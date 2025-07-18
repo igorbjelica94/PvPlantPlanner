@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+	<OutputPath>..\bin\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Database\equipment.db" />
+    <None Remove="Logo\green-energy.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Database\equipment.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="9.0.7" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Logo\green-energy.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+</Project>

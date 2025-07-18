@@ -1,0 +1,275 @@
+﻿<Window x:Class="PvPlantPlanner.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PvPlantPlanner.UI"
+        mc:Ignorable="d"
+        Height="700" Width="1200" MinHeight="700" MinWidth="1200"
+        Icon="pack://application:,,,/Logo/green-energy.ico">
+
+    <DockPanel>
+
+        <Menu DockPanel.Dock="Top" Background="LightSlateGray" Foreground="White">
+            <MenuItem Header="_Datoteka">
+                <MenuItem Header="Sačuvaj Konfiguraciju" Background="LightSlateGray"/>
+                <MenuItem Header="Učitaj Konfiguraciju" Background="LightSlateGray" Click="LoadConfiguration_Click"/>
+                <Separator/>
+                <MenuItem Header="Izlaz" Background="LightSlateGray" Click="ExitMenuItem_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Oprema">
+                <MenuItem Header="Dodaj/Obriši Opremu" Background="LightSlateGray" Click="AddEquipment_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="22*"/>
+                <ColumnDefinition Width="273*"/>
+                <ColumnDefinition Width="295*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- LEVA STRANA -->
+            <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="5">
+                    <GroupBox Header="Podešenja elektrane" Margin="0,0,0,10">
+                        <StackPanel>
+                            <WrapPanel Margin="5">
+                                <TextBlock Text="Instalisana snaga elektrane [kWp]:" Width="280"/>
+                                <TextBox Width="250"/>
+                            </WrapPanel>
+                            <WrapPanel Margin="5">
+                                <TextBlock Text="Maksimalna odobrena izlazna snaga elektrane [kW]:" Width="280"/>
+                                <TextBox Width="250"/>
+                            </WrapPanel>
+                            <WrapPanel Margin="5">
+                                <TextBlock Text="Cena izgradnje elektrane [EUR/kWp]:" Width="280"/>
+                                <TextBox Width="250"/>
+                            </WrapPanel>
+                            <WrapPanel Margin="5">
+                                <TextBlock Text="Satna proizvodnja elektrane:" Width="280"/>
+                                <Button Content="Dodaj Fajl" Width="80" Click="Button_Upload_Plant_Generation_Click"/>
+                                <TextBlock Name="StatusIcon_P_Gen_Data" FontSize="16" VerticalAlignment="Center"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Sopstvena potrošnja" Margin="0,0,0,10">
+                        <StackPanel>
+                            <WrapPanel Margin="5">
+                                <RadioButton Content="Faktor jedn. sopstvene potrošnje:" Width="280"/>
+                                <TextBox Width="250"/>
+                            </WrapPanel>
+                            <WrapPanel Margin="5">
+                                <RadioButton Content="Satna sopstvena potrošnja:" Width="280"/>
+                                <Button Content="Dodaj Fajl" Width="80"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Način kupo-prodaje" Margin="0,0,0,10">
+                        <StackPanel>
+                            <WrapPanel Margin="5">
+                                <TextBlock Text="Satna cena električne energije na berzi:" Width="280"/>
+                                <Button Content="Dodaj Fajl" Width="80" Name="UploadButton" Click="Button_Upload_EnegyMarket_Price_Click"/>
+                                <TextBlock Name="StatusIcon_Market_Price" FontSize="16" VerticalAlignment="Center"/>
+                            </WrapPanel>
+                            <CheckBox Content="Elektrana na berzi | Korekcioni faktor:" Margin="5"/>
+                            <WrapPanel Margin="5">
+                                <TextBlock Text="Minimalna cena prodaje električne energije:" Width="280"/>
+                                <TextBox Width="250"/>
+                            </WrapPanel>
+                            <WrapPanel Margin="5">
+                                <TextBlock Text="Minimalna cena za pražnjenje baterije:" Width="280"/>
+                                <TextBox Width="250"/>
+                            </WrapPanel>
+                            <CheckBox Content="Fiksna cena" Margin="5"/>
+                            <WrapPanel Margin="5">
+                                <TextBlock Text="Cena [EUR/kWh]:" Width="280"/>
+                                <TextBox Width="250"/>
+                            </WrapPanel>
+                            <WrapPanel Margin="5">
+                                <TextBlock Text="Korekcioni faktor:" Width="280"/>
+                                <TextBox Width="250"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Podešenja prema mreži" Margin="0,0,0,10">
+                        <StackPanel>
+                            <WrapPanel Margin="5">
+                                <TextBlock Text="Maksimalna snaga iz mreže [kW]:" Width="280"/>
+                                <TextBox Width="250"/>
+                            </WrapPanel>
+                            <WrapPanel Margin="5">
+                                <TextBlock Text="Cena preuzete električne energije [EUR/kWh]:" Width="280"/>
+                                <TextBox Width="250"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- DESNA STRANA -->
+            <ScrollViewer Grid.Row="0" Grid.Column="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="5">
+                    <GroupBox Header="Podešenje sistema baterija" Margin="0,0,0,10">
+                        <StackPanel>
+                            <WrapPanel Margin="5">
+                                <TextBlock Text="Maksimalna instalisana snaga baterija [kW]:" Width="280"/>
+                                <TextBox Width="250"/>
+                            </WrapPanel>
+                            <TextBlock Text="Tipovi Baterija:" FontWeight="Bold" Margin="5"/>
+                            <DataGrid ItemsSource="{Binding SelectedBatteries}" AutoGenerateColumns="False" Height="150" Margin="5" IsReadOnly="True" HeadersVisibility="Column" RowHeaderWidth="0">
+                                <DataGrid.ColumnHeaderStyle>
+                                    <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGrid.ColumnHeaderStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="No" Binding="{Binding No}" Width="30">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                <Setter Property="TextAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Snaga [kW]" Binding="{Binding Power}" Width="2*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                <Setter Property="TextAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Kapacitet [kWh]" Binding="{Binding Capacity}" Width="2*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                <Setter Property="TextAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Cena [EUR]" Binding="{Binding Price}" Width="2*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                <Setter Property="TextAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Broj ciklusa" Binding="{Binding Cycles}" Width="2*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                <Setter Property="TextAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTemplateColumn Header="" Width="30" MinWidth="30">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="−" Background="LightSlateGray" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Width="20" Height="20" Padding="0" Click="DeleteBattery_Click" Tag="{Binding}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Button Content="Dodaj Bateriju" Width="150" Margin="5" HorizontalAlignment="Right" Click="Button_AddBattery_Click"/>
+                            <TextBlock Text="Tipovi Transformatora:" FontWeight="Bold" Margin="10,10,5,5"/>
+                            <DataGrid x:Name="myDataGrid" AutoGenerateColumns="False" Height="150" Margin="5" IsReadOnly="False" HeadersVisibility="Column" RowHeaderWidth="0" CanUserAddRows="False">
+                                <DataGrid.ColumnHeaderStyle>
+                                    <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGrid.ColumnHeaderStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="No" Width="30" Binding="{Binding No}" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Snaga [kVA]" Width="2*" Binding="{Binding Snaga}" />
+                                    <DataGridTextColumn Header="Faktor snage" Width="2*" Binding="{Binding Faktor}" />
+                                    <DataGridTextColumn Header="Cena [EUR]" Width="2*" Binding="{Binding Cena}" />
+                                    <DataGridTemplateColumn Header="" Width="40">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="−" Background="Red" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Width="25" Height="25" Click="DeleteRow_Click"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Button Content="Dodaj Transformator" Width="150" Margin="5" HorizontalAlignment="Right"/>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Button Grid.Row="1" Content="Generiši Izveštaj" Width="150" Height="30" HorizontalAlignment="Right" Margin="0,10,10,0" Grid.Column="2" Click="Button_Generate_Report_Click"/>
+        </Grid>
+
+    </DockPanel>
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="LightSlateGray"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#005A9E"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#003E73"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#AAA"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+</Window>
+
