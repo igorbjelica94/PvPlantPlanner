@@ -10,6 +10,9 @@ namespace PvPlantPlanner.Common.CoreTypes
 
         public HourlyValue(T value)
         {
+            if (value == null)
+                throw new ArgumentNullException(nameof(value), "Single value in HourlyValue cannot be null.");
+
             _singleValue = value;
             _isSingle = true;
         }
@@ -17,7 +20,7 @@ namespace PvPlantPlanner.Common.CoreTypes
         public HourlyValue(T[] values)
         {
             if (values == null || values.Length == 0)
-                throw new ArgumentException("Hourly values cannot be null or empty.", nameof(values));
+                throw new ArgumentException("Hourly values in HourlyValue cannot be null or empty.", nameof(values));
 
             _hourlyValues = values.ToArray(); // Ensuring the array is copied to prevent external modifications.
             _isSingle = false;
@@ -25,8 +28,8 @@ namespace PvPlantPlanner.Common.CoreTypes
 
         public T GetValueAtHour(int hour)
         {
-            if (hour <= 0)
-                throw new ArgumentOutOfRangeException(nameof(hour), "Hour value must be positive.");
+            if (hour < 0)
+                throw new ArgumentOutOfRangeException(nameof(hour), "Hour value must be non-negative.");
 
             if (_isSingle)
             {
@@ -35,13 +38,15 @@ namespace PvPlantPlanner.Common.CoreTypes
                 return _singleValue;
             }
 
-            if (_hourlyValues == null || hour > _hourlyValues.Length)
+            if (_hourlyValues == null || hour >= _hourlyValues.Length)
                 throw new ArgumentOutOfRangeException(nameof(hour), $"Hour ({hour}) exceeds the length of hourly values.");
 
-            return _hourlyValues[hour - 1];
+            return _hourlyValues[hour];
         }
 
         public T this[int hour] => GetValueAtHour(hour);
+
+        public int Length => _isSingle ? 1 : (_hourlyValues?.Length ?? 0);
 
         public static implicit operator HourlyValue<T>(T value) => new HourlyValue<T>(value);
 
@@ -60,7 +65,7 @@ namespace PvPlantPlanner.Common.CoreTypes
             if (_hourlyValues == null)
                 return "Hourly Values: null";
 
-            var preview = string.Join(", ", _hourlyValues.Take(15)); // Takes first 15 values from collection
+            var preview = string.Join(", ", _hourlyValues.Take(24)); // Takes first 24 values from collection
             return $"Hourly Values: [{preview}... total: {_hourlyValues.Length}]";
         }
     }
