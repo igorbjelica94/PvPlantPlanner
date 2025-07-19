@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PvPlantPlanner.EnergyModels.BatteryModule
+namespace PvPlantPlanner.EnergyModels.BatteryModules
 {
     internal class CycleCountHandler
     {
