@@ -4,26 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PvPlantPlanner.EnergyModels.BatteryModule
+namespace PvPlantPlanner.EnergyModels.BatteryModules
 {
     internal class CycleCountHandler
     {
-        private readonly double _ratedCapacity;
-
-        private int _currentCycleCount;
-        private double _cycleProgress;
+        public double RatedCapacity { get; }
+        public int CurrentCycleCount { get; private set; }
+        public double CycleProgress { get; private set; }
 
         public CycleCountHandler(double ratedCapacity)
         {
             if (ratedCapacity <= 0)
                 throw new ArgumentOutOfRangeException(nameof(ratedCapacity), "Rated capacity must be positive.");
 
-            _ratedCapacity = ratedCapacity;
+            RatedCapacity = ratedCapacity;
         }
-
-        public int CurrentCycleCount => _currentCycleCount;
-        public double CycleProgress => _cycleProgress;
-        public double RatedCapacity => _ratedCapacity;
 
         public void UpdateCycleProgress(double energyDelta)
         {
@@ -32,12 +27,12 @@ namespace PvPlantPlanner.EnergyModels.BatteryModule
 
             energyDelta = Math.Abs(energyDelta); // We are interested in the magnitude of energy delta (whether it's positive or negative)
 
-            _cycleProgress += energyDelta / (2 * _ratedCapacity); // One cycle = one charge + one discharge, so we multiply rated capacity by 2
+            CycleProgress += energyDelta / (2 * RatedCapacity); // One cycle = one charge + one discharge, so we multiply rated capacity by 2
 
-            while (_cycleProgress >= 1.0)
+            while (CycleProgress >= 1.0)
             {
-                _currentCycleCount++;
-                _cycleProgress -= 1.0;
+                CurrentCycleCount++;
+                CycleProgress -= 1.0;
             }
         }
     }
