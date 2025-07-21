@@ -1,0 +1,274 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.0.4 Chrome/138.0.7204.97 Electron/37.2.1 Safari/537.36" version="28.0.4" pages="2">
+  <diagram name="ClassDiagram" id="Fz1SgVb4pIZPQcPt5hbG">
+    <mxGraphModel dx="2245" dy="2054" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="d4scRSGsKHPp8cbbEbA8-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="d4scRSGsKHPp8cbbEbA8-6" target="xJd2pfn09ynUVpjx_QGJ-13" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="647.5" y="860" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="xJd2pfn09ynUVpjx_QGJ-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=block;endFill=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="xJd2pfn09ynUVpjx_QGJ-12" target="xJd2pfn09ynUVpjx_QGJ-10" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="117.5" y="626.25" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="xJd2pfn09ynUVpjx_QGJ-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="xJd2pfn09ynUVpjx_QGJ-12" target="xJd2pfn09ynUVpjx_QGJ-13" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="258.75" y="667.5" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="xJd2pfn09ynUVpjx_QGJ-10" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Interface&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;IPowerPlant&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ InstalledPower: double&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;br&gt;+ HourlyEnergyOutput: double[] &lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ InvestmentCost: int &lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="-42.5" y="380" width="320" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="xJd2pfn09ynUVpjx_QGJ-12" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SolarPowerPlant&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&amp;nbsp;-&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;_hourlyEnergyProduction: double[]&lt;/span&gt;&lt;p style=&quot;margin: 0px 0px 0px 4px;&quot;&gt;- _selfConsumptionEnergy: HourlyValue&amp;lt;double&amp;gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ SolarPowerPlant(instalPow: double, cost: int, hEnerProd: double[], &lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;selfCons: HourlyValue&amp;lt;double&amp;gt;)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- CalculateHourlyEnergyOutput(): double[]&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="-72.5" y="604" width="380" height="127.01" as="geometry" />
+        </mxCell>
+        <mxCell id="xJd2pfn09ynUVpjx_QGJ-13" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;HourlyValue&amp;lt;T&amp;gt;&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;div&gt;&amp;nbsp;- _singleValue: T&lt;/div&gt;&lt;div&gt;&amp;nbsp;- _hourlyValues: T[]&lt;/div&gt;&lt;div&gt;&amp;nbsp;- _isSingle: bool&lt;/div&gt;&lt;div&gt;&amp;nbsp;+ Length: int&lt;/div&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&amp;nbsp;+ HourlyValue(value: T)&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ HourlyValue(values: T[])&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;&lt;br&gt;+ GetValueAtHour(hour: int): T&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ this[hour: int]: T&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ implicit operator HourlyValue&amp;lt;T&amp;gt;(value: T)&lt;br&gt;+ implicit operator HourlyValue&amp;lt;T&amp;gt;(values: T[])&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ ToString(): string &amp;lt;&amp;lt;&lt;i&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;override&amp;gt;&amp;gt;&lt;/font&gt;&lt;/i&gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="347.5" y="562.68" width="260" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="74v_1Q-8GCGpm79nwkMR-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="xJd2pfn09ynUVpjx_QGJ-14" target="jiTqrFprnVyUfZZ7GHk6-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2150" y="703" />
+              <mxPoint x="2150" y="313" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="xJd2pfn09ynUVpjx_QGJ-14" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Interface&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;IBatteryModule&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ RatedPower: double&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;br&gt;+ RatedCapacity: double &lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ InvestmentCost: int &lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ MaxCycleCount: int &lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ CurrentCapacity: double&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ CurrentCycleCount: double&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;&lt;font color=&quot;#cccccc&quot;&gt;{get;}&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ RemainingCapcity: double&lt;/font&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;color: rgb(204, 204, 204); background-color: transparent;&quot;&gt;{get;}&lt;br&gt;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ TimeToFullCharge: double&lt;/font&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;br&gt;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ TimeToFullDischarge: double&lt;/font&gt;&lt;/span&gt;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ TryCharge(energy: double): ChargeResult&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ TryDischarge(energy: double): DischargeResult&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ CanChargeWithEnergy(energy: double): ChargeResult&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="1647.5" y="590" width="320" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="xJd2pfn09ynUVpjx_QGJ-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;" parent="1" source="xJd2pfn09ynUVpjx_QGJ-16" target="xJd2pfn09ynUVpjx_QGJ-14" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="xJd2pfn09ynUVpjx_QGJ-22" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="xJd2pfn09ynUVpjx_QGJ-16" target="xJd2pfn09ynUVpjx_QGJ-21" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="xJd2pfn09ynUVpjx_QGJ-16" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;BatteryModule&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;div&gt;&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- Cycle: CycleCountHandler&lt;/span&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&amp;nbsp;+ BatteryModule(ratPow: double, ratCap: double, inCost: int, maxCycle: int)" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="1587.5" y="911.24" width="440" height="82.5" as="geometry" />
+        </mxCell>
+        <mxCell id="jiTqrFprnVyUfZZ7GHk6-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="xJd2pfn09ynUVpjx_QGJ-17" target="jiTqrFprnVyUfZZ7GHk6-1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1548" y="400" />
+              <mxPoint x="1548" y="313" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jiTqrFprnVyUfZZ7GHk6-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="xJd2pfn09ynUVpjx_QGJ-17" target="jiTqrFprnVyUfZZ7GHk6-2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1548" y="410" />
+              <mxPoint x="1548" y="490" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="xJd2pfn09ynUVpjx_QGJ-17" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Interface&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;IBatteryStorage&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ RatedPower: double&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;br&gt;+ RatedCapacity: double &lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ InvestmentCost: int &lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ BatteryModules: List&amp;lt;IBatteryModule&amp;gt;&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ CurrentCapacity: double&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;br&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ RemainingCapacity: double&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ AvaliableChargePower: double&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ AvaliableDischargePower: double&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ TryCharge(energy: double): ChargeResult&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ TryDischarge(energy: double): DischargeResult&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="1207.5" y="345.81" width="280" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="xJd2pfn09ynUVpjx_QGJ-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;" parent="1" source="xJd2pfn09ynUVpjx_QGJ-20" target="xJd2pfn09ynUVpjx_QGJ-17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="xJd2pfn09ynUVpjx_QGJ-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.999;exitY=0.855;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="xJd2pfn09ynUVpjx_QGJ-17" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1590" y="525" />
+              <mxPoint x="1590" y="706" />
+            </Array>
+            <mxPoint x="1490" y="525" as="sourcePoint" />
+            <mxPoint x="1647.4999999999995" y="706" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="xJd2pfn09ynUVpjx_QGJ-20" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;BatteryStorage&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;div&gt;&amp;nbsp;- ChargeableModules: IEnumerable&amp;lt;IBatteryModule&amp;gt;&lt;br&gt;&amp;nbsp;- DischargeableModules: IEnumerable&amp;lt;IBatteryModule&amp;gt;&lt;/div&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&amp;nbsp;+ BatteryStorage(modules: List&amp;lt;IBatteryModule&amp;gt;)&lt;div&gt;&amp;nbsp;- HandleDistributionToModules(energy: double): ChargeResult&lt;/div&gt;&lt;div&gt;&amp;nbsp;- HandleDistributionFromModules(energy: double): DischargeResult&lt;/div&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="1155.1599999999999" y="612.49" width="384.69" height="125.01" as="geometry" />
+        </mxCell>
+        <mxCell id="xJd2pfn09ynUVpjx_QGJ-21" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;CycleCountHandler&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ CurrentCycleCount: int&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ CycleProgress: double&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ RatedCapacity: double&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ CycleCountHandler(ratedCap: double)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ UpdateCycleProgress(energDelta: double): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="2147.5" y="887.87" width="310" height="128.13" as="geometry" />
+        </mxCell>
+        <mxCell id="d4scRSGsKHPp8cbbEbA8-1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Interface&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;IEnergyTransferManager&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&amp;nbsp;+ CalculatedData: CalculatedData&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;div&gt;&lt;font color=&quot;#cccccc&quot;&gt;&amp;nbsp;&lt;/font&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ SolarPlant: IPowerPlant&lt;/font&gt;&lt;font color=&quot;#cccccc&quot;&gt;&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;font color=&quot;#cccccc&quot;&gt;&amp;nbsp;&lt;/font&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ PowerGrid: IPowerGrid&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;font color=&quot;#cccccc&quot;&gt;&amp;nbsp;&lt;/font&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ EnerguStorage: IBatteryStorage&lt;/font&gt;&lt;br&gt;&lt;div&gt;&lt;div&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ ExecuteEnergyTransferForHour(hour: int): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ ResetCalculatedData(): void&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="665.13" y="150" width="296.25" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="d4scRSGsKHPp8cbbEbA8-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;" parent="1" source="d4scRSGsKHPp8cbbEbA8-2" target="d4scRSGsKHPp8cbbEbA8-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d4scRSGsKHPp8cbbEbA8-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="d4scRSGsKHPp8cbbEbA8-2" target="xJd2pfn09ynUVpjx_QGJ-10" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d4scRSGsKHPp8cbbEbA8-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="d4scRSGsKHPp8cbbEbA8-2" target="xJd2pfn09ynUVpjx_QGJ-17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d4scRSGsKHPp8cbbEbA8-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="d4scRSGsKHPp8cbbEbA8-2" target="d4scRSGsKHPp8cbbEbA8-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jiTqrFprnVyUfZZ7GHk6-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="d4scRSGsKHPp8cbbEbA8-2" target="jiTqrFprnVyUfZZ7GHk6-8" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1130" y="412" />
+              <mxPoint x="1130" y="240" />
+              <mxPoint x="1235" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d4scRSGsKHPp8cbbEbA8-2" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;EnergyTransferManager&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- _tradingMode: TradingMode&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- _feedInPriorityPrice: List&amp;lt;int&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- _minBatteryDischargePrice: List&amp;lt;int&amp;gt;&lt;br&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ EnergyTransferManager(solPl: IPowerPlant, powGr: IPowerGrid, tradMode: TradingMode, feedInPrice: List&amp;lt;int&amp;gt;, minBatDisPrice: List&amp;lt;int&amp;gt;, calcData: CalculatedData)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="624.37" y="381.62" width="376.25" height="138.38" as="geometry" />
+        </mxCell>
+        <mxCell id="d4scRSGsKHPp8cbbEbA8-6" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Interface&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;IPowerGrid&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ ApprovedFeedInPower: double&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;br&gt;+ AllowedExportPower: double&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;HourlyFeedInEnergyPrice: HourlyValue&amp;lt;double&amp;gt;&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ ExportEnergyPrice: double&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204);&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="657.49" y="597.5" width="310.01" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="d4scRSGsKHPp8cbbEbA8-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=block;endFill=0;" parent="1" source="d4scRSGsKHPp8cbbEbA8-7" target="d4scRSGsKHPp8cbbEbA8-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d4scRSGsKHPp8cbbEbA8-7" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;PowerGrid&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&amp;nbsp;+ PowerGrid(appFeedInPow: double, allExPow: double, &lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;hFeedInEnergPr: HourlyValue&amp;lt;double&amp;gt;, &lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;exEnergPr: double)" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="656.49" y="831.24" width="312.51" height="108.76" as="geometry" />
+        </mxCell>
+        <mxCell id="d4scRSGsKHPp8cbbEbA8-11" value="&lt;span style=&quot;font-weight: normal;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Enumeration&amp;gt;&amp;gt;&lt;/i&gt;&lt;/span&gt;&lt;br&gt;TradingMode" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="397.5" y="273.25" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="d4scRSGsKHPp8cbbEbA8-12" value="&lt;div&gt;None,&lt;/div&gt;&lt;div&gt;TradingOnMarket&lt;/div&gt;&lt;div&gt;TradingFixedPrice&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="d4scRSGsKHPp8cbbEbA8-11" vertex="1">
+          <mxGeometry y="40" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d4scRSGsKHPp8cbbEbA8-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="d4scRSGsKHPp8cbbEbA8-2" target="d4scRSGsKHPp8cbbEbA8-12" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="730" y="343" />
+            </Array>
+            <mxPoint x="1162.5" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jiTqrFprnVyUfZZ7GHk6-1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;ChargeResult&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ IsSuccessful: bool&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204); background-color: transparent;&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ ChargedEnergy: double&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204); background-color: transparent;&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ ChargeResult(success: bool, chargEnerg: double)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ &lt;u&gt;Success&lt;/u&gt;(chargEnerg: double): ChargeResult&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ &lt;u&gt;PartialSuccess&lt;/u&gt;(chargEnerg: double): ChargeResult&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ &lt;u&gt;Failure&lt;/u&gt;(): ChargeResult&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="1680" y="246.5" width="300" height="133.5" as="geometry" />
+        </mxCell>
+        <mxCell id="jiTqrFprnVyUfZZ7GHk6-2" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;DischargeResult&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ IsSuccessful: bool&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204); background-color: transparent;&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ DischargedEnergy: double&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204); background-color: transparent;&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ DischargeResult(success: bool, discEnerg: double)&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin: 0px 0px 0px 4px;&quot;&gt;+&amp;nbsp;&lt;u&gt;Success&lt;/u&gt;(discEnerg: double): DischargeResult&lt;/p&gt;&lt;p style=&quot;margin: 0px 0px 0px 4px;&quot;&gt;+&amp;nbsp;&lt;u&gt;PartialSuccess&lt;/u&gt;(discEnerg: double): DischargeResult&lt;br&gt;+&amp;nbsp;&lt;u&gt;Failure&lt;/u&gt;(): DischargeResult&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="1680" y="420" width="300" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="jiTqrFprnVyUfZZ7GHk6-7" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;InputData&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ BatteryType: List&amp;lt;string&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ ModuleNumber: List&amp;lt;int&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ RatedStoragePower: double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ RatedStorageCapacity: double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ TransformerNumber: int&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ Capex: double&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="1110" y="-200" width="250" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="jiTqrFprnVyUfZZ7GHk6-8" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;CalculatedData&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ EnergySalesRevenue: double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ EnergyPurchaseCost: double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;AnnualGridConsumptionEnergy: double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;AnnualGridExportEnergy: double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;AnnualBatteryDischargeEnergy: double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;AnnualFullPowerHours: int&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="1110" width="250" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="36R46VaEtXLXS3W97MRg-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="jiTqrFprnVyUfZZ7GHk6-11" target="36R46VaEtXLXS3W97MRg-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="36R46VaEtXLXS3W97MRg-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" parent="1" source="jiTqrFprnVyUfZZ7GHk6-11" target="36R46VaEtXLXS3W97MRg-3" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="667" y="-180" />
+              <mxPoint x="610" y="-180" />
+              <mxPoint x="610" y="-110" />
+              <mxPoint x="450" y="-110" />
+              <mxPoint x="450" y="-40" />
+            </Array>
+            <mxPoint x="420" y="-80" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jiTqrFprnVyUfZZ7GHk6-11" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Interface&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;I&lt;/b&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); text-align: left;&quot;&gt;&lt;b&gt;EnergyTransferSimulator&lt;/b&gt;&lt;/span&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ ConfigureSimulator(config: Configuration): Result&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ StartSimulation(): Result&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="667" y="-265" width="293" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="jiTqrFprnVyUfZZ7GHk6-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;" parent="1" source="jiTqrFprnVyUfZZ7GHk6-12" target="jiTqrFprnVyUfZZ7GHk6-11" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jiTqrFprnVyUfZZ7GHk6-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="jiTqrFprnVyUfZZ7GHk6-12" target="d4scRSGsKHPp8cbbEbA8-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="36R46VaEtXLXS3W97MRg-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="jiTqrFprnVyUfZZ7GHk6-12" target="jiTqrFprnVyUfZZ7GHk6-7" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="36R46VaEtXLXS3W97MRg-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="jiTqrFprnVyUfZZ7GHk6-12" target="36R46VaEtXLXS3W97MRg-7" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jiTqrFprnVyUfZZ7GHk6-12" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;AnnualEnergyTransferSimulator&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- _energyManager: IEnergyTransferManager&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- _isConfigured: bool&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- _simulationVariants: List&amp;lt;InputData&amp;gt;&lt;br&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ AnnualEnergyTransferSimulator()&lt;br&gt;- CreateEnergyTransferManager: Result&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- CreateSimulationVariants(): Result&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#bac8d3;strokeColor=#23445d;" parent="1" vertex="1">
+          <mxGeometry x="667.5" y="-105" width="292.5" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="36R46VaEtXLXS3W97MRg-1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Configuration #TODO&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ field: Type&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ method(): Type&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="340" y="-255" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="36R46VaEtXLXS3W97MRg-3" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;ResultStatus&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ Success: bool&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204); background-color: transparent;&quot;&gt;{get;}&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ ErrorCode: int&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204); background-color: transparent;&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ ErrorMessage: string&amp;nbsp;&lt;span style=&quot;color: rgb(204, 204, 204); background-color: transparent;&quot;&gt;{get;}&lt;/span&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;ResultStatus(success: bool, [err_code: int],&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;[&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;err_mess: string])&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ &lt;u&gt;Ok&lt;/u&gt;():&amp;nbsp; ResultStatus&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ &lt;u&gt;Fail&lt;/u&gt;(err_code: ErrorCode, [err_mess: string]): ResultStatus&lt;/span&gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;strokeColor=#000000;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="190" y="-40" width="347" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="36R46VaEtXLXS3W97MRg-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="36R46VaEtXLXS3W97MRg-7" target="jiTqrFprnVyUfZZ7GHk6-7" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="36R46VaEtXLXS3W97MRg-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="36R46VaEtXLXS3W97MRg-7" target="jiTqrFprnVyUfZZ7GHk6-8" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="36R46VaEtXLXS3W97MRg-7" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Static&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;ReportGenerator&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ &lt;u&gt;GenerateReport&lt;/u&gt;(in: List&amp;lt;InputData&amp;gt;, out: List&amp;lt;CalculatedData&amp;gt;): Success&lt;br&gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="1450" y="-90" width="222.5" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="74v_1Q-8GCGpm79nwkMR-1" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="1" source="xJd2pfn09ynUVpjx_QGJ-14" target="jiTqrFprnVyUfZZ7GHk6-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1970" y="650" as="sourcePoint" />
+            <mxPoint x="1979.9999999999995" y="480" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="2080" y="650" />
+              <mxPoint x="2080" y="490" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="vZYID3DI_Ru7MysUyEMG" name="SequenceDiagram">
+    <mxGraphModel dx="1141" dy="673" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="cCR9NLWcfU2ljnOkZroB-1" value="" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};participant=umlActor;" vertex="1" parent="1">
+          <mxGeometry x="70" y="40" width="20" height="640" as="geometry" />
+        </mxCell>
+        <mxCell id="cCR9NLWcfU2ljnOkZroB-2" value="&lt;b&gt;AnnualEnergy&lt;br&gt;TransferSimulator&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="1">
+          <mxGeometry x="180" y="40" width="120" height="640" as="geometry" />
+        </mxCell>
+        <mxCell id="cCR9NLWcfU2ljnOkZroB-3" value="" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="cCR9NLWcfU2ljnOkZroB-2">
+          <mxGeometry x="55" y="80" width="10" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="iRDiEK-6QZDjD6UGkQHB-1" value="" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="cCR9NLWcfU2ljnOkZroB-2">
+          <mxGeometry x="60" y="120" width="10" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="iRDiEK-6QZDjD6UGkQHB-2" value="CreateEnergy&lt;br&gt;TransferManager()" style="html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;curved=0;rounded=0;" edge="1" target="iRDiEK-6QZDjD6UGkQHB-1" parent="cCR9NLWcfU2ljnOkZroB-2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="65" y="100" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="95" y="130" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r1SlxZjltpLPH0ukbR55-1" value="" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="cCR9NLWcfU2ljnOkZroB-2">
+          <mxGeometry x="60" y="200" width="10" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="r1SlxZjltpLPH0ukbR55-2" value="CreateSimulation&lt;br&gt;Variants()" style="html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;curved=0;rounded=0;" edge="1" target="r1SlxZjltpLPH0ukbR55-1" parent="cCR9NLWcfU2ljnOkZroB-2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="65" y="180" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="95" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r1SlxZjltpLPH0ukbR55-3" value="" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="cCR9NLWcfU2ljnOkZroB-2">
+          <mxGeometry x="55" y="320" width="10" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="cCR9NLWcfU2ljnOkZroB-4" value="ConfigureSimulator(config)" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;entryX=0;entryY=0;entryDx=0;entryDy=5;" edge="1" target="cCR9NLWcfU2ljnOkZroB-3" parent="1" source="cCR9NLWcfU2ljnOkZroB-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="125" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cCR9NLWcfU2ljnOkZroB-5" value="Result" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;exitX=0;exitY=1;exitDx=0;exitDy=-5;" edge="1" source="cCR9NLWcfU2ljnOkZroB-3" parent="1" target="cCR9NLWcfU2ljnOkZroB-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="195" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r1SlxZjltpLPH0ukbR55-4" value="StartSimulation()" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;entryX=0;entryY=0;entryDx=0;entryDy=5;" edge="1" target="r1SlxZjltpLPH0ukbR55-3" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="365" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r1SlxZjltpLPH0ukbR55-5" value="return" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;exitX=0;exitY=1;exitDx=0;exitDy=-5;" edge="1" source="r1SlxZjltpLPH0ukbR55-3" parent="1" target="cCR9NLWcfU2ljnOkZroB-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="435" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
