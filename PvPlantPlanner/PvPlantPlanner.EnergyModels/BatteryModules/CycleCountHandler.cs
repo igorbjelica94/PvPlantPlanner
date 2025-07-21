@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PvPlantPlanner.EnergyModels.BatteryModules
 {
-    internal class CycleCountHandler
+    internal sealed class CycleCountHandler
     {
         public double RatedCapacity { get; }
         public int CurrentCycleCount { get; private set; }

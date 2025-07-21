@@ -11,10 +11,12 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
         double CurrentCapacity { get; }
         double RemainingCapacity { get; }
         double CurrentCycleCount { get; }
+        double TimeToFullCharge { get; }
+        double TimeToFullDischarge { get; }
 
         ChargeResult TryCharge(double energy);
         DischargeResult TryDischarge(double energy);
-        ChargeResult CouldChargeWithEnergy(double energy);
+        ChargeResult CanChargeWithEnergy(double energy);
     }
 
 }

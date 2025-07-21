@@ -13,6 +13,8 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
         public double CurrentCapacity { get; private set; }
         public double RemainingCapacity => RatedCapacity - CurrentCapacity;
         public double CurrentCycleCount => Cycle.CurrentCycleCount;
+        public double TimeToFullCharge => RemainingCapacity / RatedPower;
+        public double TimeToFullDischarge => CurrentCapacity / RatedPower;
 
         private CycleCountHandler Cycle { get; set; }
 
@@ -37,7 +39,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
                 return ChargeResult.Failure();
             }
 
-            double chargedEnergy = Math.Min(energy, RemainingCapacity);
+            double chargedEnergy = Math.Min(Math.Min(energy, RatedPower /* x 1h */), RemainingCapacity);
 
             CurrentCapacity += chargedEnergy;
             Cycle.UpdateCycleProgress(chargedEnergy);
@@ -68,7 +70,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
                 : DischargeResult.PartialSuccess(dischargedEnergy);
         }
 
-        public ChargeResult CouldChargeWithEnergy(double energy)
+        public ChargeResult CanChargeWithEnergy(double energy)
         {
             if (double.IsNaN(energy) || double.IsInfinity(energy) || energy < 0)
                 throw new ArgumentOutOfRangeException(nameof(energy), "Energy must be a non-negative, finite number.");
