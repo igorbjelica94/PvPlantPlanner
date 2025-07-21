@@ -15,6 +15,7 @@ namespace PvPlantPlanner.UI
     public partial class MainWindow : Window
     {
         public ObservableCollection<Battery> SelectedBatteries { get; set; } = new ObservableCollection<Battery>();
+        public ObservableCollection<Transformer> SelectedTransformers { get; set; } = new ObservableCollection<Transformer>();
         private readonly IDatabaseRepository _repository;
 
         public MainWindow()
@@ -54,6 +55,22 @@ namespace PvPlantPlanner.UI
                 }
             }
         }
+        private void Button_AddTransformer_Click(object sender, RoutedEventArgs e)
+        {
+            var transformerWindow = new TransformerList(_repository);
+            transformerWindow.Owner = this;
+            if (transformerWindow.ShowDialog() == true)
+            {
+                foreach (var transformer in transformerWindow.SelectedTransformers)
+                {
+                    if (!SelectedTransformers.Contains(transformer))
+                    {
+                        SelectedTransformers.Add(transformer);
+                        UpdateTransformersNumbers();
+                    }
+                }
+            }
+        }
 
         private void Button_Generate_Report_Click(object sender, RoutedEventArgs e)
         {
@@ -77,11 +94,28 @@ namespace PvPlantPlanner.UI
                 UpdateBatteryNumbers();
             }
         }
+        private void DeleteTransformer_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is Transformer transformer)
+            {
+                SelectedTransformers.Remove(transformer);
+                UpdateTransformersNumbers();
+            }
+        }
+
         private void UpdateBatteryNumbers()
         {
             for (int i = 0; i < SelectedBatteries.Count; i++)
             {
                 SelectedBatteries[i].No = i + 1;
+            }
+        }
+
+        private void UpdateTransformersNumbers()
+        {
+            for (int i = 0; i < SelectedTransformers.Count; i++)
+            {
+                SelectedTransformers[i].No = i + 1;
             }
         }
 
@@ -111,5 +145,7 @@ namespace PvPlantPlanner.UI
             window.ShowDialog();
         }
         #endregion
+
+
     }
 }

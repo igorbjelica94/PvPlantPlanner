@@ -6,9 +6,9 @@ namespace PvPlantPlanner.UI.Models
     public class Battery : INotifyPropertyChanged
     {
         private bool _isSelected;
+        private int _no;
 
         public int Id { get; set; }
-        private int _no;
         public int No
         {
             get => _no;
@@ -19,7 +19,6 @@ namespace PvPlantPlanner.UI.Models
                     _no = value;
                     OnPropertyChanged();
                 }
-
             }
         }
 

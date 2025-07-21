@@ -208,28 +208,81 @@
                             </DataGrid>
                             <Button Content="Dodaj Bateriju" Width="150" Margin="5" HorizontalAlignment="Right" Click="Button_AddBattery_Click"/>
                             <TextBlock Text="Tipovi Transformatora:" FontWeight="Bold" Margin="10,10,5,5"/>
-                            <DataGrid x:Name="myDataGrid" AutoGenerateColumns="False" Height="150" Margin="5" IsReadOnly="False" HeadersVisibility="Column" RowHeaderWidth="0" CanUserAddRows="False">
+                            <DataGrid  x:Name="myDataGrid" ItemsSource="{Binding SelectedTransformers}" AutoGenerateColumns="False" Height="150" Margin="5" IsReadOnly="True" HeadersVisibility="Column" RowHeaderWidth="0">
                                 <DataGrid.ColumnHeaderStyle>
                                     <Style TargetType="DataGridColumnHeader">
                                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                         <Setter Property="VerticalContentAlignment" Value="Center"/>
                                     </Style>
                                 </DataGrid.ColumnHeaderStyle>
+
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="No" Width="30" Binding="{Binding No}" IsReadOnly="True"/>
-                                    <DataGridTextColumn Header="Snaga [kVA]" Width="2*" Binding="{Binding Snaga}" />
-                                    <DataGridTextColumn Header="Faktor snage" Width="2*" Binding="{Binding Faktor}" />
-                                    <DataGridTextColumn Header="Cena [EUR]" Width="2*" Binding="{Binding Cena}" />
-                                    <DataGridTemplateColumn Header="" Width="40">
+                                    <DataGridTextColumn Header="No" Binding="{Binding No}" Width="30">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                <Setter Property="TextAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
+
+                                    <DataGridTextColumn Header="Snaga [kVA]" Binding="{Binding PowerKVA}" Width="2*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                <Setter Property="TextAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
+
+                                    <DataGridTextColumn Header="Faktor snage" Binding="{Binding PowerFactor}" Width="2*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                <Setter Property="TextAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
+
+                                    <DataGridTextColumn Header="Cena [EUR]" Binding="{Binding Price}" Width="2*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                <Setter Property="TextAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
+
+                                    <DataGridTemplateColumn Header="" Width="30" MinWidth="30">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <Button Content="−" Background="Red" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Width="25" Height="25" Click="DeleteRow_Click"/>
+                                                <Button Content="−" Background="LightSlateGray" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Width="20" Height="20" Padding="0" Click="DeleteTransformer_Click" Tag="{Binding}" />
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
-                            <Button Content="Dodaj Transformator" Width="150" Margin="5" HorizontalAlignment="Right"/>
+                            <Button Content="Dodaj Transformator" Width="150" Margin="5" HorizontalAlignment="Right" Click="Button_AddTransformer_Click"/>
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>
@@ -270,6 +323,5 @@
             </Setter>
         </Style>
     </Window.Resources>
-
 </Window>
 
