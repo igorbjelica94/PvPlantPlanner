@@ -36,7 +36,7 @@
             <!-- LEVA STRANA -->
             <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="5">
-                    <GroupBox Header="Podešenja elektrane" Margin="0,0,0,10">
+                    <GroupBox Header="Opšti podaci elektrane" Margin="0,0,0,10">
                         <StackPanel>
                             <WrapPanel Margin="5">
                                 <TextBlock Text="Instalisana snaga elektrane [kWp]:" Width="280"/>
@@ -51,63 +51,62 @@
                                 <TextBox Width="250"/>
                             </WrapPanel>
                             <WrapPanel Margin="5">
-                                <TextBlock Text="Satna proizvodnja elektrane:" Width="280"/>
-                                <Button Content="Dodaj Fajl" Width="80" Click="Button_Upload_Plant_Generation_Click"/>
+                                <TextBlock Text="Satna proizvodnja elektrane [kWh]:" Width="280"/>
+                                <Button Content="Dodaj Fajl" Width="80" Click="Button_Upload_Plant_Generation_Click" Padding="2"/>
                                 <TextBlock Name="StatusIcon_P_Gen_Data" FontSize="16" VerticalAlignment="Center"/>
                             </WrapPanel>
+                            <GroupBox Header="Sopstvena potrošnja" Margin="5,10,5,10">
+                                <StackPanel>
+                                    <WrapPanel Margin="5">
+                                        <TextBlock Text="Maksimalna snaga kojom može da se preuzima energija iz mreže [kW]:" Width="380"/>
+                                        <TextBox Width="130"/>
+                                    </WrapPanel>
+                                    <WrapPanel Margin="5">
+                                        <RadioButton Content="Faktor jednovremenosti sopstvene potrošnje:" Width="270"/>
+                                        <TextBox Width="240"/>
+                                    </WrapPanel>
+                                    <WrapPanel Margin="5">
+                                        <RadioButton Content="Satna sopstvena potrošnja:" Width="270"/>
+                                        <Button Content="Dodaj Fajl" Width="80" Padding="2"/>
+                                    </WrapPanel>
+                                    <WrapPanel Margin="5">
+                                        <TextBlock Text="Cena električne energije preuzete iz mreže [EUR/kWh]:" Width="320"/>
+                                        <TextBox Width="190"/>
+                                    </WrapPanel>
+                                </StackPanel>
+                            </GroupBox>
                         </StackPanel>
                     </GroupBox>
 
-                    <GroupBox Header="Sopstvena potrošnja" Margin="0,0,0,10">
+                    <GroupBox Header="Prodaja električne energije" Margin="0,0,0,10">
                         <StackPanel>
                             <WrapPanel Margin="5">
-                                <RadioButton Content="Faktor jedn. sopstvene potrošnje:" Width="280"/>
-                                <TextBox Width="250"/>
-                            </WrapPanel>
-                            <WrapPanel Margin="5">
-                                <RadioButton Content="Satna sopstvena potrošnja:" Width="280"/>
-                                <Button Content="Dodaj Fajl" Width="80"/>
-                            </WrapPanel>
-                        </StackPanel>
-                    </GroupBox>
-
-                    <GroupBox Header="Način kupo-prodaje" Margin="0,0,0,10">
-                        <StackPanel>
-                            <WrapPanel Margin="5">
-                                <TextBlock Text="Satna cena električne energije na berzi:" Width="280"/>
-                                <Button Content="Dodaj Fajl" Width="80" Name="UploadButton" Click="Button_Upload_EnegyMarket_Price_Click"/>
+                                <TextBlock Text="Satna cena električne energije na berzi [EUR/kWh]:" Width="280"/>
+                                <Button Content="Dodaj Fajl" Width="80" Name="UploadButton" Click="Button_Upload_EnegyMarket_Price_Click" Padding="2"/>
                                 <TextBlock Name="StatusIcon_Market_Price" FontSize="16" VerticalAlignment="Center"/>
                             </WrapPanel>
-                            <CheckBox Content="Elektrana na berzi | Korekcioni faktor:" Margin="5"/>
                             <WrapPanel Margin="5">
-                                <TextBlock Text="Minimalna cena prodaje električne energije:" Width="280"/>
+                                <RadioButton Content="Elektrana na berzi  | " Width="130"/>
+                                <TextBlock Text="Trgovačka provizija [%]:" Width="150"/>
                                 <TextBox Width="250"/>
                             </WrapPanel>
                             <WrapPanel Margin="5">
-                                <TextBlock Text="Minimalna cena za pražnjenje baterije:" Width="280"/>
-                                <TextBox Width="250"/>
-                            </WrapPanel>
-                            <CheckBox Content="Fiksna cena" Margin="5"/>
-                            <WrapPanel Margin="5">
-                                <TextBlock Text="Cena [EUR/kWh]:" Width="280"/>
-                                <TextBox Width="250"/>
+                                <TextBlock Text="Minimalna cena za koju se električna energija prodaje:" Width="300" Margin="130,0,0,0"/>
+                                <TextBox Width="100"/>
                             </WrapPanel>
                             <WrapPanel Margin="5">
-                                <TextBlock Text="Korekcioni faktor:" Width="280"/>
-                                <TextBox Width="250"/>
-                            </WrapPanel>
-                        </StackPanel>
-                    </GroupBox>
-
-                    <GroupBox Header="Podešenja prema mreži" Margin="0,0,0,10">
-                        <StackPanel>
-                            <WrapPanel Margin="5">
-                                <TextBlock Text="Maksimalna snaga iz mreže [kW]:" Width="280"/>
-                                <TextBox Width="250"/>
+                                <TextBlock Text="Minimalna cena za koju se baterija prazni:" Width="300" Margin="130,0,0,0"/>
+                                <TextBox Width="100"/>
                             </WrapPanel>
                             <WrapPanel Margin="5">
-                                <TextBlock Text="Cena preuzete električne energije [EUR/kWh]:" Width="280"/>
-                                <TextBox Width="250"/>
+                                <RadioButton Content="Fiksna cena   |   " Width="100"/>
+                                <TextBlock Text="Cena [EUR/kWh]:" Width="270"/>
+                                <TextBox Width="160"/>
+                            </WrapPanel>
+                            <WrapPanel Margin="5">
+                                <TextBlock Width="100"/>
+                                <TextBlock Text="Cena pri negativnoj berzanskoj ceni [EUR/kWh]:" Width="270"/>
+                                <TextBox Width="160"/>
                             </WrapPanel>
                         </StackPanel>
                     </GroupBox>
@@ -207,7 +206,7 @@
                                 </DataGrid.Columns>
                             </DataGrid>
                             <Button Content="Dodaj Bateriju" Width="150" Margin="5" HorizontalAlignment="Right" Click="Button_AddBattery_Click"/>
-                            <TextBlock Text="Tipovi Transformatora:" FontWeight="Bold" Margin="10,10,5,5"/>
+                            <TextBlock Text="Tipovi Transformatora:" FontWeight="Bold" Margin="10,12,5,5"/>
                             <DataGrid  x:Name="myDataGrid" ItemsSource="{Binding SelectedTransformers}" AutoGenerateColumns="False" Height="150" Margin="5" IsReadOnly="True" HeadersVisibility="Column" RowHeaderWidth="0">
                                 <DataGrid.ColumnHeaderStyle>
                                     <Style TargetType="DataGridColumnHeader">
