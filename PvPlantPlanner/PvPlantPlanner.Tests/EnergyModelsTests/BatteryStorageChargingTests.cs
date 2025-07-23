@@ -11,6 +11,7 @@ namespace PvPlantPlanner.Tests
         private int DefaultCost { get;  } = 1000;
         private int DefaultMaxCycleCount { get;  } = 5000;
 
+        #region Identical Modules
         [Test]
         public void ChargeOverflow_IdenticalModules_EmptyState()
         {
@@ -72,35 +73,6 @@ namespace PvPlantPlanner.Tests
         }
 
         [Test]
-        public void ChargeOverflow_DifferentModules_EmptyState()
-        {
-            // Arrange
-            var modules = new List<IBatteryModule>
-            {
-                new BatteryModule(
-                    ratedPower: 10,
-                    ratedCapacity: 100,
-                    investmentCost: DefaultCost,
-                    maxCycleCount: DefaultMaxCycleCount),
-                new BatteryModule(
-                    ratedPower: 20,
-                    ratedCapacity: 200,
-                    investmentCost: DefaultCost,
-                    maxCycleCount: DefaultMaxCycleCount)
-            };
-            var batteryStorage = new BatteryStorage(modules);
-
-            // Act
-            var result = batteryStorage.TryCharge(60);
-
-            // Assert
-            Assert.That(result.IsSuccessful, Is.False);
-            Assert.That(result.ChargedEnergy, Is.EqualTo(30).Within(Tolerance));
-            Assert.That(modules[0].CurrentCapacity, Is.EqualTo(10).Within(Tolerance));
-            Assert.That(modules[1].CurrentCapacity, Is.EqualTo(20).Within(Tolerance));
-        }
-
-        [Test]
         public void ChargeOverflow_IdenticalModules_FullyCharged()
         {
             // Arrange
@@ -122,7 +94,7 @@ namespace PvPlantPlanner.Tests
             ChargeModuleWithEnergy(modules[1], 100);
 
             // Act
-            var result = batteryStorage.TryCharge(100);
+            var result = batteryStorage.TryCharge(35);
 
             // Assert
             Assert.That(result.IsSuccessful, Is.False);
@@ -150,7 +122,7 @@ namespace PvPlantPlanner.Tests
             ChargeModuleWithEnergy(modules[0], 100);
 
             // Act
-            var result = batteryStorage.TryCharge(130);
+            var result = batteryStorage.TryCharge(30);
 
             // Assert
             Assert.That(result.IsSuccessful, Is.False);
@@ -160,7 +132,71 @@ namespace PvPlantPlanner.Tests
         }
 
         [Test]
-        public void NominalCharge_SamePowerDifferentCapacity_SomeAlmostFullyChargedSomePartiallyCharged()
+        public void PartialCharge_IdenticalModules_PartiallyCharged()
+        {
+            // Arrange
+            var modules = new List<IBatteryModule>
+            {
+                new BatteryModule(
+                    ratedPower: 30,
+                    ratedCapacity: 100,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount),
+                new BatteryModule(
+                    ratedPower: 30,
+                    ratedCapacity: 100,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount)
+            };
+            var batteryStorage = new BatteryStorage(modules);
+            ChargeModuleWithEnergy(modules[0], 30);
+            ChargeModuleWithEnergy(modules[1], 30);
+
+            // Act
+            var result = batteryStorage.TryCharge(40);
+
+            // Assert
+            Assert.That(result.IsSuccessful, Is.True);
+            Assert.That(result.ChargedEnergy, Is.EqualTo(40).Within(Tolerance));
+            Assert.That(modules[0].CurrentCapacity, Is.EqualTo(50).Within(Tolerance));
+            Assert.That(modules[1].CurrentCapacity, Is.EqualTo(50).Within(Tolerance));
+        }
+
+        [Test]
+        public void PartialCharge_IdenticalModules_AlmostFullyCharged()
+        {
+            // Arrange
+            var modules = new List<IBatteryModule>
+            {
+                new BatteryModule(
+                    ratedPower: 30,
+                    ratedCapacity: 100,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount),
+                new BatteryModule(
+                    ratedPower: 30,
+                    ratedCapacity: 100,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount)
+            };
+            var batteryStorage = new BatteryStorage(modules);
+            ChargeModuleWithEnergy(modules[0], 90);
+            ChargeModuleWithEnergy(modules[1], 90);
+
+            // Act
+            var result = batteryStorage.TryCharge(35);
+
+            // Assert
+            Assert.That(result.IsSuccessful, Is.False);
+            Assert.That(result.ChargedEnergy, Is.EqualTo(20).Within(Tolerance));
+            Assert.That(modules[0].CurrentCapacity, Is.EqualTo(100).Within(Tolerance));
+            Assert.That(modules[1].CurrentCapacity, Is.EqualTo(100).Within(Tolerance));
+        }
+        #endregion Identical Modules
+
+        #region Same Power Different Capacity Modules
+        [Test]
+        public void NominalCharge_SamePowerDifferentCapacity_MixedChargeLevel()
         {
             // Arrange
             var modules = new List<IBatteryModule>
@@ -247,6 +283,82 @@ namespace PvPlantPlanner.Tests
             Assert.That(modules[1].CurrentCapacity, Is.EqualTo(110).Within(Tolerance));
             Assert.That(modules[2].CurrentCapacity, Is.EqualTo(100).Within(Tolerance));
             Assert.That(modules[3].CurrentCapacity, Is.EqualTo(100).Within(Tolerance));
+        }
+
+        [Test]
+        public void PartialCharge_SamePowerDifferentCapacity_SomeAlmostFullyChargedSomePartiallyCharged()
+        {
+            // Arrange
+            var modules = new List<IBatteryModule>
+            {
+                new BatteryModule(
+                    ratedPower: 20,
+                    ratedCapacity: 200,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount),
+                new BatteryModule(
+                    ratedPower: 20,
+                    ratedCapacity: 200,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount),
+                new BatteryModule(
+                    ratedPower: 20,
+                    ratedCapacity: 100,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount),
+                new BatteryModule(
+                    ratedPower: 20,
+                    ratedCapacity: 100,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount),
+            };
+            var batteryStorage = new BatteryStorage(modules);
+            ChargeModuleWithEnergy(modules[0], 90);
+            ChargeModuleWithEnergy(modules[1], 90);
+            ChargeModuleWithEnergy(modules[2], 90);
+            ChargeModuleWithEnergy(modules[3], 90);
+
+            // Act
+            var result = batteryStorage.TryCharge(50);
+
+            // Assert
+            Assert.That(result.IsSuccessful, Is.True);
+            Assert.That(result.ChargedEnergy, Is.EqualTo(50).Within(Tolerance));
+            Assert.That(modules[0].CurrentCapacity, Is.EqualTo(105).Within(Tolerance));
+            Assert.That(modules[1].CurrentCapacity, Is.EqualTo(105).Within(Tolerance));
+            Assert.That(modules[2].CurrentCapacity, Is.EqualTo(100).Within(Tolerance));
+            Assert.That(modules[3].CurrentCapacity, Is.EqualTo(100).Within(Tolerance));
+        }
+        #endregion Same Power Different Capacity Modules
+
+        #region Different Modules
+        [Test]
+        public void ChargeOverflow_DifferentModules_EmptyState()
+        {
+            // Arrange
+            var modules = new List<IBatteryModule>
+            {
+                new BatteryModule(
+                    ratedPower: 10,
+                    ratedCapacity: 100,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount),
+                new BatteryModule(
+                    ratedPower: 20,
+                    ratedCapacity: 200,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount)
+            };
+            var batteryStorage = new BatteryStorage(modules);
+
+            // Act
+            var result = batteryStorage.TryCharge(60);
+
+            // Assert
+            Assert.That(result.IsSuccessful, Is.False);
+            Assert.That(result.ChargedEnergy, Is.EqualTo(30).Within(Tolerance));
+            Assert.That(modules[0].CurrentCapacity, Is.EqualTo(10).Within(Tolerance));
+            Assert.That(modules[1].CurrentCapacity, Is.EqualTo(20).Within(Tolerance));
         }
 
         [Test]
@@ -338,6 +450,97 @@ namespace PvPlantPlanner.Tests
             Assert.That(modules[2].CurrentCapacity, Is.EqualTo(100).Within(Tolerance));
             Assert.That(modules[3].CurrentCapacity, Is.EqualTo(100).Within(Tolerance));
         }
+
+        [Test]
+        public void PartialCharge_DifferentModules_MixedChargeLevels()
+        {
+            // Arrange
+            var modules = new List<IBatteryModule>
+            {
+                new BatteryModule(
+                    ratedPower: 10,
+                    ratedCapacity: 200,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount),
+                new BatteryModule(
+                    ratedPower: 20,
+                    ratedCapacity: 200,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount),
+                new BatteryModule(
+                    ratedPower: 10,
+                    ratedCapacity: 100,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount),
+                new BatteryModule(
+                    ratedPower: 20,
+                    ratedCapacity: 100,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount),
+            };
+            var batteryStorage = new BatteryStorage(modules);
+            ChargeModuleWithEnergy(modules[0], 80);
+            ChargeModuleWithEnergy(modules[1], 160);
+            ChargeModuleWithEnergy(modules[2], 80);
+            ChargeModuleWithEnergy(modules[3], 100);
+
+            // Act
+            var result = batteryStorage.TryCharge(30);
+
+            // Assert
+            Assert.That(result.IsSuccessful, Is.True);
+            Assert.That(result.ChargedEnergy, Is.EqualTo(30).Within(Tolerance));
+            Assert.That(modules[0].CurrentCapacity, Is.EqualTo(87.5).Within(Tolerance));
+            Assert.That(modules[1].CurrentCapacity, Is.EqualTo(175).Within(Tolerance));
+            Assert.That(modules[2].CurrentCapacity, Is.EqualTo(87.5).Within(Tolerance));
+            Assert.That(modules[3].CurrentCapacity, Is.EqualTo(100).Within(Tolerance));
+        }
+
+        [Test]
+        public void PartialCharge_DifferentModules_MostlyAlmostFullyCharged()
+        {
+            // Arrange
+            var modules = new List<IBatteryModule>
+            {
+                new BatteryModule(
+                    ratedPower: 10,
+                    ratedCapacity: 200,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount),
+                new BatteryModule(
+                    ratedPower: 20,
+                    ratedCapacity: 200,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount),
+                new BatteryModule(
+                    ratedPower: 10,
+                    ratedCapacity: 100,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount),
+                new BatteryModule(
+                    ratedPower: 20,
+                    ratedCapacity: 100,
+                    investmentCost: DefaultCost,
+                    maxCycleCount: DefaultMaxCycleCount),
+            };
+            var batteryStorage = new BatteryStorage(modules);
+            ChargeModuleWithEnergy(modules[0], 95);
+            ChargeModuleWithEnergy(modules[1], 190);
+            ChargeModuleWithEnergy(modules[2], 95);
+            ChargeModuleWithEnergy(modules[3], 100);
+
+            // Act
+            var result = batteryStorage.TryCharge(30);
+
+            // Assert
+            Assert.That(result.IsSuccessful, Is.False);
+            Assert.That(result.ChargedEnergy, Is.EqualTo(25).Within(Tolerance));
+            Assert.That(modules[0].CurrentCapacity, Is.EqualTo(105).Within(Tolerance));
+            Assert.That(modules[1].CurrentCapacity, Is.EqualTo(200).Within(Tolerance));
+            Assert.That(modules[2].CurrentCapacity, Is.EqualTo(100).Within(Tolerance));
+            Assert.That(modules[3].CurrentCapacity, Is.EqualTo(100).Within(Tolerance));
+        }
+        #endregion Different Modules
     }
 }
 
