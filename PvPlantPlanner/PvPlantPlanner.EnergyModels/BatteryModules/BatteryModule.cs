@@ -33,7 +33,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
             if (double.IsNaN(energy) || double.IsInfinity(energy) || energy < 0)
                 throw new ArgumentOutOfRangeException(nameof(energy), "Charged energy must be a non-negative, finite number.");
 
-            if (ApproximatelyEqual(CurrentCapacity, RatedCapacity))
+            if (IsApproximatelyEqual(CurrentCapacity, RatedCapacity))
             {
                 CurrentCapacity = RatedCapacity;
                 return ChargeResult.Failure();
@@ -44,7 +44,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
             CurrentCapacity += chargedEnergy;
             Cycle.UpdateCycleProgress(chargedEnergy);
 
-            return ApproximatelyEqual(chargedEnergy, energy)
+            return IsApproximatelyEqual(chargedEnergy, energy)
                 ? ChargeResult.Success(chargedEnergy)
                 : ChargeResult.PartialSuccess(chargedEnergy);
         }
@@ -54,7 +54,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
             if (double.IsNaN(energy) || double.IsInfinity(energy) || energy < 0)
                 throw new ArgumentOutOfRangeException(nameof(energy), "Discharged energy must be a non-negative, finite number.");
 
-            if (ApproximatelyEqual(CurrentCapacity, 0.0))
+            if (IsApproximatelyEqual(CurrentCapacity, 0.0))
             {
                 CurrentCapacity = 0.0;
                 return DischargeResult.Failure();
@@ -65,7 +65,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
             CurrentCapacity -= dischargedEnergy;
             Cycle.UpdateCycleProgress(dischargedEnergy);
 
-            return ApproximatelyEqual(dischargedEnergy, energy)
+            return IsApproximatelyEqual(dischargedEnergy, energy)
                 ? DischargeResult.Success(dischargedEnergy)
                 : DischargeResult.PartialSuccess(dischargedEnergy);
         }
@@ -75,13 +75,13 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
             if (double.IsNaN(energy) || double.IsInfinity(energy) || energy < 0)
                 throw new ArgumentOutOfRangeException(nameof(energy), "Energy must be a non-negative, finite number.");
 
-            if (ApproximatelyEqual(CurrentCapacity, RatedCapacity))
+            if (IsApproximatelyEqual(CurrentCapacity, RatedCapacity))
             {
                 CurrentCapacity = RatedCapacity;
                 return ChargeResult.Failure();
             }
 
-            return energy < RemainingCapacity || ApproximatelyEqual(energy, RemainingCapacity)
+            return energy < RemainingCapacity || IsApproximatelyEqual(energy, RemainingCapacity)
                 ? ChargeResult.Success(energy)
                 : ChargeResult.PartialSuccess(RemainingCapacity);
         }

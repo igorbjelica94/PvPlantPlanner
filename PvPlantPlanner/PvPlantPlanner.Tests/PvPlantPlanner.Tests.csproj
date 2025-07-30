@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PvPlantPlanner.Common\PvPlantPlanner.Common.csproj" />
     <ProjectReference Include="..\PvPlantPlanner.EnergyModels\PvPlantPlanner.EnergyModels.csproj" />
+    <ProjectReference Include="..\PvPlantPlanner.EnergyTransferSimulator\PvPlantPlanner.EnergyTransferSimulator.csproj" />
   </ItemGroup>
 
   <ItemGroup>

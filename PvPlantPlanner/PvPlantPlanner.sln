@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PvPlantPlanner.EnergyModels
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PvPlantPlanner.Tests", "PvPlantPlanner.Tests\PvPlantPlanner.Tests.csproj", "{3E878A67-A749-4F96-A6AA-0661EBBC1119}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PvPlantPlanner.EnergyTransferSimulator", "PvPlantPlanner.EnergyTransferSimulator\PvPlantPlanner.EnergyTransferSimulator.csproj", "{047C6B9E-EF78-4629-8C92-8158FC27F773}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{3E878A67-A749-4F96-A6AA-0661EBBC1119}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E878A67-A749-4F96-A6AA-0661EBBC1119}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E878A67-A749-4F96-A6AA-0661EBBC1119}.Release|Any CPU.Build.0 = Release|Any CPU
+		{047C6B9E-EF78-4629-8C92-8158FC27F773}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{047C6B9E-EF78-4629-8C92-8158FC27F773}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{047C6B9E-EF78-4629-8C92-8158FC27F773}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{047C6B9E-EF78-4629-8C92-8158FC27F773}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

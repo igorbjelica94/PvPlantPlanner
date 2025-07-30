@@ -14,18 +14,18 @@ namespace PvPlantPlanner.EnergyModels.BatteryStorages
         public double RemainingCapacity => BatteryModules.Sum(m => m.RemainingCapacity);
         public double AvailableChargePower =>
             BatteryModules
-                .Where(m => GreaterThanZero(m.RemainingCapacity))
+                .Where(m => IsGreaterThanZero(m.RemainingCapacity))
                 .Sum(m => m.RatedPower);
 
         public double AvailableDishargePower =>
             BatteryModules
-                .Where(m => GreaterThanZero(m.CurrentCapacity))
+                .Where(m => IsGreaterThanZero(m.CurrentCapacity))
                 .Sum(m => m.RatedPower);
 
         private IEnumerable<IBatteryModule> ChargeableModules =>
-            BatteryModules.Where(m => GreaterThanZero(m.RemainingCapacity)).OrderBy(m => m.TimeToFullCharge);
+            BatteryModules.Where(m => IsGreaterThanZero(m.RemainingCapacity)).OrderBy(m => m.TimeToFullCharge);
         private IEnumerable<IBatteryModule> DischargeableModules =>
-            BatteryModules.Where(m => GreaterThanZero(m.CurrentCapacity)).OrderBy(m => m.TimeToFullDischarge);
+            BatteryModules.Where(m => IsGreaterThanZero(m.CurrentCapacity)).OrderBy(m => m.TimeToFullDischarge);
 
         public BatteryStorage(List<IBatteryModule> batteryModules)
         {
@@ -37,7 +37,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryStorages
 
         public ChargeResult TryCharge(double energy)
         {
-            if (ApproximatelyEqual(RemainingCapacity, 0))
+            if (IsApproximatelyEqual(RemainingCapacity, 0))
                 return ChargeResult.Failure();
 
             double energyToCharge = Math.Min(energy, AvailableChargePower /* x 1h */);
@@ -45,17 +45,17 @@ namespace PvPlantPlanner.EnergyModels.BatteryStorages
             ChargeResult chargeResult = HandleDistributionToModules(energyToCharge);
 
             double totalCharged = chargeResult.ChargedEnergy;
-            if (totalCharged > energyToCharge && !ApproximatelyEqual(totalCharged, energyToCharge))
+            if (totalCharged > energyToCharge && !IsApproximatelyEqual(totalCharged, energyToCharge))
                 throw new InvalidOperationException("Charging exceeded the allowed system capacity.");
 
-            return ApproximatelyEqual(totalCharged, energy)
+            return IsApproximatelyEqual(totalCharged, energy)
                 ? ChargeResult.Success(energy)
                 : ChargeResult.PartialSuccess(totalCharged);
         }
 
         public DischargeResult TryDischarge(double energy)
         {
-            if (ApproximatelyEqual(CurrentCapacity, 0))
+            if (IsApproximatelyEqual(CurrentCapacity, 0))
                 return DischargeResult.Failure();
 
             double energyToDischarge = Math.Min(energy, AvailableDishargePower /* x 1h */);
@@ -63,10 +63,10 @@ namespace PvPlantPlanner.EnergyModels.BatteryStorages
             DischargeResult dischargeResult = HandleDistributionFromModules(energyToDischarge);
 
             double totalDischarged = dischargeResult.DischargedEnergy;
-            if (totalDischarged > energyToDischarge && !ApproximatelyEqual(totalDischarged, energyToDischarge))
+            if (totalDischarged > energyToDischarge && !IsApproximatelyEqual(totalDischarged, energyToDischarge))
                 throw new InvalidOperationException("Discharging exceeded the allowed system capacity.");
 
-            return ApproximatelyEqual(totalDischarged, energy)
+            return IsApproximatelyEqual(totalDischarged, energy)
                 ? DischargeResult.Success(energy)
                 : DischargeResult.PartialSuccess(totalDischarged);
         }
@@ -88,7 +88,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryStorages
                 double share = module.RatedPower / currentChargePower;
                 double energyForModule = share * remainedToCharge;
                 // if the energy cannot be proportionally distributed across the modules, remove the module with the insufficient capacity
-                if (energyForModule > module.RemainingCapacity && !ApproximatelyEqual(energyForModule, module.RemainingCapacity))
+                if (energyForModule > module.RemainingCapacity && !IsApproximatelyEqual(energyForModule, module.RemainingCapacity))
                 {
                     chargeableModules.RemoveAt(i);
                     i--;
@@ -99,7 +99,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryStorages
                 chargedEnergy += chargeResult.ChargedEnergy;
             }
 
-            return ApproximatelyEqual(chargedEnergy, energy)
+            return IsApproximatelyEqual(chargedEnergy, energy)
                 ? ChargeResult.Success(energy)
                 : ChargeResult.PartialSuccess(chargedEnergy);
         }
@@ -121,7 +121,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryStorages
                 double share = module.RatedPower / currentDischargePower;
                 double energyFromModule = share * remainedToDischarge;
                 // if the energy cannot be proportionally distributed from the modules, remove the module with the insufficient capacity
-                if (energyFromModule > module.CurrentCapacity && !ApproximatelyEqual(energyFromModule, module.CurrentCapacity))
+                if (energyFromModule > module.CurrentCapacity && !IsApproximatelyEqual(energyFromModule, module.CurrentCapacity))
                 {
                     dischargeableModules.RemoveAt(i);
                     i--;
@@ -132,7 +132,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryStorages
                 dischargedEnergy += dischargeResult.DischargedEnergy;
             }
 
-            return ApproximatelyEqual(dischargedEnergy, energy)
+            return IsApproximatelyEqual(dischargedEnergy, energy)
                 ? DischargeResult.Success(energy)
                 : DischargeResult.PartialSuccess(dischargedEnergy);
         }

@@ -4,8 +4,10 @@
     {
         // General error codes:
         Success = 0,
-        NotFound = 1
+        NotFound = 1,
 
         // Custom error codes:
+        InvalidFeedInEnergyPriceComparison = 10,
+        UnresolvedFeedInDecision = 11
     }
 }
