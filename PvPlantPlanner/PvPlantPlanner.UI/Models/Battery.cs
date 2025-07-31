@@ -1,10 +1,20 @@
-﻿using System.ComponentModel;
+﻿using PvPlantPlanner.Common.Config;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace PvPlantPlanner.UI.Models
 {
     public class Battery : INotifyPropertyChanged
     {
+        public Battery(BatteryDto dto)
+        {
+            Power = dto.Power;
+            Capacity = dto.Capacity;
+            Price = dto.Price;
+            Cycles = dto.Cycles;
+        }
+
+        public Battery() { }
         private bool _isSelected;
         private int _no;
 

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PvPlantPlanner.UI"
         mc:Ignorable="d"
-        Title="Dodaj/Izbrisi Opremu" MinHeight="450" MinWidth="800" Height="600" Width="800">
+        Title="Dodaj/Izbrisi Opremu" MinHeight="450" MinWidth="800" Height="600" Width="800" Icon="pack://application:,,,/Logo/green-energy.ico">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -114,6 +114,20 @@
                                 </DataGridTextColumn.EditingElementStyle>
                             </DataGridTextColumn>
                         </DataGrid.Columns>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="LightBlue"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="BorderBrush" Value="Transparent"/>
+                                        <Setter Property="Padding" Value="0"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.CellStyle>
                     </DataGrid>
 
                     <Button Grid.Row="1" Content="Izbriši selektovanu bateriju" Margin="5" HorizontalAlignment="Right" Padding="10,3" Click="DeleteSelectedBattery_Click"/>
@@ -184,6 +198,20 @@
                                 </DataGridTextColumn.EditingElementStyle>
                             </DataGridTextColumn>
                         </DataGrid.Columns>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="LightBlue"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="BorderBrush" Value="Transparent"/>
+                                        <Setter Property="Padding" Value="0"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.CellStyle>
                     </DataGrid>
 
                     <Button Grid.Row="1" Content="Izbriši selektovani transformator" Margin="5" HorizontalAlignment="Right" Padding="10,3" Click="DeleteSelectedTransformer_Click"/>

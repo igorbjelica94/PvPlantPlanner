@@ -12,7 +12,7 @@
 
         <Menu DockPanel.Dock="Top" Background="LightSlateGray" Foreground="White">
             <MenuItem Header="_Datoteka">
-                <MenuItem Header="Sačuvaj Konfiguraciju" Background="LightSlateGray"/>
+                <MenuItem Header="Sačuvaj Konfiguraciju" Background="LightSlateGray" Click="ExportConfiguration_Click"/>
                 <MenuItem Header="Učitaj Konfiguraciju" Background="LightSlateGray" Click="LoadConfiguration_Click"/>
                 <Separator/>
                 <MenuItem Header="Izlaz" Background="LightSlateGray" Click="ExitMenuItem_Click"/>
@@ -40,15 +40,15 @@
                         <StackPanel>
                             <WrapPanel Margin="5">
                                 <TextBlock Text="Instalisana snaga elektrane [kWp]:" Width="280"/>
-                                <TextBox Width="250"/>
+                                <TextBox x:Name="InstalledPowerTextBox" Width="250"/>
                             </WrapPanel>
                             <WrapPanel Margin="5">
                                 <TextBlock Text="Maksimalna odobrena izlazna snaga elektrane [kW]:" Width="280"/>
-                                <TextBox Width="250"/>
+                                <TextBox x:Name="MaxApprovedPowerTextBox" Width="250"/>
                             </WrapPanel>
                             <WrapPanel Margin="5">
                                 <TextBlock Text="Cena izgradnje elektrane [EUR/kWp]:" Width="280"/>
-                                <TextBox Width="250"/>
+                                <TextBox x:Name="ConstructionPriceTextBox" Width="250"/>
                             </WrapPanel>
                             <WrapPanel Margin="5">
                                 <TextBlock Text="Satna proizvodnja elektrane [kWh]:" Width="280"/>
@@ -59,19 +59,20 @@
                                 <StackPanel>
                                     <WrapPanel Margin="5">
                                         <TextBlock Text="Maksimalna snaga kojom može da se preuzima energija iz mreže [kW]:" Width="380"/>
-                                        <TextBox Width="130"/>
+                                        <TextBox  x:Name="MaxGridPowerTextBox" Width="130"/>
                                     </WrapPanel>
                                     <WrapPanel Margin="5">
-                                        <RadioButton Content="Faktor jednovremenosti sopstvene potrošnje:" Width="270"/>
-                                        <TextBox Width="240"/>
+                                        <RadioButton x:Name="SelfConsumptionFactorRadioButton" Content="Faktor jednovremenosti sopstvene potrošnje:" Width="270" IsChecked="True" GroupName="SelfConsumptionType"  Checked="SelfConsumptionFactorRadioButton_Checked"/>
+                                        <TextBox x:Name="SelfConsumptionFactorTextBox" Width="240"/>
                                     </WrapPanel>
                                     <WrapPanel Margin="5">
-                                        <RadioButton Content="Satna sopstvena potrošnja:" Width="270"/>
-                                        <Button Content="Dodaj Fajl" Width="80" Padding="2"/>
+                                        <RadioButton  x:Name="SelfConsumptionHourlyRadioButton" Content="Satna sopstvena potrošnja:" Width="270" GroupName="SelfConsumptionType" Checked="SelfConsumptionHourlyRadioButton_Checked"/>
+                                        <Button Content="Dodaj Fajl" Width="80" Padding="2" Click="Button_SelfConsumptionImport_Click"/>
+                                        <TextBlock Name="StatusIcon_SelfConsumption" FontSize="16" VerticalAlignment="Center"/>
                                     </WrapPanel>
                                     <WrapPanel Margin="5">
                                         <TextBlock Text="Cena električne energije preuzete iz mreže [EUR/kWh]:" Width="320"/>
-                                        <TextBox Width="190"/>
+                                        <TextBox x:Name="ElectricityPriceTextBox" Width="190"/>
                                     </WrapPanel>
                                 </StackPanel>
                             </GroupBox>
@@ -86,27 +87,27 @@
                                 <TextBlock Name="StatusIcon_Market_Price" FontSize="16" VerticalAlignment="Center"/>
                             </WrapPanel>
                             <WrapPanel Margin="5">
-                                <RadioButton Content="Elektrana na berzi  | " Width="130"/>
+                                <RadioButton x:Name="MarketTradingRadioButton" Content="Elektrana na berzi  | " Width="130" GroupName="TradingPowerType" IsChecked="True" Checked="MarketTradingRadioButton_Checked"/>
                                 <TextBlock Text="Trgovačka provizija [%]:" Width="150"/>
-                                <TextBox Width="250"/>
+                                <TextBox x:Name="TradingCommissionTextBox" Width="250"/>
                             </WrapPanel>
                             <WrapPanel Margin="5">
                                 <TextBlock Text="Minimalna cena za koju se električna energija prodaje:" Width="300" Margin="130,0,0,0"/>
-                                <TextBox Width="100"/>
+                                <TextBox x:Name="MinSellingPriceTextBox" Width="100"/>
                             </WrapPanel>
                             <WrapPanel Margin="5">
                                 <TextBlock Text="Minimalna cena za koju se baterija prazni:" Width="300" Margin="130,0,0,0"/>
-                                <TextBox Width="100"/>
+                                <TextBox x:Name="MinBatteryDischargePriceTextBox" Width="100"/>
                             </WrapPanel>
                             <WrapPanel Margin="5">
-                                <RadioButton Content="Fiksna cena   |   " Width="100"/>
+                                <RadioButton x:Name="FixedPriceRadioButton" Content="Fiksna cena   |   " Width="100" GroupName="TradingPowerType" Checked="FixedPriceRadioButton_Checked"/>
                                 <TextBlock Text="Cena [EUR/kWh]:" Width="270"/>
-                                <TextBox Width="160"/>
+                                <TextBox x:Name="FixedPriceTextBox" Width="160"/>
                             </WrapPanel>
                             <WrapPanel Margin="5">
                                 <TextBlock Width="100"/>
                                 <TextBlock Text="Cena pri negativnoj berzanskoj ceni [EUR/kWh]:" Width="270"/>
-                                <TextBox Width="160"/>
+                                <TextBox x:Name="NegativePriceTextBox" Width="160"/>
                             </WrapPanel>
                         </StackPanel>
                     </GroupBox>
@@ -116,11 +117,11 @@
             <!-- DESNA STRANA -->
             <ScrollViewer Grid.Row="0" Grid.Column="2" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="5">
-                    <GroupBox Header="Podešenje sistema baterija" Margin="0,0,0,10">
+                    <GroupBox Header="Opšti podaci baterijskog sistema" Margin="0,0,0,10">
                         <StackPanel>
                             <WrapPanel Margin="5">
-                                <TextBlock Text="Maksimalna instalisana snaga baterija [kW]:" Width="280"/>
-                                <TextBox Width="250"/>
+                                <TextBlock Text="Maksimalna instalisana snaga baterijskog sistema [kW]:" Width="300"/>
+                                <TextBox x:Name="MaxBatteryPowerTextBox" Width="230"/>
                             </WrapPanel>
                             <TextBlock Text="Tipovi Baterija:" FontWeight="Bold" Margin="5"/>
                             <DataGrid ItemsSource="{Binding SelectedBatteries}" AutoGenerateColumns="False" Height="150" Margin="5" IsReadOnly="True" HeadersVisibility="Column" RowHeaderWidth="0">

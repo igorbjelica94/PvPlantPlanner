@@ -1,10 +1,20 @@
-﻿using System.ComponentModel;
+﻿using PvPlantPlanner.Common.Config;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace PvPlantPlanner.UI.Models
 {
     public class Transformer : INotifyPropertyChanged
     {
+        public Transformer(TransformerDto dto)
+        {
+            PowerKVA = dto.PowerKVA;
+            PowerFactor = dto.PowerFactor;
+            Price = dto.Price;
+        }
+
+        public Transformer() { }
+
         private bool _isSelected;
         private int _no;
 
