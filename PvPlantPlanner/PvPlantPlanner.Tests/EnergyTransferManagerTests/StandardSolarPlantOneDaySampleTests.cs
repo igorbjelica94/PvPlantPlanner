@@ -58,7 +58,7 @@ namespace PvPlantPlanner.Tests.EnergyTransferManagerTests
             var modules = new List<IBatteryModule>() { batteryModule };
             var batteryStorage = new BatteryStorage(modules);
 
-            var energyTransferManager = new EnergyTransferManager(solarPowerPlant, powerGrid, batteryStorage, 0, FeedInPriorityPrice, MinBatteryDischargePrice);
+            var energyTransferManager = new EnergyTransferManager(solarPowerPlant, powerGrid, batteryStorage, FeedInPriorityPrice, MinBatteryDischargePrice);
 
             // Act
             for (int hour = 0; hour < 24; hour++)
@@ -98,7 +98,7 @@ namespace PvPlantPlanner.Tests.EnergyTransferManagerTests
             var modules = new List<IBatteryModule>() { batteryModule };
             var batteryStorage = new BatteryStorage(modules);
 
-            var energyTransferManager = new EnergyTransferManager(solarPowerPlant, powerGrid, batteryStorage, 0, FeedInPriorityPrice, MinBatteryDischargePrice);
+            var energyTransferManager = new EnergyTransferManager(solarPowerPlant, powerGrid, batteryStorage, FeedInPriorityPrice, MinBatteryDischargePrice);
 
             // Act
             for (int hour = 0; hour < 24; hour++)
@@ -139,7 +139,7 @@ namespace PvPlantPlanner.Tests.EnergyTransferManagerTests
             var modules = new List<IBatteryModule>() { batteryModule1, batteryModule2 };
             var batteryStorage = new BatteryStorage(modules);
 
-            var energyTransferManager = new EnergyTransferManager(solarPowerPlant, powerGrid, batteryStorage, 0, FeedInPriorityPrice, MinBatteryDischargePrice);
+            var energyTransferManager = new EnergyTransferManager(solarPowerPlant, powerGrid, batteryStorage, FeedInPriorityPrice, MinBatteryDischargePrice);
 
             // Act
             for (int hour = 0; hour < 24; hour++)
@@ -180,7 +180,7 @@ namespace PvPlantPlanner.Tests.EnergyTransferManagerTests
             var modules = new List<IBatteryModule>() { batteryModule1, batteryModule2 };
             var batteryStorage = new BatteryStorage(modules);
 
-            var energyTransferManager = new EnergyTransferManager(solarPowerPlant, powerGrid, batteryStorage, 0, FeedInPriorityPrice, MinBatteryDischargePrice);
+            var energyTransferManager = new EnergyTransferManager(solarPowerPlant, powerGrid, batteryStorage, FeedInPriorityPrice, MinBatteryDischargePrice);
 
             // Act
             for (int hour = 0; hour < 24; hour++)
@@ -226,7 +226,7 @@ namespace PvPlantPlanner.Tests.EnergyTransferManagerTests
             }
             var batteryStorage = new BatteryStorage(modules);
 
-            var energyTransferManager = new EnergyTransferManager(solarPowerPlant, powerGrid, batteryStorage, 0, FeedInPriorityPrice, MinBatteryDischargePrice);
+            var energyTransferManager = new EnergyTransferManager(solarPowerPlant, powerGrid, batteryStorage, FeedInPriorityPrice, MinBatteryDischargePrice);
 
             // Act
             for (int hour = 0; hour < 24; hour++)
@@ -277,7 +277,7 @@ namespace PvPlantPlanner.Tests.EnergyTransferManagerTests
             }
             var batteryStorage = new BatteryStorage(modules);
 
-            var energyTransferManager = new EnergyTransferManager(solarPowerPlant, powerGrid, batteryStorage, 0, FeedInPriorityPrice, MinBatteryDischargePrice);
+            var energyTransferManager = new EnergyTransferManager(solarPowerPlant, powerGrid, batteryStorage, FeedInPriorityPrice, MinBatteryDischargePrice);
 
             // Act
             for (int hour = 0; hour < 24; hour++)

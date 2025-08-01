@@ -12,13 +12,11 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
         PvCalculatedData CalculatedData { get; }
         IPowerPlant SolarPlant { get; }
         IPowerGrid PowerGrid { get; }
-        IBatteryStorage EnergyStorage { get; }
-        TradingMode TradingMode { get; }
+        IBatteryStorage EnergyStorage { get; set;  }
         List<double> FeedInPriorityPrice { get; }
         List<double> MinBatteryDischargePrice { get; }
 
-        ResultStatus ExecuteEnergyTransferForHour(int hour);
+        void ExecuteEnergyTransferForHour(int hour);
         void ResetCalculatedData();
-        bool ReplaceBatteryStorage(IBatteryStorage newBatteryStorage);
     }
 }

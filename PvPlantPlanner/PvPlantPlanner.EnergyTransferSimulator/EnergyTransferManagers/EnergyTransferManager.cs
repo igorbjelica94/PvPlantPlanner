@@ -18,8 +18,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
         public PvCalculatedData CalculatedData { get; } = new PvCalculatedData();
         public IPowerPlant SolarPlant { get; }
         public IPowerGrid PowerGrid { get; }
-        public IBatteryStorage EnergyStorage { get; private set; }
-        public TradingMode TradingMode { get; }
+        public IBatteryStorage EnergyStorage { get; set; }
         public List<double> FeedInPriorityPrice { get; }
         public List<double> MinBatteryDischargePrice { get; }
 
@@ -29,14 +28,12 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
             IPowerPlant solarPlant,
             IPowerGrid powerGrid,
             IBatteryStorage energyStorage,
-            TradingMode tradingMode,
             List<double> feedInPriorityPrice,
             List<double> minBatteryDischargePrice)
         {
             SolarPlant = solarPlant ?? throw new ArgumentNullException(nameof(solarPlant));
             PowerGrid = powerGrid ?? throw new ArgumentNullException(nameof(powerGrid));
-            EnergyStorage = energyStorage ?? throw new ArgumentNullException(nameof(energyStorage));
-            TradingMode = tradingMode;
+            EnergyStorage = energyStorage;
             FeedInPriorityPrice = feedInPriorityPrice ?? new List<double>();
             MinBatteryDischargePrice = minBatteryDischargePrice ?? new List<double>();
         }
@@ -50,62 +47,51 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
             CalculatedData.AnnualFullPowerHours = 0;
         }
 
-        public bool ReplaceBatteryStorage(IBatteryStorage newBatteryStorage)
-        {
-            if (newBatteryStorage == null)
-                return false;
-
-            EnergyStorage = newBatteryStorage;
-            return true;
-        }
-
-        public ResultStatus ExecuteEnergyTransferForHour(int hour)
+        public void ExecuteEnergyTransferForHour(int hour)
         {
             CurrentMonthIndex = MathHelper.GetMonthIndexForHour(hour); // 0-based
 
             if (IsGreaterThanOrApproxEqual(PowerGrid.HourlyFeedInEnergyPrice[hour], FeedInPriorityPrice[CurrentMonthIndex]))
             {
-                return PrioritizeTransferringEnergyToGrid(hour);
+                PrioritizeTransferringEnergyToGrid(hour);
             }
             else if (IsLessThan(PowerGrid.HourlyFeedInEnergyPrice[hour], FeedInPriorityPrice[CurrentMonthIndex]) && IsGreaterThanOrEqualToZero(PowerGrid.HourlyFeedInEnergyPrice[hour]))
             {
-                return PrioritizeStoringEnergyInBattery(hour, FeedInStrategyToGrid.Allowed);
+                PrioritizeStoringEnergyInBattery(hour, FeedInStrategyToGrid.Allowed);
             }
             else
             {
-                return PrioritizeStoringEnergyInBattery(hour, FeedInStrategyToGrid.NotAllowed);
+                PrioritizeStoringEnergyInBattery(hour, FeedInStrategyToGrid.NotAllowed);
             }
 
         }
 
         #region Prioritize transferring energy to grid
 
-        private ResultStatus PrioritizeTransferringEnergyToGrid(int hour)
+        private void PrioritizeTransferringEnergyToGrid(int hour)
         {
-            if (IsGreaterThanOrApproxEqual(SolarPlant.HourlyEnergyOutput[hour], PowerGrid.ApprovedFeedInPower /* x 1h */))
-            {
-                TransferEnergyToGrid(PowerGrid.ApprovedFeedInPower /* x 1h */, hour);
-                CalculatedData.AnnualFullPowerHours += 1;
+            double approvedFeedInEnergy = PowerGrid.ApprovedFeedInPower /* x 1h */;
 
-                double energyToBattery = SolarPlant.HourlyEnergyOutput[hour] - PowerGrid.ApprovedFeedInPower /* x 1h */;
+            if (IsGreaterThanOrApproxEqual(SolarPlant.HourlyEnergyOutput[hour], approvedFeedInEnergy))
+            {
+                CalculatedData.AnnualFullPowerHours += 1;
+                TransferEnergyToGrid(approvedFeedInEnergy, hour);
+
+                double energyToBattery = SolarPlant.HourlyEnergyOutput[hour] - approvedFeedInEnergy;
                 RejectedEnergy rejEnergy = TransferPossibleEnergyFromSolarPlantToBatteryStorage(energyToBattery, hour);
                 CalculatedData.AnnualRejectedEnergy += rejEnergy;
             }
-            else if (IsLessThan(SolarPlant.HourlyEnergyOutput[hour], PowerGrid.ApprovedFeedInPower /* x 1h */) && IsGreaterThanOrEqualToZero(SolarPlant.HourlyEnergyOutput[hour]))
+            else if (IsLessThan(SolarPlant.HourlyEnergyOutput[hour], approvedFeedInEnergy) && IsGreaterThanOrEqualToZero(SolarPlant.HourlyEnergyOutput[hour]))
             {
                 TransferEnergyToGrid(SolarPlant.HourlyEnergyOutput[hour], hour);
 
-                double energyFromBattery = PowerGrid.ApprovedFeedInPower /* x 1h */ - SolarPlant.HourlyEnergyOutput[hour];
+                double energyFromBattery = approvedFeedInEnergy - SolarPlant.HourlyEnergyOutput[hour];
                 TryTransferPossibleEnergyFromBatteryStorageToGrid(energyFromBattery, hour);
             }
             else
             {
-                double selfConsuptionEnergy = Math.Abs(SolarPlant.HourlyEnergyOutput[hour]);
-                HandlePlantSelfConsumptionDeficit(selfConsuptionEnergy, hour);
-
+                HandlePlantSelfConsumptionDeficit(SolarPlant.HourlyEnergyOutput[hour], hour);
             }
-
-            return ResultStatus.Ok();
         }
 
         private void TransferEnergyToGrid(double energy, int hour)
@@ -116,6 +102,9 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
 
         private RejectedEnergy TransferPossibleEnergyFromSolarPlantToBatteryStorage(double energy, int hour)
         {
+            if (EnergyStorage == null)
+                return energy;
+
             if (IsLessThan(EnergyStorage.CurrentCapacity, EnergyStorage.RatedCapacity))
             {
                 ChargeResult result = EnergyStorage.TryCharge(energy);
@@ -126,6 +115,9 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
 
         private void TryTransferPossibleEnergyFromBatteryStorageToGrid(double energy, int hour)
         {
+            if (EnergyStorage == null)
+                return;
+            
             if (!IsGreaterThanZero(EnergyStorage.CurrentCapacity))
                 return;
 
@@ -139,6 +131,8 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
 
         private void HandlePlantSelfConsumptionDeficit(double selfConsuptionEnergy, int hour)
         {
+            selfConsuptionEnergy = Math.Abs(selfConsuptionEnergy);
+
             DischargeResult result = TryTransferFullEnergyFromBatteryStorageToSolarPlant(selfConsuptionEnergy, hour);
             if (result.IsSuccessful)
             {
@@ -152,6 +146,9 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
 
         private DischargeResult TryTransferFullEnergyFromBatteryStorageToSolarPlant(double energy, int hour) // but the battery storage must not be completely discharged
         {
+            if (EnergyStorage == null)
+                return DischargeResult.Failure();
+
             if (IsLessThan(PowerGrid.HourlyFeedInEnergyPrice[hour], MinBatteryDischargePrice[CurrentMonthIndex])) // when storage is on, it supplies grid (and plant), so this should be checked
                 return DischargeResult.Failure();
 
@@ -164,7 +161,8 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
                 return result;
             }
             else
-            { // Invalid scenario. The battery cannot simultaneously supply power to the grid and partially to the plant, while the plant is also being partially powered by the grid.
+            {   // Invalid scenario. The battery cannot simultaneously supply power to the grid and partially to the plant, while the plant is also being partially powered by the grid.
+                // Put energy back to the battery.
                 ChargeResult chResult = EnergyStorage.TryCharge(result.DischargedEnergy);
                 if (!IsApproximatelyEqual(chResult.ChargedEnergy, result.DischargedEnergy))
                     throw new Exception("TryTransferFullEnergyFromBatteryStorageToSolarPlant failed. Returning energy to the battery failed.");
@@ -172,8 +170,10 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
             }
         }
 
-        private void TransferEnergyFromGrid(double energy) // energy must be positive number
+        private void TransferEnergyFromGrid(double energy)
         {
+            energy = Math.Abs(energy);
+
             CalculatedData.AnnualEnergyFromGrid += energy;
             CalculatedData.EnergyPurchaseCost += energy * PowerGrid.ExportEnergyPrice;
         }
@@ -182,31 +182,28 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
 
         #region Prioritize storing energy in battery
 
-        private ResultStatus PrioritizeStoringEnergyInBattery(int hour, FeedInStrategyToGrid feedInToGrid)
+        private void PrioritizeStoringEnergyInBattery(int hour, FeedInStrategyToGrid feedInToGrid)
         {
             if (IsGreaterThanOrEqualToZero(SolarPlant.HourlyEnergyOutput[hour]))
             {
-                if (IsGreaterThanOrApproxEqual(SolarPlant.HourlyEnergyOutput[hour], PowerGrid.ApprovedFeedInPower))
-                {
+                if (IsGreaterThanOrApproxEqual(SolarPlant.HourlyEnergyOutput[hour], PowerGrid.ApprovedFeedInPower /* x 1h */))
                     CalculatedData.AnnualFullPowerHours += 1;
-                }
+
                 double notStoredEnergy = TransferPossibleEnergyFromSolarPlantToBatteryStorage(SolarPlant.HourlyEnergyOutput[hour], hour);
 
-                double energyToGrid = 0;
+                double rejectedEnergy = notStoredEnergy;
                 if (feedInToGrid == FeedInStrategyToGrid.Allowed)
                 {
-                    energyToGrid = Math.Min(PowerGrid.ApprovedFeedInPower, notStoredEnergy);
+                    double energyToGrid = Math.Min(PowerGrid.ApprovedFeedInPower, notStoredEnergy);
                     TransferEnergyToGrid(energyToGrid, hour);
+                    rejectedEnergy -= energyToGrid;
                 }
-                CalculatedData.AnnualRejectedEnergy += (notStoredEnergy - energyToGrid);
+                CalculatedData.AnnualRejectedEnergy += rejectedEnergy;
             }
             else
             {
-                double selfConsuptionEnergy = Math.Abs(SolarPlant.HourlyEnergyOutput[hour]);
-                TransferEnergyFromGrid(selfConsuptionEnergy);
+                TransferEnergyFromGrid(SolarPlant.HourlyEnergyOutput[hour]);
             }
-
-            return ResultStatus.Ok();
         }
 
         #endregion Prioritize storing energy in battery
