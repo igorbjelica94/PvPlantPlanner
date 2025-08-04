@@ -34,7 +34,7 @@ namespace PvPlantPlanner.UI.Models
 
         public double Power { get; set; }
         public double Capacity { get; set; }
-        public decimal Price { get; set; }
+        public int Price { get; set; }
         public int Cycles { get; set; }
         public bool IsSelected
         {

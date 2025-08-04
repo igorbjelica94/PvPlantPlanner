@@ -53,7 +53,7 @@
                             <WrapPanel Margin="5">
                                 <TextBlock Text="Satna proizvodnja elektrane [kWh]:" Width="280"/>
                                 <Button Content="Dodaj Fajl" Width="80" Click="Button_Upload_Plant_Generation_Click" Padding="2"/>
-                                <TextBlock Name="StatusIcon_P_Gen_Data" FontSize="16" VerticalAlignment="Center"/>
+                                <TextBlock Name="StatusIcon_P_Gen_Data" FontSize="16" VerticalAlignment="Center" Margin="3,0,0,0"/>
                             </WrapPanel>
                             <GroupBox Header="Sopstvena potrošnja" Margin="5,10,5,10">
                                 <StackPanel>
@@ -67,8 +67,8 @@
                                     </WrapPanel>
                                     <WrapPanel Margin="5">
                                         <RadioButton  x:Name="SelfConsumptionHourlyRadioButton" Content="Satna sopstvena potrošnja:" Width="270" GroupName="SelfConsumptionType" Checked="SelfConsumptionHourlyRadioButton_Checked"/>
-                                        <Button Content="Dodaj Fajl" Width="80" Padding="2" Click="Button_SelfConsumptionImport_Click"/>
-                                        <TextBlock Name="StatusIcon_SelfConsumption" FontSize="16" VerticalAlignment="Center"/>
+                                        <Button x:Name="SelfConsumptionHourlyButton" Content="Dodaj Fajl" Width="80" Padding="2" Click="Button_SelfConsumptionImport_Click"/>
+                                        <TextBlock Name="StatusIcon_SelfConsumption" FontSize="16" VerticalAlignment="Center" Margin="3,0,0,0"/>
                                     </WrapPanel>
                                     <WrapPanel Margin="5">
                                         <TextBlock Text="Cena električne energije preuzete iz mreže [EUR/kWh]:" Width="320"/>
@@ -79,12 +79,12 @@
                         </StackPanel>
                     </GroupBox>
 
-                    <GroupBox Header="Prodaja električne energije" Margin="0,0,0,10">
+                    <GroupBox Header="Prodaja električne energije" Margin="0,20,0,10">
                         <StackPanel>
                             <WrapPanel Margin="5">
                                 <TextBlock Text="Satna cena električne energije na berzi [EUR/kWh]:" Width="280"/>
                                 <Button Content="Dodaj Fajl" Width="80" Name="UploadButton" Click="Button_Upload_EnegyMarket_Price_Click" Padding="2"/>
-                                <TextBlock Name="StatusIcon_Market_Price" FontSize="16" VerticalAlignment="Center"/>
+                                <TextBlock Name="StatusIcon_Market_Price" FontSize="16" VerticalAlignment="Center" Margin="3,0,0,0"/>
                             </WrapPanel>
                             <WrapPanel Margin="5">
                                 <RadioButton x:Name="MarketTradingRadioButton" Content="Elektrana na berzi  | " Width="130" GroupName="TradingPowerType" IsChecked="True" Checked="MarketTradingRadioButton_Checked"/>
@@ -92,12 +92,9 @@
                                 <TextBox x:Name="TradingCommissionTextBox" Width="250"/>
                             </WrapPanel>
                             <WrapPanel Margin="5">
-                                <TextBlock Text="Minimalna cena za koju se električna energija prodaje:" Width="300" Margin="130,0,0,0"/>
-                                <TextBox x:Name="MinSellingPriceTextBox" Width="100"/>
-                            </WrapPanel>
-                            <WrapPanel Margin="5">
-                                <TextBlock Text="Minimalna cena za koju se baterija prazni:" Width="300" Margin="130,0,0,0"/>
-                                <TextBox x:Name="MinBatteryDischargePriceTextBox" Width="100"/>
+                                <TextBlock Text="Cena aktivacije prodaje energije i pražnjenja baterija:" Width="300" Margin="130,0,0,0"/>
+                                <Button x:Name="UploadBatteryEnergySellingPricesButton" Content="Dodaj Fajl" Width="80" Click="Button_Upload_BatteryEnergy_SellingyPrices_Click" Padding="2"/>
+                                <TextBlock Name="StatusIcon_BatterySalesValues" FontSize="16" VerticalAlignment="Center" Margin="3,0,0,0"/>
                             </WrapPanel>
                             <WrapPanel Margin="5">
                                 <RadioButton x:Name="FixedPriceRadioButton" Content="Fiksna cena   |   " Width="100" GroupName="TradingPowerType" Checked="FixedPriceRadioButton_Checked"/>

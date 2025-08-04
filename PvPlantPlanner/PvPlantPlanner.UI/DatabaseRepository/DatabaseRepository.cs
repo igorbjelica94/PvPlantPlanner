@@ -113,7 +113,7 @@ namespace PvPlantPlanner.UI.DatabaseRepo
                     Id = reader.GetInt32(0),
                     Power = reader.GetDouble(1),
                     Capacity = reader.GetDouble(2),
-                    Price = reader.GetDecimal(3),
+                    Price = reader.GetInt32(3),
                     Cycles = reader.GetInt32(4)
                 };
             }
@@ -134,7 +134,7 @@ namespace PvPlantPlanner.UI.DatabaseRepo
                     Id = reader.GetInt32(0),
                     Power = reader.GetDouble(1),
                     Capacity = reader.GetDouble(2),
-                    Price = reader.GetDecimal(3),
+                    Price = reader.GetInt32(3),
                     Cycles = reader.GetInt32(4)
                 });
             }
@@ -198,7 +198,7 @@ namespace PvPlantPlanner.UI.DatabaseRepo
                     Id = reader.GetInt32(0),
                     PowerKVA = reader.GetDouble(1),
                     PowerFactor = reader.GetDouble(2),
-                    Price = reader.GetDecimal(3)
+                    Price = reader.GetInt32(3)
                 };
             }
             return null;
@@ -218,7 +218,7 @@ namespace PvPlantPlanner.UI.DatabaseRepo
                     Id = reader.GetInt32(0),
                     PowerKVA = reader.GetDouble(1),
                     PowerFactor = reader.GetDouble(2),
-                    Price = reader.GetDecimal(3)
+                    Price = reader.GetInt32(3)
                 });
             }
             return transformers;

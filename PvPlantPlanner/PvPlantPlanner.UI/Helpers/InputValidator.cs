@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace PvPlantPlanner.UI.Helpers
+﻿namespace PvPlantPlanner.UI.Helpers
 {
     public static class InputValidator
     {
@@ -35,10 +33,9 @@ namespace PvPlantPlanner.UI.Helpers
                 else if (!double.TryParse(window.SelfConsumptionFactorTextBox.Text, out double factor) || factor <= 0 || factor > 1)
                     errors.Add("Faktor sopstvene potrošnje mora biti broj između 0 i 1.");
             }
-
-            if (window.SelfConsumptionFactorRadioButton.IsChecked != true)
+            else if (window.SelfConsumptionFactorRadioButton.IsChecked != true)
             {
-                if (string.IsNullOrEmpty(window.StatusIcon_SelfConsumption.Text) || !window.StatusIcon_SelfConsumption.Text.Contains("✓"))
+                if (window.selfConsumptionData is null || !window.selfConsumptionData.Any())
                     errors.Add("Niste učitali podatke o satnoj sopstvenoj potrošnji elektrane.");
             }
 
@@ -52,18 +49,11 @@ namespace PvPlantPlanner.UI.Helpers
                 else if (!double.TryParse(window.TradingCommissionTextBox.Text, out double commission) || commission < 0 || commission > 100)
                     errors.Add("Trgovačka provizija mora biti broj između 0 i 100.");
 
-                if (string.IsNullOrWhiteSpace(window.MinSellingPriceTextBox.Text))
-                    errors.Add("Polje 'Minimalna prodajna cena' nije popunjeno.");
-                else if (!double.TryParse(window.MinSellingPriceTextBox.Text, out double minSellingPrice) || minSellingPrice < 0)
-                    errors.Add("Minimalna prodajna cena ne sme biti negativna.");
+                if (window.minEnergySellingPrices is null || window.minBatteryEnergySellingPrices is null || !window.minEnergySellingPrices.Any() || !window.minBatteryEnergySellingPrices.Any())
+                    errors.Add("Niste učitali cenu aktivacije prodaje energije i pražnjenja baterija.");
 
-                if (string.IsNullOrWhiteSpace(window.MinBatteryDischargePriceTextBox.Text))
-                    errors.Add("Polje 'Minimalna cena za pražnjenje baterije' nije popunjeno.");
-                else if (!double.TryParse(window.MinBatteryDischargePriceTextBox.Text, out double minDischargePrice) || minDischargePrice < 0)
-                    errors.Add("Minimalna cena za pražnjenje baterije ne sme biti negativna.");
             }
-
-            if (window.FixedPriceRadioButton.IsChecked == true)
+            else if (window.FixedPriceRadioButton.IsChecked == true)
             {
                 if (string.IsNullOrWhiteSpace(window.FixedPriceTextBox.Text))
                     errors.Add("Polje 'Fiksna cena' nije popunjeno.");
@@ -79,16 +69,18 @@ namespace PvPlantPlanner.UI.Helpers
             else if (!double.TryParse(window.MaxBatteryPowerTextBox.Text, out double maxBatteryPower) || maxBatteryPower < 0)
                 errors.Add("Maksimalna instalisana snaga baterijskog sistema ne sme biti negativna.");
 
-            if (window.SelectedBatteries == null || window.SelectedBatteries.Count == 0)
-                errors.Add("Niste dodali nijednu bateriju.");
+            if (window.SelectedBatteries != null && window.SelectedBatteries.Count > 0)
+            {
+                if (window.SelectedTransformers == null || window.SelectedTransformers.Count == 0)
+                {
+                    errors.Add("Niste dodali nijedan transformator.");
+                }
+            }
 
-            if (window.SelectedTransformers == null || window.SelectedTransformers.Count == 0)
-                errors.Add("Niste dodali nijedan transformator.");
-
-            if (string.IsNullOrEmpty(window.StatusIcon_P_Gen_Data.Text) || !window.StatusIcon_P_Gen_Data.Text.Contains("✓"))
+            if (window.generationData is null || !window.generationData.Any())
                 errors.Add("Niste učitali podatke o satnoj proizvodnji elektrane.");
 
-            if (string.IsNullOrEmpty(window.StatusIcon_Market_Price.Text) || !window.StatusIcon_Market_Price.Text.Contains("✓"))
+            if (window.marketPriceData is null || !window.marketPriceData.Any())
                 errors.Add("Niste učitali podatke o ceni električne energije na berzi.");
 
             errorMessage = string.Join("\n", errors);

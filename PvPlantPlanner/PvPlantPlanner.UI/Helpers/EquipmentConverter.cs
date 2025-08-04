@@ -1,4 +1,5 @@
 ﻿using PvPlantPlanner.Common.Config;
+using PvPlantPlanner.Common.CoreTypes;
 using PvPlantPlanner.UI.Models;
 
 namespace PvPlantPlanner.UI.Helpers
@@ -9,6 +10,7 @@ namespace PvPlantPlanner.UI.Helpers
         {
             return new BatteryDto
             {
+                Id = uiModel.Id,
                 Power = uiModel.Power,
                 Capacity = uiModel.Capacity,
                 Price = uiModel.Price,
@@ -20,6 +22,7 @@ namespace PvPlantPlanner.UI.Helpers
         {
             return new TransformerDto
             {
+                Id = uiModel.Id,
                 PowerKVA = uiModel.PowerKVA,
                 PowerFactor = uiModel.PowerFactor,
                 Price = uiModel.Price
@@ -31,7 +34,7 @@ namespace PvPlantPlanner.UI.Helpers
             {
                 InstalledPower = double.Parse(window.InstalledPowerTextBox.Text),
                 MaxApprovedPower = double.Parse(window.MaxApprovedPowerTextBox.Text),
-                ConstructionPrice = double.Parse(window.ConstructionPriceTextBox.Text),
+                ConstructionPrice = UInt32.Parse(window.ConstructionPriceTextBox.Text),
                 MaxGridPower = double.Parse(window.MaxGridPowerTextBox.Text),
                 ElectricityPrice = double.Parse(window.ElectricityPriceTextBox.Text),
                 MaxBatteryPower = double.Parse(window.MaxBatteryPowerTextBox.Text),
@@ -54,32 +57,33 @@ namespace PvPlantPlanner.UI.Helpers
             else
             {
                 config.TradingCommission = double.Parse(window.TradingCommissionTextBox.Text);
-                config.MinSellingPrice = double.Parse(window.MinSellingPriceTextBox.Text);
-                config.MinBatteryDischargePrice = double.Parse(window.MinBatteryDischargePriceTextBox.Text);
             }
 
             return config;
         }
 
-        public static ImportExportConfig ToImportExportConfig(this MainWindow window, string generationDataPath, string marketPricePath, string? selfConsumptionPath)
+        public static ImportExportConfig ToImportExportConfig(this MainWindow window, string generationDataPath, string marketPricePath, string? selfConsumptionPath, string? energyMarketSellingPricesPath)
         {
             return new ImportExportConfig
             {
                 BaseConfig = window.ToBaseConfig(),
                 GenerationDataFile = generationDataPath,
                 MarketPriceFile = marketPricePath,
-                SelfConsumptionDataFile = window.SelfConsumptionFactorRadioButton.IsChecked == true ? null : selfConsumptionPath
+                SelfConsumptionDataFile = window.SelfConsumptionFactorRadioButton.IsChecked == true ? null : selfConsumptionPath,
+                MinSellingPricesFile = window.MarketTradingRadioButton.IsChecked == true ? energyMarketSellingPricesPath : null
             };
         }
 
-        public static CalculationConfig ToCalculationConfig(this MainWindow window, List<double> generationData, List<double> marketPrice, List<double>? selfConsumption)
+        public static CalculationConfig ToCalculationConfig(this MainWindow window, List<double> generationData, List<double> marketPrice, List<double>? selfConsumption, List<double>? minEnergySellingPrices, List<double>? minBatteryEnergySellingPrices)
         {
             return new CalculationConfig
             {
                 BaseConfig = window.ToBaseConfig(),
                 GenerationData = generationData,
                 MarketPrice = marketPrice,
-                SelfConsumptionData = window.SelfConsumptionFactorRadioButton.IsChecked == true ? null : selfConsumption
+                SelfConsumptionData = window.SelfConsumptionFactorRadioButton.IsChecked == true ? null : selfConsumption,
+                MinEnergySellingPrice = window.MarketTradingRadioButton.IsChecked == true ? minEnergySellingPrices : null,
+                MinBatteryEnergySellingPrice = window.MarketTradingRadioButton.IsChecked == true? minBatteryEnergySellingPrices : null
             };
         }
 

@@ -26,10 +26,14 @@ namespace PvPlantPlanner.UI
         private string generationDataFilePath;
         private string marketPriceFilePath;
         private string selfConsumptionDataFilePath;
+        private string energyMarketSellingPricesPath;
 
-        private List<double> generationData;
-        private List<double> marketPriceData;
-        private List<double>? selfConsumptionData;
+        public List<double> generationData;
+        public List<double> marketPriceData;
+        public List<double>? selfConsumptionData;
+
+        public List<double>? minEnergySellingPrices;
+        public List<double>? minBatteryEnergySellingPrices;
 
         private DateTime? StartTime;
 
@@ -39,6 +43,14 @@ namespace PvPlantPlanner.UI
             InitializeComponent();
             DataContext = this;
             _repository = new DatabaseRepository();
+            InitializeUIControls();
+        }
+
+        private void InitializeUIControls()
+        {
+            SelfConsumptionHourlyButton.IsEnabled = false;
+            FixedPriceTextBox.IsEnabled = false;
+            NegativePriceTextBox.IsEnabled = false;
         }
 
         #region Button Click Events
@@ -231,7 +243,7 @@ namespace PvPlantPlanner.UI
 
                         success = true;
                         selfConsumptionDataFilePath = filePath;
-    }
+                    }
                     catch (Exception ex)
                     {
                         Dispatcher.Invoke(() =>
@@ -261,7 +273,8 @@ namespace PvPlantPlanner.UI
                 var plantConfig = this.ToImportExportConfig(
                     generationDataFilePath,
                     marketPriceFilePath,
-                    selfConsumptionDataFilePath);
+                    selfConsumptionDataFilePath,
+                    energyMarketSellingPricesPath);
 
                 // Serijalizacija u JSON
                 var json = JsonConvert.SerializeObject(plantConfig, Formatting.Indented);
@@ -335,7 +348,9 @@ namespace PvPlantPlanner.UI
             var plantConfig = this.ToCalculationConfig(
                 generationData,
                 marketPriceData,
-                selfConsumptionData);
+                selfConsumptionData,
+                minEnergySellingPrices,
+                minBatteryEnergySellingPrices);
 
         }
 
@@ -389,8 +404,76 @@ namespace PvPlantPlanner.UI
                 selfConsumptionDataFilePath = string.Empty;
 
                 SelfConsumptionFactorTextBox.IsEnabled = true;
+
+                SelfConsumptionHourlyButton.IsEnabled = false;
+                selfConsumptionData = null;
             }
         }
+        private async void Button_Upload_BatteryEnergy_SellingyPrices_Click(object sender, RoutedEventArgs e)
+        {
+            var openDialog = new OpenFileDialog
+            {
+                Filter = "Excel fajlovi (*.xlsx)|*.xlsx|CSV fajlovi (*.csv)|*.csv"
+            };
+
+            if (openDialog.ShowDialog() == true)
+            {
+                var filePath = openDialog.FileName;
+
+                StatusIcon_BatterySalesValues.Text = "...";
+                StatusIcon_BatterySalesValues.Foreground = System.Windows.Media.Brushes.Gray;
+
+                await Task.Run(() =>
+                {
+                    try
+                    {
+                        minEnergySellingPrices = new List<double>();
+                        minBatteryEnergySellingPrices = new List<double>();
+
+                        using (var workbook = new XLWorkbook(filePath))
+                        {
+                            var worksheet = workbook.Worksheet(1);
+                            var rows = worksheet.RangeUsed().RowsUsed().Skip(1);
+
+                            foreach (var row in rows)
+                            {
+                                var priceCell = row.Cell(2); // kolona B
+                                var volumeCell = row.Cell(3); // kolona C
+
+                                if (priceCell.TryGetValue(out double price) && volumeCell.TryGetValue(out double volume))
+                                {
+                                    minEnergySellingPrices.Add(price);
+                                    minBatteryEnergySellingPrices.Add(volume);
+                                }
+                            }
+                        }
+
+                        // Proveri da li ima tačno 12 vrednosti
+                        if (minEnergySellingPrices.Count != 12 || minBatteryEnergySellingPrices.Count != 12)
+                            throw new Exception("Fajl mora da sadrži tačno 12 redova sa podacima u kolonama B i C.");
+
+                        // Ažuriranje UI-ja iz UI threada
+                        Dispatcher.Invoke(() =>
+                        {
+                            StatusIcon_BatterySalesValues.Text = "✓";
+                            StatusIcon_BatterySalesValues.Foreground = System.Windows.Media.Brushes.Green;
+                        });
+
+                        energyMarketSellingPricesPath = filePath;
+                    }
+                    catch (Exception ex)
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            StatusIcon_BatterySalesValues.Text = "✗";
+                            StatusIcon_BatterySalesValues.Foreground = System.Windows.Media.Brushes.Red;
+                            MessageBox.Show("Greška prilikom učitavanja fajla: " + ex.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+                        });
+                    }
+                });
+            }
+        }
+
         private void MarketTradingRadioButton_Checked(object sender, RoutedEventArgs e)
         {
             if (NegativePriceTextBox != null)
@@ -402,8 +485,7 @@ namespace PvPlantPlanner.UI
                 NegativePriceTextBox.IsEnabled = false;
 
                 TradingCommissionTextBox.IsEnabled = true;
-                MinSellingPriceTextBox.IsEnabled = true;
-                MinBatteryDischargePriceTextBox.IsEnabled = true;
+                UploadBatteryEnergySellingPricesButton.IsEnabled = true;
             }
         }
 
@@ -412,16 +494,24 @@ namespace PvPlantPlanner.UI
             if (TradingCommissionTextBox != null)
             {
                 TradingCommissionTextBox.Text = string.Empty;
-                MinSellingPriceTextBox.Text = string.Empty;
-                MinBatteryDischargePriceTextBox.Text = string.Empty;
 
                 TradingCommissionTextBox.IsEnabled = false;
-                MinSellingPriceTextBox.IsEnabled = false;
-                MinBatteryDischargePriceTextBox.IsEnabled = false;
+                UploadBatteryEnergySellingPricesButton.IsEnabled = false;
 
                 NegativePriceTextBox.IsEnabled = true;
                 FixedPriceTextBox.IsEnabled = true;
+                StatusIcon_BatterySalesValues.Text = string.Empty;
+                if (minEnergySellingPrices != null)
+                {
+                    minEnergySellingPrices.Clear();
+                    minEnergySellingPrices = null;
+                }
 
+                if (minBatteryEnergySellingPrices != null)
+                {
+                    minBatteryEnergySellingPrices.Clear();
+                    minBatteryEnergySellingPrices = null;
+                }
             }
         }
 
@@ -430,6 +520,8 @@ namespace PvPlantPlanner.UI
             if (TradingCommissionTextBox != null)
                 SelfConsumptionFactorTextBox.Text = string.Empty;
             SelfConsumptionFactorTextBox.IsEnabled = false;
+            SelfConsumptionHourlyButton.IsEnabled = true;
+
         }
 
         #endregion
@@ -507,14 +599,30 @@ namespace PvPlantPlanner.UI
             {
                 FixedPriceRadioButton.IsChecked = true;
                 FixedPriceTextBox.Text = config.BaseConfig.FixedPrice.Value.ToString();
-                NegativePriceTextBox.Text = config.BaseConfig.NegativePrice?.ToString() ?? "0";
+                NegativePriceTextBox.Text = config.BaseConfig.NegativePrice?.ToString() ?? null;
             }
             else
             {
                 MarketTradingRadioButton.IsChecked = true;
-                TradingCommissionTextBox.Text = config.BaseConfig.TradingCommission.ToString() ?? "0";
-                MinSellingPriceTextBox.Text = config.BaseConfig.MinSellingPrice.ToString() ?? "0";
-                MinBatteryDischargePriceTextBox.Text = config.BaseConfig.MinBatteryDischargePrice.ToString() ?? "0";
+                TradingCommissionTextBox.Text = config.BaseConfig.TradingCommission.ToString() ?? null;
+                if (!string.IsNullOrEmpty(config.MinSellingPricesFile))
+                {
+                    energyMarketSellingPricesPath = config.MinSellingPricesFile;
+
+                    bool loaded = LoadBatterySellingData(energyMarketSellingPricesPath);
+
+                    if (loaded)
+                    {
+                        StatusIcon_BatterySalesValues.Text = "✓";
+                        StatusIcon_BatterySalesValues.Foreground = System.Windows.Media.Brushes.Green;
+                    }
+                    else
+                    {
+                        StatusIcon_BatterySalesValues.Text = "✗";
+                        StatusIcon_BatterySalesValues.Foreground = System.Windows.Media.Brushes.Red;
+                    }
+                }
+
             }
 
             // Battery system
@@ -690,7 +798,49 @@ namespace PvPlantPlanner.UI
                 return false;
             }
         }
+        private bool LoadBatterySellingData(string filePath)
+        {
+            try
+            {
+                var energyPrices = new List<double>();
+                var batteryPrices = new List<double>();
 
+                using (var workbook = new XLWorkbook(filePath))
+                {
+                    var worksheet = workbook.Worksheet(1);
+                    var rows = worksheet.RangeUsed().RowsUsed().Skip(1); // preskoči zaglavlje
 
+                    foreach (var row in rows)
+                    {
+                        var energyCell = row.Cell(2);  // Kolona B
+                        var batteryCell = row.Cell(3); // Kolona C
+
+                        if (energyCell.TryGetValue(out double energyPrice) &&
+                            batteryCell.TryGetValue(out double batteryPrice))
+                        {
+                            energyPrices.Add(energyPrice);
+                            batteryPrices.Add(batteryPrice);
+                        }
+                    }
+                }
+
+                if (energyPrices.Count != 12 || batteryPrices.Count != 12)
+                    throw new Exception("Excel fajl mora da sadrži tačno 12 redova sa cenama u kolonama B i C.");
+
+                // Očisti stare podatke ako postoje
+                minEnergySellingPrices?.Clear();
+                minBatteryEnergySellingPrices?.Clear();
+
+                minEnergySellingPrices = energyPrices;
+                minBatteryEnergySellingPrices = batteryPrices;
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Greška prilikom učitavanja fajla:\n" + ex.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
     }
 }

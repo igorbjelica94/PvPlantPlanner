@@ -33,7 +33,7 @@ namespace PvPlantPlanner.UI.Models
         }
         public double PowerKVA { get; set; }
         public double PowerFactor { get; set; }
-        public decimal Price { get; set; }
+        public int Price { get; set; }
 
         public bool IsSelected
         {

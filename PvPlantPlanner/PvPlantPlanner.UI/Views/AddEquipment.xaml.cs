@@ -230,13 +230,13 @@ namespace PvPlantPlanner.UI
         {
             private int _no, _id, _cycles;
             private double _power, _capacity;
-            private decimal _price;
+            private int _price;
 
             public int No { get => _no; set { _no = value; OnPropertyChanged(); } }
             public int Id { get => _id; set { _id = value; OnPropertyChanged(); } }
             public double Power { get => _power; set { _power = value; OnPropertyChanged(); } }
             public double Capacity { get => _capacity; set { _capacity = value; OnPropertyChanged(); } }
-            public decimal Price { get => _price; set { _price = value; OnPropertyChanged(); } }
+            public int Price { get => _price; set { _price = value; OnPropertyChanged(); } }
             public int Cycles { get => _cycles; set { _cycles = value; OnPropertyChanged(); } }
 
             public event PropertyChangedEventHandler PropertyChanged;
@@ -248,13 +248,13 @@ namespace PvPlantPlanner.UI
         {
             private int _no, _id;
             private double _powerKVA, _powerFactor;
-            private decimal _price;
+            private int _price;
 
             public int No { get => _no; set { _no = value; OnPropertyChanged(); } }
             public int Id { get => _id; set { _id = value; OnPropertyChanged(); } }
             public double PowerKVA { get => _powerKVA; set { _powerKVA = value; OnPropertyChanged(); } }
             public double PowerFactor { get => _powerFactor; set { _powerFactor = value; OnPropertyChanged(); } }
-            public decimal Price { get => _price; set { _price = value; OnPropertyChanged(); } }
+            public int Price { get => _price; set { _price = value; OnPropertyChanged(); } }
 
             public event PropertyChangedEventHandler PropertyChanged;
             protected void OnPropertyChanged([CallerMemberName] string name = null)
