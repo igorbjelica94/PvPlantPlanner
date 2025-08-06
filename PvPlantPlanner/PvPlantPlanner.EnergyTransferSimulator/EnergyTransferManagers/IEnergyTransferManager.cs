@@ -12,7 +12,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
         PvCalculatedData CalculatedData { get; }
         IPowerPlant SolarPlant { get; }
         IPowerGrid PowerGrid { get; }
-        IBatteryStorage EnergyStorage { get; set;  }
+        IBatteryStorage? EnergyStorage { get; set;  }
         List<double> FeedInPriorityPrice { get; }
         List<double> MinBatteryDischargePrice { get; }
 

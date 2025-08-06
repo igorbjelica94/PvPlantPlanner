@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using PvPlantPlanner.Common.Config;
+using PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator;
 using PvPlantPlanner.UI.DatabaseRepo;
 using PvPlantPlanner.UI.Helpers;
 using PvPlantPlanner.UI.Models;
@@ -361,6 +362,10 @@ namespace PvPlantPlanner.UI
                     selfConsumptionData,
                     minEnergySellingPrices,
                     minBatteryEnergySellingPrices);
+
+                var annualSimulator = new AnnualEnergyTransferSimulator();
+                annualSimulator.ConfigureSimulator(plantConfig);
+                annualSimulator.StartSimulation();
             }
             catch (Exception ex)
             {

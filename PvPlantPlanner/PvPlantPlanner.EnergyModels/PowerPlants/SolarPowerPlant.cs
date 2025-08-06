@@ -10,7 +10,7 @@ namespace PvPlantPlanner.EnergyModels.PowerPlants
     public class SolarPowerPlant : IPowerPlant
     {
         public double InstalledPower { get; }
-        public int InvestmentCost { get; }
+        public uint InvestmentCost { get; }
         public double[] HourlyEnergyOutput { get; }
 
         private double[] HourlyEnergyProduction { get; }
@@ -18,7 +18,7 @@ namespace PvPlantPlanner.EnergyModels.PowerPlants
 
         public SolarPowerPlant(
             double installedPower,
-            int investmentCost,
+            uint investmentCost,
             double[] hourlyEnergyProduction,
             HourlyValue<double> selfConsumptionEnergy)
         {

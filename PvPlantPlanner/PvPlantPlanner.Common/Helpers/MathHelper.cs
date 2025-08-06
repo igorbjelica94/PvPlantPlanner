@@ -12,6 +12,8 @@ namespace PvPlantPlanner.Common.Helpers
         public static bool IsGreaterThanZero(double value, double epsilon = DefaultTolerance) => value > epsilon;
         public static bool IsGreaterThanOrEqualToZero(double value, double epsilon = DefaultTolerance) => value >= -epsilon;
         public static bool IsLessThanZero(double value, double epsilon = DefaultTolerance) => value < -epsilon;
+        public static bool IsLessThanOrEqualToZero(double value, double epsilon = DefaultTolerance) => value <= epsilon;
+
         public static bool IsApproximatelyZero(double value, double epsilon = DefaultTolerance) => Math.Abs(value) <= epsilon;
         public static bool IsGreaterThan(double a, double b, double epsilon = DefaultTolerance) => a > b + epsilon;
         public static bool IsGreaterThanOrApproxEqual(double a, double b, double epsilon = DefaultTolerance) => a >= b - epsilon;

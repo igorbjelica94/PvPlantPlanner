@@ -11,6 +11,6 @@ namespace PvPlantPlanner.EnergyModels.PowerPlants
     {
         double InstalledPower { get; }
         double[] HourlyEnergyOutput { get; }
-        int InvestmentCost { get; }
+        uint InvestmentCost { get; }
     }
 }

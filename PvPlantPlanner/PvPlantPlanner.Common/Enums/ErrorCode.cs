@@ -6,8 +6,11 @@
         Success = 0,
         NotFound = 1,
 
+        // Application state:
+        NotConfigured = 10,
+
         // Custom error codes:
-        InvalidFeedInEnergyPriceComparison = 10,
-        UnresolvedFeedInDecision = 11
+        InvalidFeedInEnergyPriceComparison = 20,
+        UnresolvedFeedInDecision = 21
     }
 }

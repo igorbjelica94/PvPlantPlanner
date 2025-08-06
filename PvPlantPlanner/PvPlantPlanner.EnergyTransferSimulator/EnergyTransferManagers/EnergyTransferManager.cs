@@ -5,6 +5,7 @@ using PvPlantPlanner.Common.Results;
 using PvPlantPlanner.EnergyModels.BatteryStorages;
 using PvPlantPlanner.EnergyModels.PowerGrids;
 using PvPlantPlanner.EnergyModels.PowerPlants;
+using System.ComponentModel;
 using static PvPlantPlanner.Common.Helpers.MathHelper;
 
 using RejectedEnergy = System.Double;
@@ -13,27 +14,38 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
 {
     public class EnergyTransferManager : IEnergyTransferManager
     {
-        private enum FeedInStrategyToGrid { NotAllowed, Allowed };
+        private int _currentMonthIndex; // 0-based
 
         public PvCalculatedData CalculatedData { get; } = new PvCalculatedData();
         public IPowerPlant SolarPlant { get; }
         public IPowerGrid PowerGrid { get; }
-        public IBatteryStorage EnergyStorage { get; set; }
-        public List<double> FeedInPriorityPrice { get; }
+        public IBatteryStorage? EnergyStorage { get; set; }
+        public List<double> FeedInPriorityPrice { get; private set; }
         public List<double> MinBatteryDischargePrice { get; }
 
-        private int CurrentMonthIndex { get; set; } // 0-based
 
         public EnergyTransferManager(
             IPowerPlant solarPlant,
             IPowerGrid powerGrid,
-            IBatteryStorage energyStorage,
             List<double> feedInPriorityPrice,
             List<double> minBatteryDischargePrice)
         {
             SolarPlant = solarPlant ?? throw new ArgumentNullException(nameof(solarPlant));
             PowerGrid = powerGrid ?? throw new ArgumentNullException(nameof(powerGrid));
-            EnergyStorage = energyStorage;
+            FeedInPriorityPrice = feedInPriorityPrice ?? new List<double>();
+            MinBatteryDischargePrice = minBatteryDischargePrice ?? new List<double>();
+        }
+
+        public EnergyTransferManager(
+            IPowerPlant solarPlant,
+            IPowerGrid powerGrid,
+            IBatteryStorage batteryStorage,
+            List<double> feedInPriorityPrice,
+            List<double> minBatteryDischargePrice)
+        {
+            SolarPlant = solarPlant ?? throw new ArgumentNullException(nameof(solarPlant));
+            PowerGrid = powerGrid ?? throw new ArgumentNullException(nameof(powerGrid));
+            EnergyStorage = batteryStorage;
             FeedInPriorityPrice = feedInPriorityPrice ?? new List<double>();
             MinBatteryDischargePrice = minBatteryDischargePrice ?? new List<double>();
         }
@@ -47,15 +59,23 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
             CalculatedData.AnnualFullPowerHours = 0;
         }
 
+        public void ReplaceFeedInPriorityPrice(List<double> feedInPriorityPlace)
+        {
+            if (feedInPriorityPlace.Count != 12)
+                throw new ArgumentException("Number of FeedInPriority prices is different than 12.", nameof(feedInPriorityPlace));
+
+            FeedInPriorityPrice = feedInPriorityPlace;
+        }
+
         public void ExecuteEnergyTransferForHour(int hour)
         {
-            CurrentMonthIndex = MathHelper.GetMonthIndexForHour(hour); // 0-based
+            _currentMonthIndex = MathHelper.GetMonthIndexForHour(hour); // 0-based
 
-            if (IsGreaterThanOrApproxEqual(PowerGrid.HourlyFeedInEnergyPrice[hour], FeedInPriorityPrice[CurrentMonthIndex]))
+            if (IsGreaterThanOrApproxEqual(PowerGrid.HourlyFeedInEnergyPrice[hour], FeedInPriorityPrice[_currentMonthIndex]))
             {
                 PrioritizeTransferringEnergyToGrid(hour);
             }
-            else if (IsLessThan(PowerGrid.HourlyFeedInEnergyPrice[hour], FeedInPriorityPrice[CurrentMonthIndex]) && IsGreaterThanOrEqualToZero(PowerGrid.HourlyFeedInEnergyPrice[hour]))
+            else if (IsLessThan(PowerGrid.HourlyFeedInEnergyPrice[hour], FeedInPriorityPrice[_currentMonthIndex]) && IsGreaterThanOrEqualToZero(PowerGrid.HourlyFeedInEnergyPrice[hour]))
             {
                 PrioritizeStoringEnergyInBattery(hour, FeedInStrategyToGrid.Allowed);
             }
@@ -121,7 +141,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
             if (!IsGreaterThanZero(EnergyStorage.CurrentCapacity))
                 return;
 
-            if (IsLessThan(PowerGrid.HourlyFeedInEnergyPrice[hour], MinBatteryDischargePrice[CurrentMonthIndex]))
+            if (IsLessThan(PowerGrid.HourlyFeedInEnergyPrice[hour], MinBatteryDischargePrice[_currentMonthIndex]))
                 return;
 
             DischargeResult result = EnergyStorage.TryDischarge(energy);
@@ -149,7 +169,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
             if (EnergyStorage == null)
                 return DischargeResult.Failure();
 
-            if (IsLessThan(PowerGrid.HourlyFeedInEnergyPrice[hour], MinBatteryDischargePrice[CurrentMonthIndex])) // when storage is on, it supplies grid (and plant), so this should be checked
+            if (IsLessThan(PowerGrid.HourlyFeedInEnergyPrice[hour], MinBatteryDischargePrice[_currentMonthIndex])) // when storage is on, it supplies grid (and plant), so this should be checked
                 return DischargeResult.Failure();
 
             if (IsLessThanOrApproxEqual(EnergyStorage.CurrentCapacity, energy)) // do not use last kWh to supplie plant, in that case pull it from the grid
@@ -207,5 +227,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
         }
 
         #endregion Prioritize storing energy in battery
+
+        private enum FeedInStrategyToGrid { NotAllowed, Allowed };
     }
 }

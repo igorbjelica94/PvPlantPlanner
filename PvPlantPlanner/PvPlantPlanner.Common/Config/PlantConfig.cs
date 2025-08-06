@@ -48,7 +48,7 @@ namespace PvPlantPlanner.Common.Config
         public double PowerKVA { get; set; }
         public double PowerFactor { get; set; }
         public int Price { get; set; }
-        public double PowerkW => PowerKVA * PowerFactor;
+        public double PowerKW => PowerKVA * PowerFactor;
     }
 
     public class BatteryDto

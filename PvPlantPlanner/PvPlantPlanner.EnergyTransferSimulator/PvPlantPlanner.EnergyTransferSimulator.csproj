@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PvPlantPlanner.Common\PvPlantPlanner.Common.csproj" />
     <ProjectReference Include="..\PvPlantPlanner.EnergyModels\PvPlantPlanner.EnergyModels.csproj" />
+	  <InternalsVisibleTo Include="PvPlantPlanner.Tests" />
   </ItemGroup>
 
 </Project>
