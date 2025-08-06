@@ -41,7 +41,7 @@ namespace PvPlantPlanner.UI.DatabaseRepo
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 power REAL NOT NULL,
                 capacity REAL NOT NULL,
-                price REAL NOT NULL,
+                price INTEGER NOT NULL,
                 cycles INTEGER NOT NULL
             );
 
@@ -49,7 +49,7 @@ namespace PvPlantPlanner.UI.DatabaseRepo
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 power_kva REAL NOT NULL,
                 power_factor REAL NOT NULL,
-                price REAL NOT NULL
+                price INTEGER NOT NULL
             );";
             command.ExecuteNonQuery();
         }

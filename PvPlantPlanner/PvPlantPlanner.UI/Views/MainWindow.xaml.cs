@@ -35,7 +35,9 @@ namespace PvPlantPlanner.UI
         public List<double>? minEnergySellingPrices;
         public List<double>? minBatteryEnergySellingPrices;
 
-        private DateTime? StartTime;
+        private DateTime startTimeGenData;
+        private DateTime startTimeMarketPriceData;
+        private DateTime? startTimeSelfConsumptionData;
 
         public MainWindow()
         {
@@ -80,6 +82,8 @@ namespace PvPlantPlanner.UI
                         using (var workbook = new XLWorkbook(filePath))
                         {
                             var worksheet = workbook.Worksheet(1);
+                            if (worksheet == null)
+                                throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
                             var rows = worksheet.RangeUsed().RowsUsed();
 
                             foreach (var row in rows.Skip(1))
@@ -101,7 +105,7 @@ namespace PvPlantPlanner.UI
                         Dispatcher.Invoke(() =>
                         {
                             generationData = data;
-                            StartTime = startTime;
+                            startTimeGenData = startTime;
                             StatusIcon_P_Gen_Data.Text = "✓";
                             StatusIcon_P_Gen_Data.Foreground = System.Windows.Media.Brushes.Green;
                         });
@@ -146,6 +150,8 @@ namespace PvPlantPlanner.UI
                         using (var workbook = new XLWorkbook(filePath))
                         {
                             var worksheet = workbook.Worksheet(1);
+                            if (worksheet == null)
+                                throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
                             var rows = worksheet.RangeUsed().RowsUsed();
 
                             foreach (var row in rows.Skip(1))
@@ -155,7 +161,7 @@ namespace PvPlantPlanner.UI
 
                                 if (isFirst)
                                 {
-                                    startTime = timestamp;
+                                    startTimeMarketPriceData = timestamp;
                                     isFirst = false;
                                 }
 
@@ -167,7 +173,7 @@ namespace PvPlantPlanner.UI
                         Dispatcher.Invoke(() =>
                         {
                             marketPriceData = data;
-                            StartTime = startTime;
+                            startTimeMarketPriceData = startTime;
                             StatusIcon_Market_Price.Text = "✓";
                             StatusIcon_Market_Price.Foreground = System.Windows.Media.Brushes.Green;
                         });
@@ -214,6 +220,8 @@ namespace PvPlantPlanner.UI
                         using (var workbook = new ClosedXML.Excel.XLWorkbook(filePath))
                         {
                             var worksheet = workbook.Worksheet(1);
+                            if (worksheet == null)
+                                throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
                             var rows = worksheet.RangeUsed().RowsUsed();
                             bool isFirst = true;
 
@@ -236,7 +244,7 @@ namespace PvPlantPlanner.UI
                         Dispatcher.Invoke(() =>
                         {
                             selfConsumptionData = data;
-                            StartTime = startTime;
+                            startTimeSelfConsumptionData = startTime;
                             StatusIcon_SelfConsumption.Text = "✓";
                             StatusIcon_SelfConsumption.Foreground = System.Windows.Media.Brushes.Green;
                         });
@@ -268,6 +276,7 @@ namespace PvPlantPlanner.UI
                                     "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
+                ValidateStartTime();
 
                 // Kreiranje konfiguracije za eksport
                 var plantConfig = this.ToImportExportConfig(
@@ -336,22 +345,28 @@ namespace PvPlantPlanner.UI
 
         private void Button_Generate_Report_Click(object sender, RoutedEventArgs e)
         {
-            // Provera validnosti unosa
-            if (!InputValidator.ValidateInputs(this, out string errorMessage))
+            try
             {
-                MessageBox.Show($"Greške u unosu:\n\n{errorMessage}",
-                                "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                if (!InputValidator.ValidateInputs(this, out string errorMessage))
+                {
+                    MessageBox.Show($"Greške u unosu:\n\n{errorMessage}",
+                                    "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                ValidateStartTime();
+                
+                var plantConfig = this.ToCalculationConfig(
+                    generationData,
+                    marketPriceData,
+                    selfConsumptionData,
+                    minEnergySellingPrices,
+                    minBatteryEnergySellingPrices);
             }
-
-            // Kreiranje konfiguracije za eksport
-            var plantConfig = this.ToCalculationConfig(
-                generationData,
-                marketPriceData,
-                selfConsumptionData,
-                minEnergySellingPrices,
-                minBatteryEnergySellingPrices);
-
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Došlo je do greške prilikom generisanja izveštaja: {ex.Message}",
+                              "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void DeleteRow_Click(object sender, RoutedEventArgs e)
@@ -433,6 +448,8 @@ namespace PvPlantPlanner.UI
                         using (var workbook = new XLWorkbook(filePath))
                         {
                             var worksheet = workbook.Worksheet(1);
+                            if (worksheet == null)
+                                throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
                             var rows = worksheet.RangeUsed().RowsUsed().Skip(1);
 
                             foreach (var row in rows)
@@ -702,6 +719,8 @@ namespace PvPlantPlanner.UI
                 using (var workbook = new XLWorkbook(filePath))
                 {
                     var worksheet = workbook.Worksheet(1);
+                    if (worksheet == null)
+                        throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
                     var rows = worksheet.RangeUsed().RowsUsed();
 
                     foreach (var row in rows.Skip(1))
@@ -711,7 +730,7 @@ namespace PvPlantPlanner.UI
 
                         if (isFirst)
                         {
-                            StartTime = timestamp;
+                            startTimeSelfConsumptionData = timestamp;
                             isFirst = false;
                         }
                         data.Add(value);
@@ -738,6 +757,8 @@ namespace PvPlantPlanner.UI
                 using (var workbook = new XLWorkbook(filePath))
                 {
                     var worksheet = workbook.Worksheet(1);
+                    if (worksheet == null)
+                        throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
                     var rows = worksheet.RangeUsed().RowsUsed();
 
                     foreach (var row in rows.Skip(1))
@@ -747,7 +768,7 @@ namespace PvPlantPlanner.UI
 
                         if (isFirst)
                         {
-                            StartTime = timestamp;
+                            startTimeMarketPriceData = timestamp;
                             isFirst = false;
                         }
                         data.Add(value);
@@ -774,6 +795,8 @@ namespace PvPlantPlanner.UI
                 using (var workbook = new XLWorkbook(filePath))
                 {
                     var worksheet = workbook.Worksheet(1);
+                    if (worksheet == null)
+                        throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
                     var rows = worksheet.RangeUsed().RowsUsed();
 
                     foreach (var row in rows.Skip(1))
@@ -783,7 +806,7 @@ namespace PvPlantPlanner.UI
 
                         if (isFirst)
                         {
-                            StartTime = timestamp;
+                            startTimeGenData = timestamp;
                             isFirst = false;
                         }
                         data.Add(value);
@@ -808,6 +831,8 @@ namespace PvPlantPlanner.UI
                 using (var workbook = new XLWorkbook(filePath))
                 {
                     var worksheet = workbook.Worksheet(1);
+                    if (worksheet == null)
+                        throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
                     var rows = worksheet.RangeUsed().RowsUsed().Skip(1); // preskoči zaglavlje
 
                     foreach (var row in rows)
@@ -840,6 +865,45 @@ namespace PvPlantPlanner.UI
             {
                 MessageBox.Show("Greška prilikom učitavanja fajla:\n" + ex.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
+            }
+        }
+        void ValidateStartTime()
+        {
+            if (startTimeGenData != startTimeMarketPriceData)
+            {
+                throw new InvalidOperationException(
+                    "Neusklađeni datumi početka podataka:\n" +
+                    $"• Proizvodnja elektrane: {startTimeGenData:yyyy-MM-dd HH:mm:ss}\n" +
+                    $"• Cena energije na berzi: {startTimeMarketPriceData:yyyy-MM-dd HH:mm:ss}"
+                );
+            }
+            if (startTimeSelfConsumptionData.HasValue &&
+                startTimeSelfConsumptionData.Value != startTimeGenData)
+            {
+                throw new InvalidOperationException(
+                    "Neusklađeni datumi početka podataka:\n" +
+                    $"• Proizvodnja elektrane: {startTimeGenData:yyyy-MM-dd HH:mm:ss}\n" +
+                    $"• Cena energije na berzi: {startTimeMarketPriceData:yyyy-MM-dd HH:mm:ss}\n" +
+                    $"• Sopstvena potrošnja: {startTimeSelfConsumptionData.Value:yyyy-MM-dd HH:mm:ss}"
+                );
+            }
+            if (generationData.Count != marketPriceData.Count)
+            {
+                throw new InvalidOperationException(
+                    "Neusklađen broj podataka:\n" +
+                    $"• Proizvodnja elektrane: {generationData.Count} vrednosti\n" +
+                    $"• Cena energije na berzi: {marketPriceData.Count} vrednosti"
+                );
+            }
+
+            if (selfConsumptionData != null && selfConsumptionData.Count != generationData.Count)
+            {
+                throw new InvalidOperationException(
+                    "Neusklađen broj podataka:\n" +
+                    $"• Proizvodnja elektrane: {generationData.Count} vrednosti\n" +
+                    $"• Cena energije na berzi: {marketPriceData.Count} vrednosti\n" +
+                    $"• Sopstvena potrošnj: {selfConsumptionData.Count} vrednosti"
+                );
             }
         }
     }

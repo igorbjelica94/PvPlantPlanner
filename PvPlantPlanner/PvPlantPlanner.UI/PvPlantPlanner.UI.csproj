@@ -10,14 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Database\equipment.db" />
     <None Remove="Logo\green-energy.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Database\equipment.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +28,12 @@
     <Resource Include="Logo\green-energy.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Database\equipment.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
