@@ -50,5 +50,25 @@ namespace PvPlantPlanner.UI.Models
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not Transformer other)
+                return false;
+
+            return PowerKVA == other.PowerKVA &&
+                   PowerFactor == other.PowerFactor &&
+                   Price == other.Price;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(PowerKVA, PowerFactor, Price);
+        }
+
+        public override string ToString()
+        {
+            return $"Snaga: {PowerKVA}, Faktor snage: {PowerFactor}, Cena: {Price}";
+        }
     }
 }

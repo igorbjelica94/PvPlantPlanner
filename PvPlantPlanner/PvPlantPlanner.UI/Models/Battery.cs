@@ -51,6 +51,27 @@ namespace PvPlantPlanner.UI.Models
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not Battery other)
+                return false;
+
+            return Power == other.Power &&
+                   Capacity == other.Capacity &&
+                   Price == other.Price &&
+                   Cycles == other.Cycles;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Power, Capacity, Price, Cycles);
+        }
+
+        public override string ToString()
+        {
+            return $"Snaga: {Power}, Kapacitet: {Capacity}, Cena: {Price}, Broj ciklusa: {Cycles}";
+        }
     }
 
 

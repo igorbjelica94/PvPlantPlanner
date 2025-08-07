@@ -10,7 +10,7 @@ namespace PvPlantPlanner.UI.Helpers
         {
             return new BatteryDto
             {
-                Id = uiModel.Id,
+                No = uiModel.No,
                 Power = uiModel.Power,
                 Capacity = uiModel.Capacity,
                 Price = uiModel.Price,
@@ -22,7 +22,7 @@ namespace PvPlantPlanner.UI.Helpers
         {
             return new TransformerDto
             {
-                Id = uiModel.Id,
+                No = uiModel.No,
                 PowerKVA = uiModel.PowerKVA,
                 PowerFactor = uiModel.PowerFactor,
                 Price = uiModel.Price

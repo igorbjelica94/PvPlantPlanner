@@ -1,12 +1,5 @@
-﻿using System.Data.SQLite;
-using PvPlantPlanner.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Data.Sqlite;
-using PvPlantPlanner.UI.Models;
+﻿using PvPlantPlanner.UI.Models;
+using System.Data.SQLite;
 using System.IO;
 
 namespace PvPlantPlanner.UI.DatabaseRepo
@@ -37,20 +30,22 @@ namespace PvPlantPlanner.UI.DatabaseRepo
 
             // Kreiranje tabela ako ne postoje
             command.CommandText = @"
-            CREATE TABLE IF NOT EXISTS battery (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                power REAL NOT NULL,
-                capacity REAL NOT NULL,
-                price INTEGER NOT NULL,
-                cycles INTEGER NOT NULL
-            );
-
-            CREATE TABLE IF NOT EXISTS transformer (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                power_kva REAL NOT NULL,
-                power_factor REAL NOT NULL,
-                price INTEGER NOT NULL
-            );";
+                CREATE TABLE IF NOT EXISTS battery (
+                    id INTEGER PRIMARY KEY,
+                    power REAL NOT NULL,
+                    capacity REAL NOT NULL,
+                    price INTEGER NOT NULL,
+                    cycles INTEGER NOT NULL,
+                    UNIQUE (power, capacity, price, cycles)
+                );
+                
+                CREATE TABLE IF NOT EXISTS transformer (
+                    id INTEGER PRIMARY KEY,
+                    power_kva REAL NOT NULL,
+                    power_factor REAL NOT NULL,
+                    price INTEGER NOT NULL,
+                    UNIQUE (power_kva, power_factor, price)
+                );";
             command.ExecuteNonQuery();
         }
 

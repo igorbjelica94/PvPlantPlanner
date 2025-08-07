@@ -44,7 +44,7 @@ namespace PvPlantPlanner.Common.Config
 
     public class TransformerDto
     {
-        public int Id { get; set; }
+        public int No { get; set; }
         public double PowerKVA { get; set; }
         public double PowerFactor { get; set; }
         public int Price { get; set; }
@@ -53,7 +53,7 @@ namespace PvPlantPlanner.Common.Config
 
     public class BatteryDto
     {
-        public int Id { get; set; }
+        public int No { get; set; }
         public double Power { get; set; }
         public double Capacity { get; set; }
         public int Price { get; set; }

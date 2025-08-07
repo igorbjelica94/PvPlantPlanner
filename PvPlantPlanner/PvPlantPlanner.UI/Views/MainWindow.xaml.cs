@@ -8,6 +8,7 @@ using PvPlantPlanner.UI.Helpers;
 using PvPlantPlanner.UI.Models;
 using PvPlantPlanner.UI.Views;
 using System.Collections.ObjectModel;
+using System.Data.SQLite;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -315,6 +316,7 @@ namespace PvPlantPlanner.UI
             batteryWindow.Owner = this;
             if (batteryWindow.ShowDialog() == true)
             {
+                var existingBatteries = new List<Battery>();
                 foreach (var battery in batteryWindow.SelectedBatteries)
                 {
                     if (!SelectedBatteries.Contains(battery))
@@ -322,6 +324,18 @@ namespace PvPlantPlanner.UI
                         SelectedBatteries.Add(battery);
                         UpdateBatteryNumbers();
                     }
+                    else
+                    {
+                        existingBatteries.Add(battery);
+                    }
+                }
+                if (existingBatteries.Any())
+                {
+                    MessageBox.Show(
+                        $"Baterije u listi:\n\n{string.Join("\n", existingBatteries.Select(b => b.ToString()))}\n\nveć postoje među izabranim tipovima baterija.",
+                        "Informacija",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
                 }
             }
         }
@@ -331,6 +345,7 @@ namespace PvPlantPlanner.UI
             transformerWindow.Owner = this;
             if (transformerWindow.ShowDialog() == true)
             {
+                var existingTransformers = new List<Transformer>();
                 foreach (var transformer in transformerWindow.SelectedTransformers)
                 {
                     if (!SelectedTransformers.Contains(transformer))
@@ -338,6 +353,18 @@ namespace PvPlantPlanner.UI
                         SelectedTransformers.Add(transformer);
                         UpdateTransformersNumbers();
                     }
+                    else
+                    {
+                        existingTransformers.Add(transformer);
+                    }
+                }
+                if (existingTransformers.Any())
+                {
+                    MessageBox.Show(
+                        $"Transformatori u listi:\n\n{string.Join("\n", existingTransformers.Select(b => b.ToString()))}\n\nveć postoje među izabranim tipovima transformatora.",
+                        "Informacija",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
                 }
             }
         }
@@ -353,7 +380,7 @@ namespace PvPlantPlanner.UI
                     return;
                 }
                 ValidateStartTime();
-                
+
                 var plantConfig = this.ToCalculationConfig(
                     generationData,
                     marketPriceData,
@@ -653,12 +680,14 @@ namespace PvPlantPlanner.UI
             foreach (var dto in config.BaseConfig.SelectedBatteries ?? Enumerable.Empty<BatteryDto>())
             {
                 SelectedBatteries.Add(new Battery(dto) { No = SelectedBatteries.Count + 1 });
+                InsertBatteryIntoDatabase(new Battery(dto));
             }
 
             SelectedTransformers.Clear();
             foreach (var dto in config.BaseConfig.SelectedTransformers ?? Enumerable.Empty<TransformerDto>())
             {
                 SelectedTransformers.Add(new Transformer(dto) { No = SelectedTransformers.Count + 1 });
+                InsertTransformerIntoDatabase(new Transformer(dto));
             }
 
             myDataGrid.Items.Refresh();
@@ -907,6 +936,30 @@ namespace PvPlantPlanner.UI
                     $"• Cena energije na berzi: {marketPriceData.Count} vrednosti\n" +
                     $"• Sopstvena potrošnj: {selfConsumptionData.Count} vrednosti"
                 );
+            }
+        }
+
+        private void InsertBatteryIntoDatabase(Battery battery)
+        {
+            try
+            {
+                _repository.AddBattery(battery);
+            }
+            catch (SQLiteException ex) when (ex.ResultCode == SQLiteErrorCode.Constraint)
+            {
+                // Improve with some log
+            }
+        }
+
+        private void InsertTransformerIntoDatabase(Transformer transformer)
+        {
+            try
+            {
+                _repository.AddTransformer(transformer);
+            }
+            catch (SQLiteException ex) when (ex.ResultCode == SQLiteErrorCode.Constraint)
+            {
+                // Improve with some log
             }
         }
     }

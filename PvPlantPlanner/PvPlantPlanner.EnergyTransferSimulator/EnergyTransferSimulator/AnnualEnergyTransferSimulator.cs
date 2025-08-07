@@ -141,7 +141,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
 
                     var newVariant = new List<BatteryDto>(currentVariant);
                     newVariant.Add(battery);
-                    var variantKey = string.Join("+", newVariant.GroupBy(b => b.Id).OrderBy(g => g.Key).Select(g => $"{g.Count()}x{g.Key}"));
+                    var variantKey = string.Join("+", newVariant.GroupBy(b => b.No).OrderBy(g => g.Key).Select(g => $"{g.Count()}x{g.Key}"));
 
                     if (alreadyExist.Add(variantKey))
                         _inputCalculationData.Add(CreateSimulationVariant(newVariant));

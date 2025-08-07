@@ -32,7 +32,7 @@ namespace PvPlantPlanner.Tests.AnnualEnergyTransferSimulatorTests
                     {
                         new BatteryDto
                         {
-                            Id = 1,
+                            No = 1,
                             Power = 10.0,
                             Capacity = 20.0,
                             Price = 3000,
