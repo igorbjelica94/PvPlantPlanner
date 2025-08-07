@@ -1,15 +1,12 @@
 ﻿using PvPlantPlanner.Common.Config;
 using PvPlantPlanner.Common.CoreTypes;
 using PvPlantPlanner.Common.DomainTypes;
-using PvPlantPlanner.Common.Enums;
 using PvPlantPlanner.Common.Exceptions;
-using PvPlantPlanner.Common.Results;
 using PvPlantPlanner.EnergyModels.BatteryModules;
 using PvPlantPlanner.EnergyModels.BatteryStorages;
 using PvPlantPlanner.EnergyModels.PowerGrids;
 using PvPlantPlanner.EnergyModels.PowerPlants;
 using PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers;
-using PvPlantPlanner.Common.Exceptions;
 using static PvPlantPlanner.Common.Consts.TimeConstants;
 using static PvPlantPlanner.Common.Helpers.MathHelper;
 
@@ -29,6 +26,9 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
 
         public void ConfigureSimulator(CalculationConfig config)
         {
+            if (config == null)
+                throw new ArgumentNullException(nameof(config), "Primljena konfiguracija proracuna je prazna {{null}}.");
+
             _configuration = config;
 
             var solarPlant = new SolarPowerPlant(
@@ -48,25 +48,23 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
             _energyTransferManager = new EnergyTransferManager(
                 solarPlant: solarPlant,
                 powerGrid: powerGrid,
-                feedInPriorityPrice: new List<double>(_configuration.MinEnergySellingPrice ?? throw new ArgumentNullException()),
-                minBatteryDischargePrice: new List<double>(_configuration.MinBatteryEnergySellingPrice ?? throw new ArgumentNullException()));
+                feedInPriorityPrice: new List<double>(_configuration.MinEnergySellingPrice ?? throw new ArgumentNullException(nameof(_configuration.MinEnergySellingPrice), "Podaci o cenama aktivacije prodaje elektricne energije ne postoje u konfiguraciji.")),
+                minBatteryDischargePrice: new List<double>(_configuration.MinBatteryEnergySellingPrice ?? throw new ArgumentNullException(nameof(_configuration.MinBatteryEnergySellingPrice), "Podaci o cenama aktivacije praznjenja baterija ne postoje u konfiguraciji.")));
 
             _isConfigured = true;
         }
 
         public void StartSimulation()
         {
-            if (!_isConfigured)
-                throw new InvalidConfigurationException("Proracun nije dobro konfigurisan.");
-            
-            ArgumentNullException.ThrowIfNull(_energyTransferManager, nameof(_energyTransferManager));
+            if (!_isConfigured) throw new InvalidConfigurationException("Proracun nije dobro konfigurisan.");
+            if (_energyTransferManager == null) throw new ArgumentNullException(nameof(_energyTransferManager), "Menadzer za simulaciju transfera energije ne postoji {{nul}}.");
 
-            var feedInPriorityPrices = _energyTransferManager.FeedInPriorityPrice;
+            var saveFeedInPriorityPrices = _energyTransferManager.FeedInPriorityPrice;
 
             SimulateFullEnergyTransferToGridWithoutStorage();
             SimulateNonNegativePriceEnergyTransferToGridWithoutStorage();
 
-            _energyTransferManager.ReplaceFeedInPriorityPrice(feedInPriorityPrices);
+            _energyTransferManager.ReplaceFeedInPriorityPrice(saveFeedInPriorityPrices);
 
             foreach (var inputVariant in _inputCalculationData)
             {
@@ -76,18 +74,17 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
                 {
                     _energyTransferManager.ExecuteEnergyTransferForHour(i);
                 }
-                _outputCalculationData.Add(_energyTransferManager.CalculatedData);
+                _outputCalculationData.Add(_energyTransferManager.CalculatedData.Clone());
             }
         }
 
         private HourlyValue<double> CreateSelfConsumptionEnergyParameter()
         {
-            if (_configuration == null)
-                throw new ArgumentNullException(nameof(_configuration), "Konfiguracija proracuna je prazna {{null}}.");
+            if (_configuration == null) throw new ArgumentNullException(nameof(_configuration), "Konfiguracija proracuna je prazna {{null}}.");
 
             if (_configuration.BaseConfig.SelfConsumptionFactor == null)
             {
-                return _configuration.SelfConsumptionData?.ToArray() ?? throw new ArgumentNullException(nameof(_configuration.SelfConsumptionData), "Niz podataka sopstvene potrosnje elektrane ne postoji u konfiguraciji.");
+                return _configuration.SelfConsumptionData?.ToArray() ?? throw new ArgumentNullException(nameof(_configuration.SelfConsumptionData), "Podaci o sopstvenoj potrosnji elektrane ne postoje u konfiguraciji.");
             }
             else
             {
@@ -97,16 +94,26 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
 
         private HourlyValue<double> CreateHourlyFeedInEnergyPriceParameter()
         {
-            if (_configuration == null)
-                throw new ArgumentNullException(nameof(_configuration), "Konfiguracija proracuna je prazna {{null}}.");
+            if (_configuration == null) throw new ArgumentNullException(nameof(_configuration), "Konfiguracija proracuna je prazna {{null}}.");
 
             if (_configuration.BaseConfig.FixedPrice == null)
             {
-                return _configuration.MarketPrice?.ToArray() ?? throw new ArgumentNullException(nameof(_configuration.MarketPrice), "Niz podataka cene elektricne energije na berzi ne postoji u konfiguraciji.");
-            } else
-            {
+                if (_configuration.BaseConfig.TradingCommission == null) throw new ArgumentNullException(nameof(_configuration.BaseConfig.TradingCommission), "Podatak o trgovackoj proviziji ne postoji u konfiguraciji.");
+
+                double effectivePriceFactor = 1 - (_configuration.BaseConfig.TradingCommission.Value / 100);
                 for (int i = 0; i < _configuration.MarketPrice.Count; i++)
                 {
+                    _configuration.MarketPrice[i] *= effectivePriceFactor;
+                }
+                return _configuration.MarketPrice.ToArray();
+            }
+            else
+            {
+                if (_configuration.BaseConfig.NegativePrice == null) throw new ArgumentNullException(nameof(_configuration.BaseConfig.NegativePrice), "Podatak o ceni elektricne energije pri negativnoj berzanskoj ceni ne postoji u konfiguraciji.");
+                
+                for (int i = 0; i < _configuration.MarketPrice.Count; i++)
+                {
+
                     _configuration.MarketPrice[i] = IsLessThanOrEqualToZero(_configuration.MarketPrice[i]) ? _configuration.BaseConfig.NegativePrice.Value : _configuration.BaseConfig.FixedPrice.Value;
                 }
                 return _configuration.MarketPrice.ToArray();
@@ -115,6 +122,8 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
 
         private void CreateSimulationVariants()
         {
+            if (_configuration == null) throw new ArgumentNullException(nameof(_configuration), "Konfiguracija proracuna je prazna {{null}}.");
+
             var alreadyExist = new HashSet<string>();
             var possibleVariants = new Queue<(List<BatteryDto> OneVariant, double TotalPower)>();
 
@@ -152,7 +161,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
 
             var transformerStation = GetLowestCostTransformerStation(simulationVariant.RatedStoragePower);
             if (transformerStation == null)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(transformerStation), $"Algoritam nije uspeo da nadje odgovarajucu kombinaciju transformatora za baterijski sistem snage [{simulationVariant.RatedStoragePower}] i kapaciteta [{simulationVariant.RatedStorageCapacity}].");
 
             simulationVariant.SelectedTransformers = transformerStation;
 
@@ -161,7 +170,9 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
 
         private List<TransformerDto>? GetLowestCostTransformerStation(double minPower)
         {
-            int skipAlgoritham = 10;
+            if (_configuration == null) throw new ArgumentNullException(nameof(_configuration), "Konfiguracija proracuna je prazna {{null}}.");
+
+            int skipAlgoritham = 15;
             var bestCombination = (Transformers: (List<TransformerDto>?)null, TotalPrice: double.MaxValue);
             var possibleStations = new Queue<List<TransformerDto>>();
             var alreadyExist = new HashSet<string>();
@@ -186,7 +197,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
                 if (currentCombination.Count >= skipAlgoritham)
                     continue;
 
-                foreach (var t in _configuration?.BaseConfig.SelectedTransformers ?? throw new Exception())
+                foreach (var t in _configuration.BaseConfig.SelectedTransformers)
                 {
                     var nextCombination = new List<TransformerDto>(currentCombination) { t };
 
@@ -224,7 +235,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
             {
                 _energyTransferManager.ExecuteEnergyTransferForHour(i);
             }
-            _outputCalculationData.Add(_energyTransferManager.CalculatedData);
+            _outputCalculationData.Add(_energyTransferManager.CalculatedData.Clone());
         }
 
         private void SimulateNonNegativePriceEnergyTransferToGridWithoutStorage()
@@ -238,7 +249,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
             {
                 _energyTransferManager.ExecuteEnergyTransferForHour(i);
             }
-            _outputCalculationData.Add(_energyTransferManager.CalculatedData);
+            _outputCalculationData.Add(_energyTransferManager.CalculatedData.Clone());
         }
     }
 }

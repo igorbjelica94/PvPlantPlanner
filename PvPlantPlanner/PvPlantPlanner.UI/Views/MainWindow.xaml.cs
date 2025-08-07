@@ -145,7 +145,6 @@ namespace PvPlantPlanner.UI
                     try
                     {
                         var data = new List<double>();
-                        DateTime startTime = DateTime.MinValue;
                         bool isFirst = true;
 
                         using (var workbook = new XLWorkbook(filePath))
@@ -174,7 +173,6 @@ namespace PvPlantPlanner.UI
                         Dispatcher.Invoke(() =>
                         {
                             marketPriceData = data;
-                            startTimeMarketPriceData = startTime;
                             StatusIcon_Market_Price.Text = "✓";
                             StatusIcon_Market_Price.Foreground = System.Windows.Media.Brushes.Green;
                         });

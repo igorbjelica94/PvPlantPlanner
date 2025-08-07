@@ -61,8 +61,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
 
         public void ReplaceFeedInPriorityPrice(List<double> feedInPriorityPlace)
         {
-            if (feedInPriorityPlace.Count != 12)
-                throw new ArgumentException("Number of FeedInPriority prices is different than 12.", nameof(feedInPriorityPlace));
+            if (feedInPriorityPlace.Count != 12) throw new ArgumentException("Broj cena za aktivaciju prodaje energije nije jednak 12.", nameof(feedInPriorityPlace));
 
             FeedInPriorityPrice = feedInPriorityPlace;
         }
@@ -184,8 +183,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
             {   // Invalid scenario. The battery cannot simultaneously supply power to the grid and partially to the plant, while the plant is also being partially powered by the grid.
                 // Put energy back to the battery.
                 ChargeResult chResult = EnergyStorage.TryCharge(result.DischargedEnergy);
-                if (!IsApproximatelyEqual(chResult.ChargedEnergy, result.DischargedEnergy))
-                    throw new Exception("TryTransferFullEnergyFromBatteryStorageToSolarPlant failed. Returning energy to the battery failed.");
+                if (!IsApproximatelyEqual(chResult.ChargedEnergy, result.DischargedEnergy)) throw new InvalidOperationException("Neuspesno vracanje energije u bateriju prilikom neuspesnog praznjenja baterije.");
                 return DischargeResult.Failure();
             }
         }

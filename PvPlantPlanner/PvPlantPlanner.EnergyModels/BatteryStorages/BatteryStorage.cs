@@ -29,7 +29,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryStorages
 
         public BatteryStorage(List<IBatteryModule> batteryModules)
         {
-            BatteryModules = batteryModules ?? throw new ArgumentNullException(nameof(batteryModules), "Battery modules collection cannot be null.");
+            BatteryModules = batteryModules ?? throw new ArgumentNullException(nameof(batteryModules), "Skladište baterija ne može da se napravi od prazne kolekcije baterijskih modula.");
             RatedPower = batteryModules.Sum(m => m.RatedPower);
             RatedCapacity = batteryModules.Sum(m => m.RatedCapacity);
             InvestmentCost = batteryModules.Sum(m => m.InvestmentCost);
@@ -45,8 +45,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryStorages
             ChargeResult chargeResult = HandleDistributionToModules(energyToCharge);
 
             double totalCharged = chargeResult.ChargedEnergy;
-            if (totalCharged > energyToCharge && !IsApproximatelyEqual(totalCharged, energyToCharge))
-                throw new InvalidOperationException("Charging exceeded the allowed system capacity.");
+            if (IsGreaterThan(totalCharged, energyToCharge)) throw new InvalidOperationException("Količina napunjene energije je premašila planirani iznos punjenja.");
 
             return IsApproximatelyEqual(totalCharged, energy)
                 ? ChargeResult.Success(energy)
@@ -63,8 +62,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryStorages
             DischargeResult dischargeResult = HandleDistributionFromModules(energyToDischarge);
 
             double totalDischarged = dischargeResult.DischargedEnergy;
-            if (totalDischarged > energyToDischarge && !IsApproximatelyEqual(totalDischarged, energyToDischarge))
-                throw new InvalidOperationException("Discharging exceeded the allowed system capacity.");
+            if (IsGreaterThan(totalDischarged, energyToDischarge)) throw new InvalidOperationException("Količina ispraznjene energije je premašila planirani iznos praznjenja.");
 
             return IsApproximatelyEqual(totalDischarged, energy)
                 ? DischargeResult.Success(energy)

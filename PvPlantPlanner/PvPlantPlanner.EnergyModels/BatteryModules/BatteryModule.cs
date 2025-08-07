@@ -1,4 +1,4 @@
-using PvPlantPlanner.Common.Results;
+﻿using PvPlantPlanner.Common.Results;
 using static PvPlantPlanner.Common.Helpers.MathHelper;
 
 
@@ -31,7 +31,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
         public ChargeResult TryCharge(double energy)
         {
             if (double.IsNaN(energy) || double.IsInfinity(energy) || energy < 0)
-                throw new ArgumentOutOfRangeException(nameof(energy), "Charged energy must be a non-negative, finite number.");
+                throw new ArgumentOutOfRangeException(nameof(energy), "Količina energije za punjenje mora biti nenegativan i konačan broj.");
 
             if (IsApproximatelyEqual(CurrentCapacity, RatedCapacity))
             {
@@ -52,7 +52,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
         public DischargeResult TryDischarge(double energy)
         {
             if (double.IsNaN(energy) || double.IsInfinity(energy) || energy < 0)
-                throw new ArgumentOutOfRangeException(nameof(energy), "Discharged energy must be a non-negative, finite number.");
+                throw new ArgumentOutOfRangeException(nameof(energy), "Količina energije za praznjenje mora biti nenegativan i konačan broj.");
 
             if (IsApproximatelyEqual(CurrentCapacity, 0.0))
             {
@@ -73,7 +73,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
         public ChargeResult CanChargeWithEnergy(double energy)
         {
             if (double.IsNaN(energy) || double.IsInfinity(energy) || energy < 0)
-                throw new ArgumentOutOfRangeException(nameof(energy), "Energy must be a non-negative, finite number.");
+                throw new ArgumentOutOfRangeException(nameof(energy), "Potencijalna količina energije za punjenje mora biti nenegativan i konačan broj.");
 
             if (IsApproximatelyEqual(CurrentCapacity, RatedCapacity))
             {
