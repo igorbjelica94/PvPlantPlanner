@@ -6,10 +6,15 @@ using System.Threading.Tasks;
 
 namespace PvPlantPlanner.Tools.ReportGenerator
 {
-    public class ColumnHeaderConfig
+    public class ColumnHeadersConfig
+    {
+        public double Height { get; set; }
+        public List<ColumnHeaderParam> ColumnHeaders { get; set; }
+    }
+
+    public class ColumnHeaderParam
     {
         public string Name { get; set; }
         public double Width { get; set; }
-        public double Height { get; set; }
     }
 }

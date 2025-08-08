@@ -4,9 +4,9 @@ using PvPlantPlanner.Common.Enums;
 using PvPlantPlanner.Common.Helpers;
 using PvPlantPlanner.Common.Results;
 using PvPlantPlanner.EnergyModels.BatteryStorages;
+using PvPlantPlanner.EnergyModels.DomainTypes;
 using PvPlantPlanner.EnergyModels.PowerGrids;
 using PvPlantPlanner.EnergyModels.PowerPlants;
-using System.ComponentModel;
 using static PvPlantPlanner.Common.Helpers.MathHelper;
 
 using RejectedEnergy = System.Double;
@@ -58,6 +58,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
             CalculatedData.AnnualEnergyToGrid = 0;
             CalculatedData.AnnualEnergyFromBattery = 0;
             CalculatedData.AnnualFullPowerHours = 0;
+            CalculatedData.BatteryStorage = null;
         }
 
         public void ReplaceFeedInPriorityPrice(List<double> feedInPriorityPlace)
@@ -88,7 +89,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
             {
                 PrioritizeStoringEnergyInBattery(hour, FeedInStrategyToGrid.NotAllowed);
             }
-
+            CalculatedData.BatteryStorage = EnergyStorage;
         }
 
         #region Prioritize transferring energy to grid

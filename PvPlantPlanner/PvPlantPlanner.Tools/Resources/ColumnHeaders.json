@@ -1,144 +1,117 @@
 {
+  "Height": 56,
   "ColumnHeaders": [
     {
       "Name": "Varijanta",
-      "Width": 11,
-      "Height": 56
+      "Width": 11
     },
     {
       "Name": "Instalisana DC snaga elektrane [kWp]",
-      "Width": 14,
-      "Height": 56
+      "Width": 14
     },
     {
       "Name": "Cena elektrane \"kljuc u ruke\" [EUR/kWp]",
-      "Width": 14,
-      "Height": 56
+      "Width": 14
     },
     {
       "Name": "Snaga baterijskog sistema [MW]",
-      "Width": 13,
-      "Height": 56
+      "Width": 13
     },
     {
       "Name": "Kapacitet baterijskog sistema [MWh]",
-      "Width": 17.5,
-      "Height": 56
+      "Width": 17.5
     },
     {
       "Name": "Tip baterije",
-      "Width": 20,
-      "Height": 56
+      "Width": 20
     },
     {
       "Name": "Broj jedinica tipa baterije",
-      "Width": 11.5,
-      "Height": 56
+      "Width": 11.5
     },
     {
       "Name": "Cena tipa baterije [EUR]",
-      "Width": 13,
-      "Height": 56
+      "Width": 13
     },
     {
       "Name": "Cena baterijskog sistema [EUR]",
-      "Width": 12.5,
-      "Height": 56
+      "Width": 12.5
     },
     {
       "Name": "Ukupan broj TS jedinica baterijskog sistema",
-      "Width": 14,
-      "Height": 56
+      "Width": 14
     },
     {
       "Name": "Tip TS jedinice [kVA]",
-      "Width": 13.5,
-      "Height": 56
+      "Width": 13.5
     },
     {
       "Name": "Broj jedinica tipa TS",
-      "Width": 11.11,
-      "Height": 56
+      "Width": 11.11
     },
     {
       "Name": "Cena tipa TS [EUR]",
-      "Width": 11.11,
-      "Height": 56
+      "Width": 11.11
     },
     {
       "Name": "Cena svih TS baterijskog sistema [EUR]",
-      "Width": 20,
-      "Height": 56
+      "Width": 20
     },
     {
       "Name": "Ukupna cena baterijskog sistema sa TS [EUR]",
-      "Width": 20,
-      "Height": 56
+      "Width": 20
     },
     {
       "Name": "Godisnji neto prihod [EUR]",
-      "Width": 12,
-      "Height": 56
+      "Width": 12
     },
     {
       "Name": "Zarada od prodaje el. en. [EUR]",
-      "Width": 12.5,
-      "Height": 56
+      "Width": 12.5
     },
     {
       "Name": "Troskovi kupovine el. en. [EUR]",
-      "Width": 14,
-      "Height": 56
+      "Width": 14
     },
     {
       "Name": "Predata elektricna energija mrezi [kWh/god]",
-      "Width": 13,
-      "Height": 56
+      "Width": 13
     },
     {
       "Name": "Preuzeta elektricna energija iz mreze [kWh/god]",
-      "Width": 15.5,
-      "Height": 56
+      "Width": 15.5
     },
     {
       "Name": "Elektricna energija predata mrezi iz baterijskog sistema [kWh/god]",
-      "Width": 17.5,
-      "Height": 56
+      "Width": 17.5
     },
     {
       "Name": "Br. sati rada PV pri punoj snazi [h/god]",
-      "Width": 17,
-      "Height": 56
+      "Width": 17
     },
     {
       "Name": "Broj ciklusa baterije [n/god]",
-      "Width": 7,
-      "Height": 56
+      "Width": 7
     },
     {
       "Name": "Ukupan kapacitet baterije koriscen kroz godinu SOC [%]",
-      "Width": 18.5,
-      "Height": 56
+      "Width": 18.5
     },
     {
       "Name": "Odbacena energija (curtailment) [kWh/god]",
-      "Width": 12,
-      "Height": 56
+      "Width": 12
     },
     {
       "Name": "CAPEX [EUR]",
-      "Width": 12,
-      "Height": 56
+      "Width": 12
     },
     {
       "Name": "ROI [god]",
-      "Width": 9,
-      "Height": 56
+      "Width": 9
     },
     {
       "Name": "ROI [%]",
-      "Width": 9,
-      "Height": 56
+      "Width": 9
     }
   ]
 }

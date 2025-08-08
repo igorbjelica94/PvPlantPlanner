@@ -11,11 +11,12 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
         public double RatedCapacity { get; }
         public int CurrentCycleCount { get; private set; }
         public double CycleProgress { get; private set; }
+        public double SocUtilization { get; private set; }
 
         public CycleCountHandler(double ratedCapacity)
         {
             if (ratedCapacity <= 0)
-                throw new ArgumentOutOfRangeException(nameof(ratedCapacity), "Rated capacity must be positive.");
+                throw new ArgumentOutOfRangeException(nameof(ratedCapacity), "Nominalni kapacitet mora biti pozitivan broj.");
 
             RatedCapacity = ratedCapacity;
         }
@@ -23,7 +24,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
         public void UpdateCycleProgress(double energyDelta)
         {
             if (double.IsNaN(energyDelta) || double.IsInfinity(energyDelta))
-                throw new ArgumentOutOfRangeException(nameof(energyDelta), "Energy delta must be a finite number.");
+                throw new ArgumentOutOfRangeException(nameof(energyDelta), "Promena energije mora biti konacan broj.");
 
             energyDelta = Math.Abs(energyDelta); // We are interested in the magnitude of energy delta (whether it's positive or negative)
 
@@ -34,6 +35,8 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
                 CurrentCycleCount++;
                 CycleProgress -= 1.0;
             }
+
+            SocUtilization += (energyDelta / (RatedCapacity * 8760)) * 100;
         }
     }
 

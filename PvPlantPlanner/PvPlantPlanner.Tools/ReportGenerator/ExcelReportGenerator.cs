@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
 using PvPlantPlanner.Common.Config;
 using PvPlantPlanner.Common.DomainTypes;
+using PvPlantPlanner.EnergyModels.DomainTypes;
 using System.Diagnostics;
 
 namespace PvPlantPlanner.Tools.ReportGenerator
@@ -67,7 +67,7 @@ namespace PvPlantPlanner.Tools.ReportGenerator
             var range = woorksheet.Range("D1:AB2");
             range.Merge();
 
-            range.Value = "\tTehno-ekonomski parametri solarne elektrane sa i bez baterijskog sistema različite snage i kapaciteta";
+            range.Value = new string('\t', 10) + "Tehno-ekonomski parametri solarne elektrane sa i bez baterijskog sistema različite snage i kapaciteta";
             foreach (var cell in range.Cells())
             {
                 ApplyCommonDataStyle(cell, XLBorderStyleValues.Thick);
@@ -75,6 +75,7 @@ namespace PvPlantPlanner.Tools.ReportGenerator
                 style.Font.Bold = true;
                 style.Font.FontSize = 16;
                 style.Fill.SetBackgroundColor(XLColor.FromArgb(191, 191, 191));
+                style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
             }
 
             woorksheet.Row(1).Height = 21;
@@ -86,24 +87,22 @@ namespace PvPlantPlanner.Tools.ReportGenerator
             var woorksheet = _generatedExcel.Worksheet(1);
 
             string jsonConfig = File.ReadAllText("Resources\\ColumnHeaders.json");
-            var config = System.Text.Json.JsonSerializer.Deserialize<ColumnHeadersConfig>(jsonConfig);
+            var headersConfig = System.Text.Json.JsonSerializer.Deserialize<ColumnHeadersConfig>(jsonConfig);
 
             int row = 3;
-            for (int i = 0; i < config.ColumnHeaders.Count; i++)
+            for (int i = 0; i < headersConfig.ColumnHeaders.Count; i++)
             {
                 int col = i + 1;
                 var cell = woorksheet.Cell(row, col);
                 ApplyCommonDataStyle(cell, XLBorderStyleValues.Thick);
-                cell.Style.Alignment.WrapText = true;
                 var style = cell.Style;
+                style.Alignment.WrapText = true;
                 style.Fill.SetBackgroundColor(XLColor.FromArgb(191, 191, 191));
 
-                var header = config.ColumnHeaders[i];
-                cell.Value = header.Name;
-
-                woorksheet.Column(col).Width = header.Width;
+                cell.Value = headersConfig.ColumnHeaders[i].Name;
+                woorksheet.Column(col).Width = headersConfig.ColumnHeaders[i].Width;
             }
-            woorksheet.Row(row).Height = config.ColumnHeaders[0].Height;
+            woorksheet.Row(row).Height = headersConfig.Height;
 
         }
 
@@ -166,16 +165,25 @@ namespace PvPlantPlanner.Tools.ReportGenerator
                 WriteCell(ws, currentRow, 5, _inputs[index].RatedStorageCapacity);
 
                 // Batteries
-                var groupedBatteryTypes = _inputs[index].SelectedBatteryModuls.GroupBy(b => b.No);
+                //var groupedBatteryTypes = _inputs[index].SelectedBatteryModuls.GroupBy(b => b.No);
+                var groupedBatteryTypes = output.BatteryStorage.BatteryModules.GroupBy(m => new
+                    {
+                        m.RatedPower,
+                        m.RatedCapacity,
+                        m.InvestmentCost,
+                        m.MaxCycleCount
+                    });
                 int batterySystemPrice = 0;
                 int currentBatSubrow = 0;
                 foreach (var group in groupedBatteryTypes)
                 {
                     var first = group.First();
-                    WriteCell(ws, currentRow + currentBatSubrow, 6, $"{first.Power} kW - {first.Capacity} kWh");
+                    WriteCell(ws, currentRow + currentBatSubrow, 6, $"{first.RatedPower} kW - {first.RatedCapacity} kWh");
                     WriteCell(ws, currentRow + currentBatSubrow, 7, group.Count());
-                    WriteCell(ws, currentRow + currentBatSubrow, 8, first.Price);
-                    batterySystemPrice += group.Count() * first.Price;
+                    WriteCell(ws, currentRow + currentBatSubrow, 8, first.InvestmentCost);
+                    WriteCell(ws, currentRow + currentBatSubrow, 23, first.CurrentCycleCount);
+                    WriteCell(ws, currentRow + currentBatSubrow, 24, first.SocUtilization);
+                    batterySystemPrice += group.Count() * first.InvestmentCost;
                     currentBatSubrow++;
                 }
                 WriteCell(ws, currentRow, 9, batterySystemPrice);
@@ -221,8 +229,8 @@ namespace PvPlantPlanner.Tools.ReportGenerator
                     rng.Style.Fill.SetBackgroundColor(XLColor.FromArgb(217, 217, 217));
                 }
 
-                if (subrows > 0) 
-                { 
+                if (subrows > 0)
+                {
                     currentRow += subrows;
                 }
                 else
@@ -290,10 +298,6 @@ namespace PvPlantPlanner.Tools.ReportGenerator
         private string GetTempFileName()
         {
             return Path.Combine(Path.GetTempPath(), $"ReportCopy_{System.DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
-        }
-        public class ColumnHeadersConfig
-        {
-            public List<ColumnHeaderConfig> ColumnHeaders { get; set; }
         }
     }
 }

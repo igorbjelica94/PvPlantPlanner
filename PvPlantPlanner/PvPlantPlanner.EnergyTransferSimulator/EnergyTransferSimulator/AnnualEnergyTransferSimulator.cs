@@ -4,6 +4,7 @@ using PvPlantPlanner.Common.DomainTypes;
 using PvPlantPlanner.Common.Exceptions;
 using PvPlantPlanner.EnergyModels.BatteryModules;
 using PvPlantPlanner.EnergyModels.BatteryStorages;
+using PvPlantPlanner.EnergyModels.DomainTypes;
 using PvPlantPlanner.EnergyModels.PowerGrids;
 using PvPlantPlanner.EnergyModels.PowerPlants;
 using PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers;

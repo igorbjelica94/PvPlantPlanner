@@ -1,5 +1,7 @@
 ﻿
-namespace PvPlantPlanner.Common.DomainTypes
+using PvPlantPlanner.EnergyModels.BatteryStorages;
+
+namespace PvPlantPlanner.EnergyModels.DomainTypes
 {
     public class PvCalculatedData
     {
@@ -10,6 +12,7 @@ namespace PvPlantPlanner.Common.DomainTypes
         public double AnnualEnergyFromBattery { get; set; }
         public int AnnualFullPowerHours { get; set; }
         public double AnnualRejectedEnergy { get; set; }
+        public IBatteryStorage? BatteryStorage { get; set; }
         public PvCalculatedData Clone()
         {
             return new PvCalculatedData
@@ -19,7 +22,8 @@ namespace PvPlantPlanner.Common.DomainTypes
                 AnnualEnergyFromGrid = this.AnnualEnergyFromGrid,
                 AnnualEnergyToGrid = this.AnnualEnergyToGrid,
                 AnnualEnergyFromBattery = this.AnnualEnergyFromBattery,
-                AnnualFullPowerHours = this.AnnualFullPowerHours
+                AnnualFullPowerHours = this.AnnualFullPowerHours,
+                BatteryStorage = this.BatteryStorage
             };
         }
     }

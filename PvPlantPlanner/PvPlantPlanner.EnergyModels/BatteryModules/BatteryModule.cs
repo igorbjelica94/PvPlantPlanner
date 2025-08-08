@@ -11,6 +11,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
         public int InvestmentCost { get; }
         public int MaxCycleCount { get; }
         public double CurrentCapacity { get; private set; }
+        public double SocUtilization => Cycle.SocUtilization;
         public double RemainingCapacity => RatedCapacity - CurrentCapacity;
         public double CurrentCycleCount => Cycle.CurrentCycleCount;
         public double TimeToFullCharge => RemainingCapacity / RatedPower;

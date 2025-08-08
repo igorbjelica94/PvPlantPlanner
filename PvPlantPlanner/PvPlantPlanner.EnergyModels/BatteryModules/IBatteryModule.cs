@@ -9,6 +9,7 @@ namespace PvPlantPlanner.EnergyModels.BatteryModules
         int InvestmentCost { get; }
         int MaxCycleCount { get; }
         double CurrentCapacity { get; }
+        public double SocUtilization { get; }
         double RemainingCapacity { get; }
         double CurrentCycleCount { get; }
         double TimeToFullCharge { get; }
