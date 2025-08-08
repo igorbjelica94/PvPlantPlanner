@@ -7,6 +7,7 @@ using PvPlantPlanner.EnergyModels.BatteryStorages;
 using PvPlantPlanner.EnergyModels.PowerGrids;
 using PvPlantPlanner.EnergyModels.PowerPlants;
 using PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers;
+using PvPlantPlanner.Tools.ReportGenerator;
 using static PvPlantPlanner.Common.Consts.TimeConstants;
 using static PvPlantPlanner.Common.Helpers.MathHelper;
 
@@ -63,6 +64,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
 
             SimulateFullEnergyTransferToGridWithoutStorage();
             SimulateNonNegativePriceEnergyTransferToGridWithoutStorage();
+            SimulateAverageMonthlyPriceEnergyTransferToGridWithoutStorage();
 
             _energyTransferManager.ReplaceFeedInPriorityPrice(saveFeedInPriorityPrices);
 
@@ -76,6 +78,9 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
                 }
                 _outputCalculationData.Add(_energyTransferManager.CalculatedData.Clone());
             }
+
+            var excelReportGen = new ExcelReportGenerator(_inputCalculationData, _outputCalculationData, _configuration);
+            excelReportGen.GenerateReport();
         }
 
         private HourlyValue<double> CreateSelfConsumptionEnergyParameter()
@@ -250,6 +255,71 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
                 _energyTransferManager.ExecuteEnergyTransferForHour(i);
             }
             _outputCalculationData.Add(_energyTransferManager.CalculatedData.Clone());
+        }
+
+        private void SimulateAverageMonthlyPriceEnergyTransferToGridWithoutStorage()
+        {
+            if (_energyTransferManager == null)
+                throw new ArgumentNullException(nameof(_energyTransferManager));
+
+            var savedFeedInEnergyPraces = _energyTransferManager.PowerGrid.HourlyFeedInEnergyPrice;
+
+            _energyTransferManager.ResetCalculatedData();
+            _energyTransferManager.ReplaceFeedInPriorityPrice(Enumerable.Repeat(Double.MinValue, NumberOfMonth).ToList());
+            _energyTransferManager.ReplaceFeedInEnergyPrice(CalculateAverageMonthlyElectricityPrices());
+            for (int i = 0; i < 8760; i++)
+            {
+                _energyTransferManager.ExecuteEnergyTransferForHour(i);
+            }
+            _outputCalculationData.Add(_energyTransferManager.CalculatedData.Clone());
+
+            _energyTransferManager.ReplaceFeedInEnergyPrice(savedFeedInEnergyPraces);
+        }
+
+        private HourlyValue<double> CalculateAverageMonthlyElectricityPrices()
+        {
+            if (_configuration == null) throw new ArgumentNullException(nameof(_configuration), "Konfiguracija proracuna je prazna {{null}}.");
+
+            int hoursInYear = 8760;
+            int hoursPerDay = 24;
+            double[] monthlyAverages = new double[12];
+
+            for (int month = 0; month < 12; month++)
+            {
+                int startDay = (month == 0) ? 0 : MonthBounds[month - 1];
+                int endDay = MonthBounds[month];
+                int daysInMonth = endDay - startDay;
+
+                int startHour = startDay * hoursPerDay;
+                int endHour = endDay * hoursPerDay;
+
+                double sum = 0;
+                int count = 0;
+                for (int h = startHour; h < endHour; h++)
+                {
+                    sum += _configuration.MarketPrice[h];
+                    count++;
+                }
+
+                monthlyAverages[month] = sum / count;
+            }
+
+            double[] newMonthlyAverages = new double[hoursInYear];
+            for (int month = 0; month < 12; month++)
+            {
+                int startDay = (month == 0) ? 0 : MonthBounds[month - 1];
+                int endDay = MonthBounds[month];
+
+                int startHour = startDay * hoursPerDay;
+                int endHour = endDay * hoursPerDay;
+
+                double avg = monthlyAverages[month];
+                for (int h = startHour; h < endHour; h++)
+                {
+                    newMonthlyAverages[h] = avg;
+                }
+            }
+            return new HourlyValue<double>(newMonthlyAverages);
         }
     }
 }

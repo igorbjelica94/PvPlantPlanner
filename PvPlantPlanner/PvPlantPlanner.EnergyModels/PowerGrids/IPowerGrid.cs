@@ -8,5 +8,7 @@ namespace PvPlantPlanner.EnergyModels.PowerGrids
         double AllowedExportPower { get; }
         HourlyValue<double> HourlyFeedInEnergyPrice { get; }
         double ExportEnergyPrice { get; }
+
+        public void ReplaceFeedInEnergyPrice(HourlyValue<double> newFeedInPrice);
     }
 }

@@ -1,4 +1,5 @@
-﻿using PvPlantPlanner.Common.DomainTypes;
+﻿using PvPlantPlanner.Common.CoreTypes;
+using PvPlantPlanner.Common.DomainTypes;
 using PvPlantPlanner.Common.Enums;
 using PvPlantPlanner.Common.Helpers;
 using PvPlantPlanner.Common.Results;
@@ -64,6 +65,11 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
             if (feedInPriorityPlace.Count != 12) throw new ArgumentException("Broj cena za aktivaciju prodaje energije nije jednak 12.", nameof(feedInPriorityPlace));
 
             FeedInPriorityPrice = feedInPriorityPlace;
+        }
+
+        public void ReplaceFeedInEnergyPrice(HourlyValue<double> newFeedInPrice)
+        {
+            PowerGrid.ReplaceFeedInEnergyPrice(newFeedInPrice);
         }
 
         public void ExecuteEnergyTransferForHour(int hour)

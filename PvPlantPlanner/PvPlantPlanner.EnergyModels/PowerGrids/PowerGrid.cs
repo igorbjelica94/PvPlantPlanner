@@ -11,7 +11,7 @@ namespace PvPlantPlanner.EnergyModels.PowerGrids
     {
         public double ApprovedFeedInPower { get; }
         public double AllowedExportPower { get; }
-        public HourlyValue<double> HourlyFeedInEnergyPrice { get; }
+        public HourlyValue<double> HourlyFeedInEnergyPrice { get; private set; }
         public double ExportEnergyPrice { get; }
 
         public PowerGrid(
@@ -25,6 +25,13 @@ namespace PvPlantPlanner.EnergyModels.PowerGrids
             HourlyFeedInEnergyPrice = hourlyFeedInEnergyPrice ??
                 throw new ArgumentNullException(nameof(hourlyFeedInEnergyPrice), "Hourly feed-in energy price must be provided and cannot be null.");
             ExportEnergyPrice = exportEnergyPrice;
+        }
+
+        public void ReplaceFeedInEnergyPrice(HourlyValue<double> newFeedInPrice)
+        {
+            if (newFeedInPrice == null) throw new ArgumentNullException(nameof(newFeedInPrice), "Nove cene elektricne energije ne postoje {{null}}.");
+
+            HourlyFeedInEnergyPrice = newFeedInPrice;
         }
 
     }
