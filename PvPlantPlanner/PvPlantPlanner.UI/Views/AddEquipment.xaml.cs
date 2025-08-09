@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace PvPlantPlanner.UI
 {
@@ -49,6 +50,9 @@ namespace PvPlantPlanner.UI
 
             _batteries.AllowNew = true;
             _transformers.AllowNew = true;
+
+            _batteries.Add(new BatteryDisplay());
+            _transformers.Add(new TransformerDisplay());
         }
 
         private void SetupDataGrids()
@@ -56,25 +60,71 @@ namespace PvPlantPlanner.UI
             BatteryDataGrid.ItemsSource = _batteries;
             TransformerDataGrid.ItemsSource = _transformers;
 
-            BatteryDataGrid.PreviewKeyDown += DataGrid_PreviewKeyDown;
-            TransformerDataGrid.PreviewKeyDown += DataGrid_PreviewKeyDown;
+            BatteryDataGrid.PreviewKeyDown += BatteryDataGrid_PreviewKeyDown;
+            TransformerDataGrid.PreviewKeyDown += TransformerDataGrid_PreviewKeyDown;
         }
 
-        private void DataGrid_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void BatteryDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Enter && !_isEditing)
+            if (e.Key == Key.Enter)
             {
-                var grid = sender as DataGrid;
-                if (grid != null)
+                BatteryDataGrid.CommitEdit(DataGridEditingUnit.Cell, true);
+                BatteryDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
+
+                if (BatteryDataGrid.SelectedItem is BatteryDisplay battery)
                 {
-                    grid.CommitEdit(DataGridEditingUnit.Cell, true);
-                    grid.CommitEdit(DataGridEditingUnit.Row, true);
-                    SaveChanges(grid);
-                    e.Handled = true;
+                    if (battery.Power == 0 && battery.Capacity == 0 && battery.Price == 0 && battery.Cycles == 0)
+                    {
+                        e.Handled = true;
+                        return;
+                    }
+
+                    if (!ValidateBattery(battery))
+                    {
+                        MessageBox.Show("Unesite validne vrednosti za bateriju.");
+                        e.Handled = true;
+                        return;
+                    }
+
+                    SaveBattery(battery);
+
+                    _batteries.Add(new BatteryDisplay());
+                    BatteryDataGrid.SelectedIndex = _batteries.Count - 1;
+                    BatteryDataGrid.ScrollIntoView(_batteries.Last());
                 }
             }
         }
 
+        private void TransformerDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TransformerDataGrid.CommitEdit(DataGridEditingUnit.Cell, true);
+                TransformerDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
+
+                if (TransformerDataGrid.SelectedItem is TransformerDisplay transformer)
+                {
+                    if (transformer.PowerKVA == 0 && transformer.PowerFactor == 0 && transformer.Price == 0)
+                    {
+                        e.Handled = true;
+                        return;
+                    }
+
+                    if (!ValidateTransformer(transformer))
+                    {
+                        MessageBox.Show("Unesite validne vrednosti za transformator.");
+                        e.Handled = true;
+                        return;
+                    }
+
+                    SaveTransformer(transformer);
+
+                    _transformers.Add(new TransformerDisplay());
+                    TransformerDataGrid.SelectedIndex = _transformers.Count - 1;
+                    TransformerDataGrid.ScrollIntoView(_transformers.Last());
+                }
+            }
+        }
 
         private void SaveChanges(DataGrid grid)
         {
@@ -166,25 +216,14 @@ namespace PvPlantPlanner.UI
             }
         }
 
-
         private bool ValidateBattery(BatteryDisplay b)
         {
-            if (b.Power <= 0 || b.Capacity <= 0 || b.Price <= 0)
-            {
-                MessageBox.Show("Unesite validne vrednosti za bateriju (veće od 0)");
-                return false;
-            }
-            return true;
+            return b.Power > 0 && b.Capacity > 0 && b.Price > 0 && b.Cycles > 0;
         }
 
         private bool ValidateTransformer(TransformerDisplay t)
         {
-            if (t.PowerKVA <= 0 || t.PowerFactor <= 0 || t.Price <= 0)
-            {
-                MessageBox.Show("Unesite validne vrednosti za transformator (veće od 0)");
-                return false;
-            }
-            return true;
+            return t.PowerKVA > 0 && t.PowerFactor > 0 && t.Price > 0;
         }
 
         private void DeleteSelectedBattery_Click(object sender, RoutedEventArgs e)
