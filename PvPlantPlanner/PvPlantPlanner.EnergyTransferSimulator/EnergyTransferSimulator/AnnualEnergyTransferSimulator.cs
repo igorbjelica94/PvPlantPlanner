@@ -19,17 +19,19 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
         internal List<PvSimulationVariant> InputCalculationData => _inputCalculationData; // For Testing purposes
         internal List<PvCalculatedData> OutputCalculationData => _outputCalculationData; // For Testing purposes
 
-        private bool _isConfigured = false;
         private CalculationConfig? _configuration;
         private EnergyTransferManager? _energyTransferManager;
         private List<PvSimulationVariant> _inputCalculationData = new List<PvSimulationVariant>();
         private List<PvCalculatedData> _outputCalculationData = new List<PvCalculatedData>();
 
+        private CalculationConfig Configuration => _configuration ?? throw new InvalidOperationException("Konfiguracija proracuna je prazna {{null}}.");
+        private EnergyTransferManager EnergyTransferManager => _energyTransferManager ?? throw new InvalidOperationException("Menadzer za simulaciju transfera energije ne postoji {{nul}}.");
+
 
         public void ConfigureSimulator(CalculationConfig config)
         {
             if (config == null)
-                throw new ArgumentNullException(nameof(config), "Primljena konfiguracija proracuna je prazna {{null}}.");
+                throw new ArgumentNullException(nameof(config), "Primljena konfiguracija za proracun je prazna {{null}}.");
 
             _configuration = config;
 
@@ -45,91 +47,101 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
                 hourlyFeedInEnergyPrice: CreateHourlyFeedInEnergyPriceParameter(),
                 exportEnergyPrice: _configuration.BaseConfig.ElectricityPrice);
 
+            if (_configuration.BaseConfig.FixedPrice == null)
+            {
+                _energyTransferManager = new EnergyTransferManager(
+                    solarPlant: solarPlant,
+                    powerGrid: powerGrid,
+                    feedInPriorityPrice: new List<double>(_configuration.MinEnergySellingPrice ?? throw new ArgumentNullException(nameof(_configuration.MinEnergySellingPrice), "Podaci o cenama aktivacije prodaje elektricne energije ne postoje u konfiguraciji.")),
+                    minBatteryDischargePrice: new List<double>(_configuration.MinBatteryEnergySellingPrice ?? throw new ArgumentNullException(nameof(_configuration.MinBatteryEnergySellingPrice), "Podaci o cenama aktivacije praznjenja baterija ne postoje u konfiguraciji.")));
+            }
+            else
+            {
+                _energyTransferManager = new EnergyTransferManager(
+                    solarPlant: solarPlant,
+                    powerGrid: powerGrid,
+                    feedInPriorityPrice: Enumerable.Repeat(_configuration.BaseConfig.FixedPrice.Value, NumberOfMonth).ToList(),
+                    minBatteryDischargePrice: Enumerable.Repeat(_configuration.BaseConfig.FixedPrice.Value, NumberOfMonth).ToList());
+            }
+
             CreateSimulationVariants();
-
-            _energyTransferManager = new EnergyTransferManager(
-                solarPlant: solarPlant,
-                powerGrid: powerGrid,
-                feedInPriorityPrice: new List<double>(_configuration.MinEnergySellingPrice ?? throw new ArgumentNullException(nameof(_configuration.MinEnergySellingPrice), "Podaci o cenama aktivacije prodaje elektricne energije ne postoje u konfiguraciji.")),
-                minBatteryDischargePrice: new List<double>(_configuration.MinBatteryEnergySellingPrice ?? throw new ArgumentNullException(nameof(_configuration.MinBatteryEnergySellingPrice), "Podaci o cenama aktivacije praznjenja baterija ne postoje u konfiguraciji.")));
-
-            _isConfigured = true;
         }
 
         public void StartSimulation()
         {
-            if (!_isConfigured) throw new InvalidConfigurationException("Proracun nije dobro konfigurisan.");
-            if (_energyTransferManager == null) throw new ArgumentNullException(nameof(_energyTransferManager), "Menadzer za simulaciju transfera energije ne postoji {{nul}}.");
-
-            var saveFeedInPriorityPrices = _energyTransferManager.FeedInPriorityPrice;
+            var savedFeedInPriorityPrices = EnergyTransferManager.FeedInPriorityPrice;
 
             SimulateFullEnergyTransferToGridWithoutStorage();
             SimulateNonNegativePriceEnergyTransferToGridWithoutStorage();
             SimulateAverageMonthlyPriceEnergyTransferToGridWithoutStorage();
 
-            _energyTransferManager.ReplaceFeedInPriorityPrice(saveFeedInPriorityPrices);
+            EnergyTransferManager.ReplaceFeedInPriorityPrice(savedFeedInPriorityPrices);
 
             foreach (var inputVariant in _inputCalculationData)
             {
-                _energyTransferManager.EnergyStorage = CreateBatteryStorageFromSimulationVariant(inputVariant);
-                _energyTransferManager.ResetCalculatedData();
+                EnergyTransferManager.ResetCalculatedData();
+                EnergyTransferManager.EnergyStorage = CreateBatteryStorageFromSimulationVariant(inputVariant);
                 for (int i = 0; i < 8760; i++)
                 {
-                    _energyTransferManager.ExecuteEnergyTransferForHour(i);
+                    EnergyTransferManager.ExecuteEnergyTransferForHour(i);
                 }
-                _outputCalculationData.Add(_energyTransferManager.CalculatedData.Clone());
+                _outputCalculationData.Add(EnergyTransferManager.CalculatedData.Clone());
             }
 
-            var excelReportGen = new ExcelReportGenerator(_inputCalculationData, _outputCalculationData, _configuration);
+            var excelReportGen = new ExcelReportGenerator(_inputCalculationData, _outputCalculationData, Configuration);
             excelReportGen.GenerateReport();
         }
 
         private HourlyValue<double> CreateSelfConsumptionEnergyParameter()
         {
-            if (_configuration == null) throw new ArgumentNullException(nameof(_configuration), "Konfiguracija proracuna je prazna {{null}}.");
-
-            if (_configuration.BaseConfig.SelfConsumptionFactor == null)
+            if (Configuration.BaseConfig.SelfConsumptionFactor == null)
             {
-                return _configuration.SelfConsumptionData?.ToArray() ?? throw new ArgumentNullException(nameof(_configuration.SelfConsumptionData), "Podaci o sopstvenoj potrosnji elektrane ne postoje u konfiguraciji.");
+                return Configuration.SelfConsumptionData?.ToArray() ?? throw new ArgumentNullException(nameof(_configuration.SelfConsumptionData), "Podaci o satnoj sopstvenoj potrosnji elektrane ne postoje u konfiguraciji.");
             }
             else
             {
-                return _configuration.BaseConfig.SelfConsumptionFactor * _configuration.BaseConfig.MaxGridPower;
+                return Configuration.BaseConfig.SelfConsumptionFactor * Configuration.BaseConfig.MaxGridPower;
             }
         }
 
         private HourlyValue<double> CreateHourlyFeedInEnergyPriceParameter()
         {
-            if (_configuration == null) throw new ArgumentNullException(nameof(_configuration), "Konfiguracija proracuna je prazna {{null}}.");
-
-            if (_configuration.BaseConfig.FixedPrice == null)
+            if (Configuration.BaseConfig.FixedPrice == null)
             {
-                if (_configuration.BaseConfig.TradingCommission == null) throw new ArgumentNullException(nameof(_configuration.BaseConfig.TradingCommission), "Podatak o trgovackoj proviziji ne postoji u konfiguraciji.");
-
-                double effectivePriceFactor = 1 - (_configuration.BaseConfig.TradingCommission.Value / 100);
-                for (int i = 0; i < _configuration.MarketPrice.Count; i++)
-                {
-                    _configuration.MarketPrice[i] *= effectivePriceFactor;
-                }
-                return _configuration.MarketPrice.ToArray();
+                return RecalculateHourlyFeedInEnergyPriceWithTradingCommission();
             }
             else
             {
-                if (_configuration.BaseConfig.NegativePrice == null) throw new ArgumentNullException(nameof(_configuration.BaseConfig.NegativePrice), "Podatak o ceni elektricne energije pri negativnoj berzanskoj ceni ne postoji u konfiguraciji.");
-                
-                for (int i = 0; i < _configuration.MarketPrice.Count; i++)
-                {
-
-                    _configuration.MarketPrice[i] = IsLessThanOrEqualToZero(_configuration.MarketPrice[i]) ? _configuration.BaseConfig.NegativePrice.Value : _configuration.BaseConfig.FixedPrice.Value;
-                }
-                return _configuration.MarketPrice.ToArray();
+                return CalculateFixedHourlyFeedInEnergyPrice();
             }
+        }
+
+        private HourlyValue<double> RecalculateHourlyFeedInEnergyPriceWithTradingCommission()
+        {
+            if (Configuration.BaseConfig.TradingCommission == null) throw new ArgumentNullException(nameof(_configuration.BaseConfig.TradingCommission), "Podatak o trgovackoj proviziji kada je elektrana na berzi ne postoji u konfiguraciji.");
+
+            double effectivePriceFactor = 1 - (Configuration.BaseConfig.TradingCommission.Value / 100);
+            for (int i = 0; i < Configuration.MarketPrice.Count; i++)
+            {
+                Configuration.MarketPrice[i] *= effectivePriceFactor;
+            }
+            return Configuration.MarketPrice.ToArray();
+        }
+
+        private HourlyValue<double> CalculateFixedHourlyFeedInEnergyPrice()
+        {
+            if (Configuration.BaseConfig.FixedPrice == null) throw new ArgumentNullException(nameof(_configuration.BaseConfig.NegativePrice), "Podatak o fiksnoj ceni elektricne energije ne postoji u konfiguraciji.");
+            if (Configuration.BaseConfig.NegativePrice == null) throw new ArgumentNullException(nameof(_configuration.BaseConfig.NegativePrice), "Podatak o ceni elektricne energije pri negativnoj berzanskoj ceni ne postoji u konfiguraciji.");
+
+            for (int i = 0; i < Configuration.MarketPrice.Count; i++)
+            {
+                Configuration.MarketPrice[i] = IsGreaterThanZero(Configuration.MarketPrice[i]) ? Configuration.BaseConfig.FixedPrice.Value : Configuration.BaseConfig.NegativePrice.Value;
+            }
+            return Configuration.MarketPrice.ToArray();
         }
 
         private void CreateSimulationVariants()
         {
-            if (_configuration == null) throw new ArgumentNullException(nameof(_configuration), "Konfiguracija proracuna je prazna {{null}}.");
-
             var alreadyExist = new HashSet<string>();
             var possibleVariants = new Queue<(List<BatteryDto> OneVariant, double TotalPower)>();
 
@@ -139,10 +151,10 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
             {
                 var (currentVariant, currentPower) = possibleVariants.Dequeue();
 
-                foreach (var battery in _configuration.BaseConfig.SelectedBatteries)
+                foreach (var battery in Configuration.BaseConfig.SelectedBatteries)
                 {
                     double newPower = currentPower + battery.Power;
-                    if (newPower > _configuration.BaseConfig.MaxBatteryPower)
+                    if (newPower > Configuration.BaseConfig.MaxBatteryPower)
                         continue;
 
                     var newVariant = new List<BatteryDto>(currentVariant);
@@ -176,8 +188,6 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
 
         private List<TransformerDto>? GetLowestCostTransformerStation(double minPower)
         {
-            if (_configuration == null) throw new ArgumentNullException(nameof(_configuration), "Konfiguracija proracuna je prazna {{null}}.");
-
             int skipAlgoritham = 15;
             var bestCombination = (Transformers: (List<TransformerDto>?)null, TotalPrice: double.MaxValue);
             var possibleStations = new Queue<List<TransformerDto>>();
@@ -203,7 +213,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
                 if (currentCombination.Count >= skipAlgoritham)
                     continue;
 
-                foreach (var t in _configuration.BaseConfig.SelectedTransformers)
+                foreach (var t in Configuration.BaseConfig.SelectedTransformers)
                 {
                     var nextCombination = new List<TransformerDto>(currentCombination) { t };
 
@@ -232,55 +242,44 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
 
         private void SimulateFullEnergyTransferToGridWithoutStorage()
         {
-            if (_energyTransferManager == null)
-                throw new ArgumentNullException(nameof(_energyTransferManager));
-
-            _energyTransferManager.ResetCalculatedData();
-            _energyTransferManager.ReplaceFeedInPriorityPrice(Enumerable.Repeat(Double.MinValue, NumberOfMonth).ToList());
+            EnergyTransferManager.ResetCalculatedData();
+            EnergyTransferManager.ReplaceFeedInPriorityPrice(Enumerable.Repeat(Double.MinValue, NumberOfMonth).ToList());
             for (int i = 0; i < 8760; i++)
             {
-                _energyTransferManager.ExecuteEnergyTransferForHour(i);
+                EnergyTransferManager.ExecuteEnergyTransferForHour(i);
             }
-            _outputCalculationData.Add(_energyTransferManager.CalculatedData.Clone());
+            _outputCalculationData.Add(EnergyTransferManager.CalculatedData.Clone());
         }
 
         private void SimulateNonNegativePriceEnergyTransferToGridWithoutStorage()
         {
-            if (_energyTransferManager == null)
-                throw new ArgumentNullException(nameof(_energyTransferManager));
-
-            _energyTransferManager.ResetCalculatedData();
-            _energyTransferManager.ReplaceFeedInPriorityPrice(Enumerable.Repeat(0.0, NumberOfMonth).ToList());
+            EnergyTransferManager.ResetCalculatedData();
+            EnergyTransferManager.ReplaceFeedInPriorityPrice(Enumerable.Repeat(0.0, NumberOfMonth).ToList());
             for (int i = 0; i < 8760; i++)
             {
-                _energyTransferManager.ExecuteEnergyTransferForHour(i);
+                EnergyTransferManager.ExecuteEnergyTransferForHour(i);
             }
-            _outputCalculationData.Add(_energyTransferManager.CalculatedData.Clone());
+            _outputCalculationData.Add(EnergyTransferManager.CalculatedData.Clone());
         }
 
         private void SimulateAverageMonthlyPriceEnergyTransferToGridWithoutStorage()
         {
-            if (_energyTransferManager == null)
-                throw new ArgumentNullException(nameof(_energyTransferManager));
+            var savedFeedInEnergyPraces = EnergyTransferManager.PowerGrid.HourlyFeedInEnergyPrice;
 
-            var savedFeedInEnergyPraces = _energyTransferManager.PowerGrid.HourlyFeedInEnergyPrice;
-
-            _energyTransferManager.ResetCalculatedData();
-            _energyTransferManager.ReplaceFeedInPriorityPrice(Enumerable.Repeat(Double.MinValue, NumberOfMonth).ToList());
-            _energyTransferManager.ReplaceFeedInEnergyPrice(CalculateAverageMonthlyElectricityPrices());
+            EnergyTransferManager.ResetCalculatedData();
+            EnergyTransferManager.ReplaceFeedInPriorityPrice(Enumerable.Repeat(Double.MinValue, NumberOfMonth).ToList());
+            EnergyTransferManager.ReplaceFeedInEnergyPrice(CalculateAverageMonthlyElectricityPrices());
             for (int i = 0; i < 8760; i++)
             {
-                _energyTransferManager.ExecuteEnergyTransferForHour(i);
+                EnergyTransferManager.ExecuteEnergyTransferForHour(i);
             }
-            _outputCalculationData.Add(_energyTransferManager.CalculatedData.Clone());
+            _outputCalculationData.Add(EnergyTransferManager.CalculatedData.Clone());
 
-            _energyTransferManager.ReplaceFeedInEnergyPrice(savedFeedInEnergyPraces);
+            EnergyTransferManager.ReplaceFeedInEnergyPrice(savedFeedInEnergyPraces);
         }
 
         private HourlyValue<double> CalculateAverageMonthlyElectricityPrices()
         {
-            if (_configuration == null) throw new ArgumentNullException(nameof(_configuration), "Konfiguracija proracuna je prazna {{null}}.");
-
             int hoursInYear = 8760;
             int hoursPerDay = 24;
             double[] monthlyAverages = new double[12];
@@ -298,7 +297,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
                 int count = 0;
                 for (int h = startHour; h < endHour; h++)
                 {
-                    sum += _configuration.MarketPrice[h];
+                    sum += Configuration.MarketPrice[h];
                     count++;
                 }
 
