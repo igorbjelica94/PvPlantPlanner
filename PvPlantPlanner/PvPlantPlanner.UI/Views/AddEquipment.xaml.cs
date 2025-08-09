@@ -94,7 +94,7 @@ namespace PvPlantPlanner.UI
 
         private void SaveBattery(BatteryDisplay battery)
         {
-            if (battery.Power <= 0 || battery.Capacity <= 0 || battery.Price <= 0)
+            if (battery.Power <= 0 || battery.Capacity <= 0 || battery.Price <= 0 || battery.Cycles <= 0)
             {
                 MessageBox.Show("Unesite validne vrednosti za sva polja (veće od 0)");
                 return;
