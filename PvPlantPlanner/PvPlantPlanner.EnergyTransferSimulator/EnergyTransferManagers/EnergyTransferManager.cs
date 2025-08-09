@@ -31,10 +31,10 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
             List<double> feedInPriorityPrice,
             List<double> minBatteryDischargePrice)
         {
-            SolarPlant = solarPlant ?? throw new ArgumentNullException(nameof(solarPlant));
-            PowerGrid = powerGrid ?? throw new ArgumentNullException(nameof(powerGrid));
-            FeedInPriorityPrice = feedInPriorityPrice ?? new List<double>();
-            MinBatteryDischargePrice = minBatteryDischargePrice ?? new List<double>();
+            SolarPlant = solarPlant ?? throw new ArgumentNullException(nameof(solarPlant), "Podaci o solarnoj elektrani ne postoje u proracunu.");
+            PowerGrid = powerGrid ?? throw new ArgumentNullException(nameof(powerGrid), "Podaci o elektroenergetskoj mrezi ne postoje u proracunu.");
+            FeedInPriorityPrice = feedInPriorityPrice ?? throw new ArgumentNullException(nameof(feedInPriorityPrice), "Podaci o ceni za prioritetno predavanje električne energije mreži ne postoje u proračunu.");
+            MinBatteryDischargePrice = minBatteryDischargePrice ?? throw new ArgumentNullException(nameof(minBatteryDischargePrice), "Podaci o minimalnoj ceni za pražnjenje baterije ne postoje u proračunu.");
         }
 
         public EnergyTransferManager(
@@ -44,11 +44,11 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
             List<double> feedInPriorityPrice,
             List<double> minBatteryDischargePrice)
         {
-            SolarPlant = solarPlant ?? throw new ArgumentNullException(nameof(solarPlant));
-            PowerGrid = powerGrid ?? throw new ArgumentNullException(nameof(powerGrid));
+            SolarPlant = solarPlant ?? throw new ArgumentNullException(nameof(solarPlant), "Podaci o solarnoj elektrani ne postoje u proracunu.");
+            PowerGrid = powerGrid ?? throw new ArgumentNullException(nameof(powerGrid), "Podaci o elektroenergetskoj mrezi ne postoje u proracunu.");
             EnergyStorage = batteryStorage;
-            FeedInPriorityPrice = feedInPriorityPrice ?? new List<double>();
-            MinBatteryDischargePrice = minBatteryDischargePrice ?? new List<double>();
+            FeedInPriorityPrice = feedInPriorityPrice ?? throw new ArgumentNullException(nameof(feedInPriorityPrice), "Podaci o ceni za prioritetno predavanje električne energije mreži ne postoje u proračunu.");
+            MinBatteryDischargePrice = minBatteryDischargePrice ?? throw new ArgumentNullException(nameof(minBatteryDischargePrice), "Podaci o minimalnoj ceni za pražnjenje baterije ne postoje u proračunu.");
         }
         public void ResetCalculatedData()
         {

@@ -4,7 +4,14 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	  <OutputPath>..\bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Conf\CalculationConstants.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PvPlantPlanner.Common\PvPlantPlanner.Common.csproj" />
