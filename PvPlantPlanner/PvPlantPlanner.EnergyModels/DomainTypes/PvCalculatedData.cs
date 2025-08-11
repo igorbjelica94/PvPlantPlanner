@@ -23,6 +23,7 @@ namespace PvPlantPlanner.EnergyModels.DomainTypes
                 AnnualEnergyToGrid = this.AnnualEnergyToGrid,
                 AnnualEnergyFromBattery = this.AnnualEnergyFromBattery,
                 AnnualFullPowerHours = this.AnnualFullPowerHours,
+                AnnualRejectedEnergy = this.AnnualRejectedEnergy,
                 BatteryStorage = this.BatteryStorage
             };
         }

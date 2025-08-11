@@ -1,5 +1,4 @@
 ﻿using PvPlantPlanner.Common.Config;
-using PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers;
 using PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator;
 
 namespace PvPlantPlanner.Tests.AnnualEnergyTransferSimulatorTests

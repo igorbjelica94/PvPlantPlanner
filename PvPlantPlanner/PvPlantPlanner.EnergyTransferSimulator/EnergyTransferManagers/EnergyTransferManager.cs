@@ -58,6 +58,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers
             CalculatedData.AnnualEnergyToGrid = 0;
             CalculatedData.AnnualEnergyFromBattery = 0;
             CalculatedData.AnnualFullPowerHours = 0;
+            CalculatedData.AnnualRejectedEnergy = 0;
             CalculatedData.BatteryStorage = null;
         }
 

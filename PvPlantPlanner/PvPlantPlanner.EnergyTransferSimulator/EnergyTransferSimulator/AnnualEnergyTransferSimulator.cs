@@ -1,6 +1,8 @@
-﻿using PvPlantPlanner.Common.Config;
+﻿using DocumentFormat.OpenXml.Presentation;
+using PvPlantPlanner.Common.Config;
 using PvPlantPlanner.Common.CoreTypes;
 using PvPlantPlanner.Common.DomainTypes;
+using PvPlantPlanner.Common.Enums;
 using PvPlantPlanner.EnergyModels.BatteryModules;
 using PvPlantPlanner.EnergyModels.BatteryStorages;
 using PvPlantPlanner.EnergyModels.DomainTypes;
@@ -28,7 +30,6 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
 
         private CalculationConfig Configuration => _configuration ?? throw new InvalidOperationException("Konfiguracija proracuna je prazna {{null}}.");
         private EnergyTransferManager EnergyTransferManager => _energyTransferManager ?? throw new InvalidOperationException("Menadzer za simulaciju transfera energije ne postoji {{nul}}.");
-
 
         public void ConfigureSimulator(CalculationConfig config)
         {
@@ -69,7 +70,7 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
             CreateSimulationVariants();
         }
 
-        public void StartSimulation()
+        public void StartSimulation(ExcelReportOption option = ExcelReportOption.Generate)
         {
             var savedFeedInPriorityPrices = EnergyTransferManager.FeedInPriorityPrice;
 
@@ -90,8 +91,11 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
                 _outputCalculationData.Add(EnergyTransferManager.CalculatedData.Clone());
             }
 
-            var excelReportGen = new ExcelReportGenerator(_inputCalculationData, _outputCalculationData, Configuration);
-            excelReportGen.GenerateReport();
+            if (option == ExcelReportOption.Generate)
+            {
+                var excelReportGen = new ExcelReportGenerator(_inputCalculationData, _outputCalculationData, Configuration);
+                excelReportGen.GenerateReport();
+            }
         }
 
         private HourlyValue<double> CreateSelfConsumptionEnergyParameter()
@@ -123,11 +127,12 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
             if (Configuration.BaseConfig.TradingCommission == null) throw new ArgumentNullException(nameof(_configuration.BaseConfig.TradingCommission), "Podatak o trgovackoj proviziji kada je elektrana na berzi ne postoji u konfiguraciji.");
 
             double effectivePriceFactor = 1 - (Configuration.BaseConfig.TradingCommission.Value / 100);
+            var recalculatedPrices = new double[Configuration.MarketPrice.Count];
             for (int i = 0; i < Configuration.MarketPrice.Count; i++)
             {
-                Configuration.MarketPrice[i] *= effectivePriceFactor;
+                recalculatedPrices[i] = Configuration.MarketPrice[i] * effectivePriceFactor;
             }
-            return Configuration.MarketPrice.ToArray();
+            return recalculatedPrices;
         }
 
         private HourlyValue<double> CalculateFixedHourlyFeedInEnergyPrice()
@@ -135,11 +140,12 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
             if (Configuration.BaseConfig.FixedPrice == null) throw new ArgumentNullException(nameof(_configuration.BaseConfig.NegativePrice), "Podatak o fiksnoj ceni elektricne energije ne postoji u konfiguraciji.");
             if (Configuration.BaseConfig.NegativePrice == null) throw new ArgumentNullException(nameof(_configuration.BaseConfig.NegativePrice), "Podatak o ceni elektricne energije pri negativnoj berzanskoj ceni ne postoji u konfiguraciji.");
 
+            var recalculatedPrices = new double[Configuration.MarketPrice.Count];
             for (int i = 0; i < Configuration.MarketPrice.Count; i++)
             {
-                Configuration.MarketPrice[i] = IsGreaterThanZero(Configuration.MarketPrice[i]) ? Configuration.BaseConfig.FixedPrice.Value : Configuration.BaseConfig.NegativePrice.Value;
+                recalculatedPrices[i] = IsGreaterThanZero(Configuration.MarketPrice[i]) ? Configuration.BaseConfig.FixedPrice.Value : Configuration.BaseConfig.NegativePrice.Value;
             }
-            return Configuration.MarketPrice.ToArray();
+            return recalculatedPrices;
         }
 
         private void CreateSimulationVariants()

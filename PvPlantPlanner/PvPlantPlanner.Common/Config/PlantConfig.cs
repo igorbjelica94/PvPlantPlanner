@@ -1,7 +1,4 @@
-﻿using PvPlantPlanner.Common.CoreTypes;
-using System.Collections.Generic;
-
-namespace PvPlantPlanner.Common.Config
+﻿namespace PvPlantPlanner.Common.Config
 {
     public class BaseConfig
     {
@@ -31,6 +28,7 @@ namespace PvPlantPlanner.Common.Config
         public List<double>? MinEnergySellingPrice { get; set; }
         public List<double>? MinBatteryEnergySellingPrice { get; set; }
     }
+
     public class ImportExportConfig
     {
         public BaseConfig BaseConfig { get; set; } = new();
