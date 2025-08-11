@@ -14,13 +14,29 @@ namespace PvPlantPlanner.UI.DatabaseRepo
         {
             try
             {
-                // Izračunaj putanju do foldera gde je .exe (bin/Debug ili bin/Release)
-                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+#if DEBUG
+        string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+        _dbPath = Path.Combine(baseDir, "Database", "equipment.db");
+#else
+                string appDataFolder = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "AL&SA PVB",
+                    "Database"
+                );
+                Directory.CreateDirectory(appDataFolder);
 
-                // Kreiraj punu putanju do equipment.db unutar Database foldera
-                _dbPath = Path.Combine(baseDir, "Database", "equipment.db");
+                _dbPath = Path.Combine(appDataFolder, "equipment.db");
 
-                // Otvori konekciju
+                string sourceDbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Database", "equipment.db");
+
+                if (!File.Exists(_dbPath))
+                {
+                    if (!File.Exists(sourceDbPath))
+                        throw new FileNotFoundException($"Izvorna baza nije pronađena: {sourceDbPath}");
+
+                    File.Copy(sourceDbPath, _dbPath);
+                }
+#endif
                 _connection = new SQLiteConnection($"Data Source={_dbPath};Version=3;");
                 _connection.Open();
 
@@ -34,6 +50,7 @@ namespace PvPlantPlanner.UI.DatabaseRepo
                     MessageBoxButton.OK,
                     MessageBoxImage.Error
                 );
+
             }
         }
 
