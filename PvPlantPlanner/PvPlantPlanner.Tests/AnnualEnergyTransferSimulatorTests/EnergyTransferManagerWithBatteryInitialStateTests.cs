@@ -6,9 +6,9 @@ using PvPlantPlanner.EnergyModels.PowerPlants;
 using PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers;
 using static PvPlantPlanner.Tests.Helpers.BatteryModuleHelper;
 
-namespace PvPlantPlanner.Tests.EnergyTransferManagerTests
+namespace PvPlantPlanner.Tests.AnnualEnergyTransferSimulatorTests
 {
-    public class StandardSolarPlantOneDaySampleTests
+    public class EnergyTransferManagerWithBatteryInitialStateTests
     {
         private double Tolerance { get; } = 0.0001;
 
@@ -133,72 +133,6 @@ namespace PvPlantPlanner.Tests.EnergyTransferManagerTests
             Assert.That(energyTransferManager.CalculatedData.AnnualEnergyFromBattery, Is.EqualTo(510.0).Within(Tolerance));
             Assert.That(energyTransferManager.CalculatedData.AnnualFullPowerHours, Is.EqualTo(8));
             Assert.That(energyTransferManager.CalculatedData.AnnualRejectedEnergy, Is.EqualTo(1510.0).Within(Tolerance));
-        }
-
-        [Test]
-        public void SellingAlways_DynamicHighProduction_WithoutStorage_DynamicMarketPriceWithNegative()
-        {
-            // Arrange
-            // Create Solar Plant
-            double[] hourlyEnergyProduction = new double[24] {
-                0.0, 0.0, 0.0, 0.0, 5.0, 40.0, 120.0, 220.0,
-                200.0, 480.0, 500.0, 500.0, 160.0, 500.0, 480.0, 150.0,
-                140.0, 190.0, 80.0, 20.0, 0.0, 0.0, 0.0, 0.0
-            };
-            var solarPowerPlant = new SolarPowerPlant(SolarInstaledPower, SolarInvestmentCost, hourlyEnergyProduction, SelfConsuptionEnergy);
-
-            // CreatePower Grid
-            var powerGrid = new PowerGrid(ApprovedFeedInPower, AllowedExportPower, HourlyFeedInEnrgyPriceWithNegative, ExportEnergyPrice);
-
-            var energyTransferManager = new EnergyTransferManager(solarPowerPlant, powerGrid, SellEnergyAlways, MinBatteryDischargePrice);
-
-            // Act
-            for (int hour = 0; hour < 24; hour++)
-            {
-                energyTransferManager.ExecuteEnergyTransferForHour(hour);
-            }
-
-            // Assert
-            Assert.That(energyTransferManager.CalculatedData.EnergySalesRevenue, Is.EqualTo(65.95).Within(Tolerance));
-            Assert.That(energyTransferManager.CalculatedData.EnergyPurchaseCost, Is.EqualTo(27.5).Within(Tolerance));
-            Assert.That(energyTransferManager.CalculatedData.AnnualEnergyFromGrid, Is.EqualTo(275.0).Within(Tolerance));
-            Assert.That(energyTransferManager.CalculatedData.AnnualEnergyToGrid, Is.EqualTo(1710.0).Within(Tolerance));
-            Assert.That(energyTransferManager.CalculatedData.AnnualEnergyFromBattery, Is.EqualTo(0.0).Within(Tolerance));
-            Assert.That(energyTransferManager.CalculatedData.AnnualFullPowerHours, Is.EqualTo(8));
-            Assert.That(energyTransferManager.CalculatedData.AnnualRejectedEnergy, Is.EqualTo(1630.0).Within(Tolerance));
-        }
-
-        [Test]
-        public void SellingWhenNoNegative_DynamicHighProduction_WithoutStorage_DynamicMarketPriceWithNegative()
-        {
-            // Arrange
-            // Create Solar Plant
-            double[] hourlyEnergyProduction = new double[24] {
-                0.0, 0.0, 0.0, 0.0, 5.0, 40.0, 120.0, 220.0,
-                200.0, 480.0, 500.0, 500.0, 160.0, 500.0, 480.0, 150.0,
-                140.0, 190.0, 80.0, 20.0, 0.0, 0.0, 0.0, 0.0
-            };
-            var solarPowerPlant = new SolarPowerPlant(SolarInstaledPower, SolarInvestmentCost, hourlyEnergyProduction, SelfConsuptionEnergy);
-
-            // CreatePower Grid
-            var powerGrid = new PowerGrid(ApprovedFeedInPower, AllowedExportPower, HourlyFeedInEnrgyPriceWithNegative, ExportEnergyPrice);
-
-            var energyTransferManager = new EnergyTransferManager(solarPowerPlant, powerGrid, SellWhenNoNegativePrice, MinBatteryDischargePrice);
-
-            // Act
-            for (int hour = 0; hour < 24; hour++)
-            {
-                energyTransferManager.ExecuteEnergyTransferForHour(hour);
-            }
-
-            // Assert
-            Assert.That(energyTransferManager.CalculatedData.EnergySalesRevenue, Is.EqualTo(70.45).Within(Tolerance));
-            Assert.That(energyTransferManager.CalculatedData.EnergyPurchaseCost, Is.EqualTo(27.5).Within(Tolerance));
-            Assert.That(energyTransferManager.CalculatedData.AnnualEnergyFromGrid, Is.EqualTo(275.0).Within(Tolerance));
-            Assert.That(energyTransferManager.CalculatedData.AnnualEnergyToGrid, Is.EqualTo(1410.0).Within(Tolerance));
-            Assert.That(energyTransferManager.CalculatedData.AnnualEnergyFromBattery, Is.EqualTo(0.0).Within(Tolerance));
-            Assert.That(energyTransferManager.CalculatedData.AnnualFullPowerHours, Is.EqualTo(8));
-            Assert.That(energyTransferManager.CalculatedData.AnnualRejectedEnergy, Is.EqualTo(1930.0).Within(Tolerance));
         }
     }
 }
