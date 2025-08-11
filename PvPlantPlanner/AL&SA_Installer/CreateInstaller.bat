@@ -42,8 +42,7 @@ set "PUBLISH_SINGLE_FILE=true"
 REM ===== 1. PUBLISH APLIKACIJE =====
 echo Pokrecem dotnet publish...
 dotnet publish "%APP_PROJECT_PATH%" -c %CONFIGURATION% -r %RUNTIME% --self-contained true ^
- /p:PublishSingleFile=%PUBLISH_SINGLE_FILE% /p:PublishTrimmed=%PUBLISH_TRIMMED% ^
- -o "%PUBLISH_DIR%"
+ /p:PublishSingleFile=%PUBLISH_SINGLE_FILE% -o "%PUBLISH_DIR%"
 if errorlevel 1 (
     echo ERROR: dotnet publish nije uspio.
     exit /b 1

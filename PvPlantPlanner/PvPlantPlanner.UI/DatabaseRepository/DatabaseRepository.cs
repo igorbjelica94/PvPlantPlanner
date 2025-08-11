@@ -1,6 +1,7 @@
 ﻿using PvPlantPlanner.UI.Models;
 using System.Data.SQLite;
 using System.IO;
+using System.Windows;
 
 namespace PvPlantPlanner.UI.DatabaseRepo
 {
@@ -11,17 +12,29 @@ namespace PvPlantPlanner.UI.DatabaseRepo
 
         public DatabaseRepository()
         {
-            // Izračunaj putanju do foldera gde je .exe (bin/Debug ili bin/Release)
-            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            try
+            {
+                // Izračunaj putanju do foldera gde je .exe (bin/Debug ili bin/Release)
+                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
 
-            // Kreiraj punu putanju do equipment.db unutar Database foldera
-            _dbPath = Path.Combine(baseDir, "Database", "equipment.db");
+                // Kreiraj punu putanju do equipment.db unutar Database foldera
+                _dbPath = Path.Combine(baseDir, "Database", "equipment.db");
 
-            // Otvori konekciju
-            _connection = new SQLiteConnection($"Data Source={_dbPath};Version=3;");
-            _connection.Open();
+                // Otvori konekciju
+                _connection = new SQLiteConnection($"Data Source={_dbPath};Version=3;");
+                _connection.Open();
 
-            InitializeDatabase();
+                InitializeDatabase();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Greška pri inicijalizaciji baze:\n{ex.Message}",
+                    "Database Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+            }
         }
 
         private void InitializeDatabase()

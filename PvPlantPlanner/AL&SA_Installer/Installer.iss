@@ -12,7 +12,6 @@ SetupIconFile=..\PvPlantPlanner.UI\Logo\green-energy.ico
 UninstallDisplayName=AL&SA PVB
 
 [Files]
-Source: "..\bin\Release\net8.0\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion comparetimestamp createallsubdirs
 Source: "..\bin\Release\net8.0-windows\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion comparetimestamp createallsubdirs
 
 [Icons]

@@ -39,4 +39,10 @@
     </Resource>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Database\equipment.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
