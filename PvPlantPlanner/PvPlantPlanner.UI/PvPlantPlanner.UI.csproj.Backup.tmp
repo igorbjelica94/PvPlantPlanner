@@ -8,17 +8,14 @@
     <UseWPF>true</UseWPF>
 	<OutputPath>..\bin\$(Configuration)\</OutputPath>
 	<AssemblyName>AL&amp;SA PVB</AssemblyName>
-    <ApplicationIcon>Logo\green-energy.ico</ApplicationIcon>
-
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <SelfContained>true</SelfContained>
-    <PublishSingleFile>true</PublishSingleFile>
-    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Logo\green-energy.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Logo\green-energy.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,13 +27,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PvPlantPlanner.Common\PvPlantPlanner.Common.csproj" />
-    <ProjectReference Include="..\PvPlantPlanner.EnergyTransferSimulator\PvPlantPlanner.EnergyTransferSimulator.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Logo\green-energy.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Database\equipment.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
