@@ -81,25 +81,28 @@ namespace PvPlantPlanner.UI
                         DateTime startTime = DateTime.MinValue;
                         bool isFirst = true;
 
-                        using (var workbook = new XLWorkbook(filePath))
+                        using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         {
-                            var worksheet = workbook.Worksheet(1);
-                            if (worksheet == null)
-                                throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
-                            var rows = worksheet.RangeUsed().RowsUsed();
-
-                            foreach (var row in rows.Skip(1))
+                            using (var workbook = new XLWorkbook(stream))
                             {
-                                var timestamp = row.Cell(1).GetDateTime();
-                                var value = row.Cell(2).GetDouble();
+                                var worksheet = workbook.Worksheet(1);
+                                if (worksheet == null)
+                                    throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
+                                var rows = worksheet.RangeUsed().RowsUsed();
 
-                                if (isFirst)
+                                foreach (var row in rows.Skip(1))
                                 {
-                                    startTime = timestamp;
-                                    isFirst = false;
-                                }
+                                    var timestamp = row.Cell(1).GetDateTime();
+                                    var value = row.Cell(2).GetDouble();
 
-                                data.Add(value);
+                                    if (isFirst)
+                                    {
+                                        startTime = timestamp;
+                                        isFirst = false;
+                                    }
+
+                                    data.Add(value);
+                                }
                             }
                         }
 
@@ -148,25 +151,28 @@ namespace PvPlantPlanner.UI
                         var data = new List<double>();
                         bool isFirst = true;
 
-                        using (var workbook = new XLWorkbook(filePath))
+                        using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         {
-                            var worksheet = workbook.Worksheet(1);
-                            if (worksheet == null)
-                                throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
-                            var rows = worksheet.RangeUsed().RowsUsed();
-
-                            foreach (var row in rows.Skip(1))
+                            using (var workbook = new XLWorkbook(stream))
                             {
-                                var timestamp = row.Cell(1).GetDateTime();
-                                var value = row.Cell(2).GetDouble();
+                                var worksheet = workbook.Worksheet(1);
+                                if (worksheet == null)
+                                    throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
+                                var rows = worksheet.RangeUsed().RowsUsed();
 
-                                if (isFirst)
+                                foreach (var row in rows.Skip(1))
                                 {
-                                    startTimeMarketPriceData = timestamp;
-                                    isFirst = false;
-                                }
+                                    var timestamp = row.Cell(1).GetDateTime();
+                                    var value = row.Cell(2).GetDouble();
 
-                                data.Add(value);
+                                    if (isFirst)
+                                    {
+                                        startTimeMarketPriceData = timestamp;
+                                        isFirst = false;
+                                    }
+
+                                    data.Add(value);
+                                }
                             }
                         }
 
@@ -217,26 +223,29 @@ namespace PvPlantPlanner.UI
                         var data = new List<double>();
                         DateTime startTime = DateTime.MinValue;
 
-                        using (var workbook = new ClosedXML.Excel.XLWorkbook(filePath))
+                        using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         {
-                            var worksheet = workbook.Worksheet(1);
-                            if (worksheet == null)
-                                throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
-                            var rows = worksheet.RangeUsed().RowsUsed();
-                            bool isFirst = true;
-
-                            foreach (var row in rows.Skip(1))
+                            using (var workbook = new ClosedXML.Excel.XLWorkbook(stream))
                             {
-                                var timestamp = row.Cell(1).GetDateTime();
-                                var value = row.Cell(2).GetDouble();
+                                var worksheet = workbook.Worksheet(1);
+                                if (worksheet == null)
+                                    throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
+                                var rows = worksheet.RangeUsed().RowsUsed();
+                                bool isFirst = true;
 
-                                if (isFirst)
+                                foreach (var row in rows.Skip(1))
                                 {
-                                    startTime = timestamp;
-                                    isFirst = false;
-                                }
+                                    var timestamp = row.Cell(1).GetDateTime();
+                                    var value = row.Cell(2).GetDouble();
 
-                                data.Add(value);
+                                    if (isFirst)
+                                    {
+                                        startTime = timestamp;
+                                        isFirst = false;
+                                    }
+
+                                    data.Add(value);
+                                }
                             }
                         }
 
@@ -475,22 +484,25 @@ namespace PvPlantPlanner.UI
                         minEnergySellingPrices = new List<double>();
                         minBatteryEnergySellingPrices = new List<double>();
 
-                        using (var workbook = new XLWorkbook(filePath))
+                        using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         {
-                            var worksheet = workbook.Worksheet(1);
-                            if (worksheet == null)
-                                throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
-                            var rows = worksheet.RangeUsed().RowsUsed().Skip(1);
-
-                            foreach (var row in rows)
+                            using (var workbook = new XLWorkbook(stream))
                             {
-                                var priceCell = row.Cell(2); // kolona B
-                                var volumeCell = row.Cell(3); // kolona C
+                                var worksheet = workbook.Worksheet(1);
+                                if (worksheet == null)
+                                    throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
+                                var rows = worksheet.RangeUsed().RowsUsed().Skip(1);
 
-                                if (priceCell.TryGetValue(out double price) && volumeCell.TryGetValue(out double volume))
+                                foreach (var row in rows)
                                 {
-                                    minEnergySellingPrices.Add(price);
-                                    minBatteryEnergySellingPrices.Add(volume);
+                                    var priceCell = row.Cell(2); // kolona B
+                                    var volumeCell = row.Cell(3); // kolona C
+
+                                    if (priceCell.TryGetValue(out double price) && volumeCell.TryGetValue(out double volume))
+                                    {
+                                        minEnergySellingPrices.Add(price);
+                                        minBatteryEnergySellingPrices.Add(volume);
+                                    }
                                 }
                             }
                         }
@@ -748,24 +760,27 @@ namespace PvPlantPlanner.UI
                 DateTime startTime = DateTime.MinValue;
                 bool isFirst = true;
 
-                using (var workbook = new XLWorkbook(filePath))
+                using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    var worksheet = workbook.Worksheet(1);
-                    if (worksheet == null)
-                        throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
-                    var rows = worksheet.RangeUsed().RowsUsed();
-
-                    foreach (var row in rows.Skip(1))
+                    using (var workbook = new XLWorkbook(stream))
                     {
-                        var timestamp = row.Cell(1).GetDateTime();
-                        var value = row.Cell(2).GetDouble();
+                        var worksheet = workbook.Worksheet(1);
+                        if (worksheet == null)
+                            throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
+                        var rows = worksheet.RangeUsed().RowsUsed();
 
-                        if (isFirst)
+                        foreach (var row in rows.Skip(1))
                         {
-                            startTimeSelfConsumptionData = timestamp;
-                            isFirst = false;
+                            var timestamp = row.Cell(1).GetDateTime();
+                            var value = row.Cell(2).GetDouble();
+
+                            if (isFirst)
+                            {
+                                startTimeSelfConsumptionData = timestamp;
+                                isFirst = false;
+                            }
+                            data.Add(value);
                         }
-                        data.Add(value);
                     }
                 }
                 selfConsumptionData = data;
@@ -786,24 +801,27 @@ namespace PvPlantPlanner.UI
                 DateTime startTime = DateTime.MinValue;
                 bool isFirst = true;
 
-                using (var workbook = new XLWorkbook(filePath))
+                using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    var worksheet = workbook.Worksheet(1);
-                    if (worksheet == null)
-                        throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
-                    var rows = worksheet.RangeUsed().RowsUsed();
-
-                    foreach (var row in rows.Skip(1))
+                    using (var workbook = new XLWorkbook(stream))
                     {
-                        var timestamp = row.Cell(1).GetDateTime();
-                        var value = row.Cell(2).GetDouble();
+                        var worksheet = workbook.Worksheet(1);
+                        if (worksheet == null)
+                            throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
+                        var rows = worksheet.RangeUsed().RowsUsed();
 
-                        if (isFirst)
+                        foreach (var row in rows.Skip(1))
                         {
-                            startTimeMarketPriceData = timestamp;
-                            isFirst = false;
+                            var timestamp = row.Cell(1).GetDateTime();
+                            var value = row.Cell(2).GetDouble();
+
+                            if (isFirst)
+                            {
+                                startTimeMarketPriceData = timestamp;
+                                isFirst = false;
+                            }
+                            data.Add(value);
                         }
-                        data.Add(value);
                     }
                 }
                 marketPriceData = data;
@@ -824,24 +842,27 @@ namespace PvPlantPlanner.UI
                 DateTime startTime = DateTime.MinValue;
                 bool isFirst = true;
 
-                using (var workbook = new XLWorkbook(filePath))
+                using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    var worksheet = workbook.Worksheet(1);
-                    if (worksheet == null)
-                        throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
-                    var rows = worksheet.RangeUsed().RowsUsed();
-
-                    foreach (var row in rows.Skip(1))
+                    using (var workbook = new XLWorkbook(stream))
                     {
-                        var timestamp = row.Cell(1).GetDateTime();
-                        var value = row.Cell(2).GetDouble();
+                        var worksheet = workbook.Worksheet(1);
+                        if (worksheet == null)
+                            throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
+                        var rows = worksheet.RangeUsed().RowsUsed();
 
-                        if (isFirst)
+                        foreach (var row in rows.Skip(1))
                         {
-                            startTimeGenData = timestamp;
-                            isFirst = false;
+                            var timestamp = row.Cell(1).GetDateTime();
+                            var value = row.Cell(2).GetDouble();
+
+                            if (isFirst)
+                            {
+                                startTimeGenData = timestamp;
+                                isFirst = false;
+                            }
+                            data.Add(value);
                         }
-                        data.Add(value);
                     }
                 }
                 generationData = data;
@@ -860,23 +881,26 @@ namespace PvPlantPlanner.UI
                 var energyPrices = new List<double>();
                 var batteryPrices = new List<double>();
 
-                using (var workbook = new XLWorkbook(filePath))
+                using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    var worksheet = workbook.Worksheet(1);
-                    if (worksheet == null)
-                        throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
-                    var rows = worksheet.RangeUsed().RowsUsed().Skip(1); // preskoči zaglavlje
-
-                    foreach (var row in rows)
+                    using (var workbook = new XLWorkbook(stream))
                     {
-                        var energyCell = row.Cell(2);  // Kolona B
-                        var batteryCell = row.Cell(3); // Kolona C
+                        var worksheet = workbook.Worksheet(1);
+                        if (worksheet == null)
+                            throw new ArgumentNullException("worksheet", "Excel fajl ne sadrži prvi sheet.");
+                        var rows = worksheet.RangeUsed().RowsUsed().Skip(1); // preskoči zaglavlje
 
-                        if (energyCell.TryGetValue(out double energyPrice) &&
-                            batteryCell.TryGetValue(out double batteryPrice))
+                        foreach (var row in rows)
                         {
-                            energyPrices.Add(energyPrice);
-                            batteryPrices.Add(batteryPrice);
+                            var energyCell = row.Cell(2);  // Kolona B
+                            var batteryCell = row.Cell(3); // Kolona C
+
+                            if (energyCell.TryGetValue(out double energyPrice) &&
+                                batteryCell.TryGetValue(out double batteryPrice))
+                            {
+                                energyPrices.Add(energyPrice);
+                                batteryPrices.Add(batteryPrice);
+                            }
                         }
                     }
                 }
