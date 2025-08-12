@@ -161,8 +161,8 @@ namespace PvPlantPlanner.Tools.ReportGenerator
                 WriteCell(ws, currentRow, 1, $"PVB {currentVariant}");
                 WriteCell(ws, currentRow, 2, _configuration.BaseConfig.InstalledPower);
                 WriteCell(ws, currentRow, 3, _configuration.BaseConfig.ConstructionPrice);
-                WriteCell(ws, currentRow, 4, _inputs[index].RatedStoragePower);
-                WriteCell(ws, currentRow, 5, _inputs[index].RatedStorageCapacity);
+                WriteCell(ws, currentRow, 4, (_inputs[index].RatedStoragePower)/1000);
+                WriteCell(ws, currentRow, 5, (_inputs[index].RatedStorageCapacity)/1000);
 
                 // Batteries
                 //var groupedBatteryTypes = _inputs[index].SelectedBatteryModuls.GroupBy(b => b.No);
@@ -248,9 +248,13 @@ namespace PvPlantPlanner.Tools.ReportGenerator
             switch (value)
             {
                 case double d:
+                    if (d == double.PositiveInfinity) d = double.MaxValue;
+                    if (d == double.NegativeInfinity) d = double.MinValue;
                     cell.Value = Math.Round(d, 2);
                     break;
                 case float f:
+                    if (f == float.PositiveInfinity) f = float.MaxValue;
+                    if (f == float.NegativeInfinity) f = float.MinValue;
                     cell.Value = Math.Round(f, 2);
                     break;
                 case decimal m:

@@ -1,15 +1,9 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using PvPlantPlanner.Common.Config;
+﻿using PvPlantPlanner.Common.Config;
 using PvPlantPlanner.Common.CoreTypes;
 using PvPlantPlanner.Common.Enums;
-using PvPlantPlanner.EnergyModels.BatteryModules;
-using PvPlantPlanner.EnergyModels.BatteryStorages;
-using PvPlantPlanner.EnergyModels.PowerGrids;
-using PvPlantPlanner.EnergyModels.PowerPlants;
-using PvPlantPlanner.EnergyTransferSimulator.EnergyTransferManagers;
 using PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator;
-using static PvPlantPlanner.Tests.Helpers.CalculationConfigHelper;
 using static PvPlantPlanner.Common.Consts.TimeConstants;
+using static PvPlantPlanner.Tests.Helpers.CalculationConfigHelper;
 
 namespace PvPlantPlanner.Tests.AnnualEnergyTransferSimulatorTests
 {
@@ -45,7 +39,7 @@ namespace PvPlantPlanner.Tests.AnnualEnergyTransferSimulatorTests
         private HourlyValue<double> SelfConsuptionEnergy { get; } = 30; // kWh
         private List<double> SmallEnergyProduction { get; } = Enumerable.Range(0, 8760)  // kWh
                     .Select(i => i >= 24 && i < 48
-                        ? new double[] { 
+                        ? new double[] {
                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 10.0,
                             50.0, 60.0, 70.0, 100.0, 70.0, 70.0, 50.0, 50.0,
                             20.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }[i - 24]
@@ -88,7 +82,7 @@ namespace PvPlantPlanner.Tests.AnnualEnergyTransferSimulatorTests
                             0.08, 0.11, 0.14, 0.15, 0.17, 0.16, 0.15, 0.13}[i - 24]
                         : RandomGen.NextDouble())
                     .ToList();
-        private List<double> HourlyFeedInEnrgyPriceWithNegative { get;  } = Enumerable.Range(0, 8760) // EUR/kWh
+        private List<double> HourlyFeedInEnrgyPriceWithNegative { get; } = Enumerable.Range(0, 8760) // EUR/kWh
                     .Select(i => i >= 24 && i < 49
                         ? new double[] {
                             0.12, 0.10, 0.10, 0.11, 0.10, 0.10, 0.045, 0.08,
@@ -99,16 +93,37 @@ namespace PvPlantPlanner.Tests.AnnualEnergyTransferSimulatorTests
                     .ToList();
 
         // Battery Storage Parameters
-        private BatteryDto BatteryModulP50C100 { get; } = new BatteryDto{ 
-            No = 1, Power = 50.0, Capacity = 100.0, Price = 40000, Cycles = 6000 };
+        private BatteryDto BatteryModulP50C100 { get; } = new BatteryDto
+        {
+            No = 1,
+            Power = 50.0,
+            Capacity = 100.0,
+            Price = 40000,
+            Cycles = 6000
+        };
 
         // Transformer Parameters
-        private static TransformerDto Transformer10kVA { get; } = new TransformerDto{ 
-            No = 1, PowerKVA = 10, PowerFactor = 0.9, Price = 800};
-        private static TransformerDto Transformer15kVA { get; } = new TransformerDto{ 
-            No = 2, PowerKVA = 15, PowerFactor = 0.9, Price = 1500};
-        private static TransformerDto Transformer50kVA { get; } = new TransformerDto{ 
-            No = 3, PowerKVA = 50, PowerFactor = 0.9, Price = 3000};
+        private static TransformerDto Transformer10kVA { get; } = new TransformerDto
+        {
+            No = 1,
+            PowerKVA = 10,
+            PowerFactor = 0.9,
+            Price = 800
+        };
+        private static TransformerDto Transformer15kVA { get; } = new TransformerDto
+        {
+            No = 2,
+            PowerKVA = 15,
+            PowerFactor = 0.9,
+            Price = 1500
+        };
+        private static TransformerDto Transformer50kVA { get; } = new TransformerDto
+        {
+            No = 3,
+            PowerKVA = 50,
+            PowerFactor = 0.9,
+            Price = 3000
+        };
 
         // Calculation Parameters
         private List<double> FeedInPriorityPrice { get; } = Enumerable.Repeat(0.05, NumberOfMonth).ToList(); // EUR/kWh
@@ -360,6 +375,64 @@ namespace PvPlantPlanner.Tests.AnnualEnergyTransferSimulatorTests
                 Assert.That(Simulator.OutputCalculationData[1].AnnualEnergyFromBattery, Is.EqualTo(0.0).Within(Tolerance));
                 Assert.That(Simulator.OutputCalculationData[1].AnnualFullPowerHours, Is.EqualTo(8));
                 Assert.That(Simulator.OutputCalculationData[1].AnnualRejectedEnergy, Is.EqualTo(1930.0).Within(Tolerance));
+            });
+        }
+
+        [Test]
+        public void TwoConsecutiveCalculations_WithDifferentConfigurations()
+        {
+            // 1) StandardProduction_TwoSmallModuleStorage_StaticMarketPrice
+            // Arrange
+            CalculationConfig config = DeepCopyCalculationConfig(DefaultConfiguration);
+            config.BaseConfig.SelfConsumptionFactor = SelfConsuptionFactor;
+            config.BaseConfig.FixedPrice = FeedInEnrgyPrice;
+            config.BaseConfig.NegativePrice = FeedInEnrgyPrice;
+            config.BaseConfig.MaxBatteryPower = 100;
+            config.BaseConfig.SelectedBatteries.Add(BatteryModulP50C100);
+            config.GenerationData = StandardEnergyProduction;
+            config.MarketPrice = HourlyFeedInEnrgyPrice;
+
+            // Act
+            Simulator.ConfigureSimulator(config);
+            Simulator.StartSimulation(ExcelReportOption.DoNotGenerate);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(Simulator.OutputCalculationData[4].EnergySalesRevenue, Is.EqualTo(146.0).Within(Tolerance));
+                Assert.That(Simulator.OutputCalculationData[4].EnergyPurchaseCost, Is.EqualTo(33.5).Within(Tolerance));
+                Assert.That(Simulator.OutputCalculationData[4].AnnualEnergyFromGrid, Is.EqualTo(335.0).Within(Tolerance));
+                Assert.That(Simulator.OutputCalculationData[4].AnnualEnergyToGrid, Is.EqualTo(1460.0).Within(Tolerance));
+                Assert.That(Simulator.OutputCalculationData[4].AnnualEnergyFromBattery, Is.EqualTo(200.0).Within(Tolerance));
+                Assert.That(Simulator.OutputCalculationData[4].AnnualFullPowerHours, Is.EqualTo(6));
+                Assert.That(Simulator.OutputCalculationData[4].AnnualRejectedEnergy, Is.EqualTo(100.0).Within(Tolerance));
+            });
+
+            // 2) DynamicHighProduction_FiveSmallModuleStorage_DynamicMarketPriceWithNegative
+            // Arrange
+            config.BaseConfig.FixedPrice = null;
+            config.BaseConfig.NegativePrice = null;
+            config.BaseConfig.MaxBatteryPower = 250;
+            config.GenerationData = DynamicHighEnergyProduction;
+            config.MarketPrice = HourlyFeedInEnrgyPriceWithNegative;
+            config.BaseConfig.TradingCommission = 0;
+            config.MinEnergySellingPrice = FeedInPriorityPrice;
+            config.MinBatteryEnergySellingPrice = MinBatteryDischargePrice;
+
+            // Act
+            Simulator.ConfigureSimulator(config);
+            Simulator.StartSimulation(ExcelReportOption.DoNotGenerate);
+
+            Assert.Multiple(() =>
+            {
+                // Assert
+                Assert.That(Simulator.OutputCalculationData[7].EnergySalesRevenue, Is.EqualTo(133.9).Within(Tolerance));
+                Assert.That(Simulator.OutputCalculationData[7].EnergyPurchaseCost, Is.EqualTo(23.5).Within(Tolerance));
+                Assert.That(Simulator.OutputCalculationData[7].AnnualEnergyFromGrid, Is.EqualTo(235.0).Within(Tolerance));
+                Assert.That(Simulator.OutputCalculationData[7].AnnualEnergyToGrid, Is.EqualTo(1790.0).Within(Tolerance));
+                Assert.That(Simulator.OutputCalculationData[7].AnnualEnergyFromBattery, Is.EqualTo(470.0).Within(Tolerance));
+                Assert.That(Simulator.OutputCalculationData[7].AnnualFullPowerHours, Is.EqualTo(8));
+                Assert.That(Simulator.OutputCalculationData[7].AnnualRejectedEnergy, Is.EqualTo(1510.0).Within(Tolerance));
             });
         }
     }

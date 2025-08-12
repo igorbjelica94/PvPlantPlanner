@@ -37,6 +37,8 @@ namespace PvPlantPlanner.EnergyTransferSimulator.EnergyTransferSimulator
                 throw new ArgumentNullException(nameof(config), "Primljena konfiguracija za proracun je prazna {{null}}.");
 
             _configuration = config;
+            _inputCalculationData.Clear();
+            _outputCalculationData.Clear();
 
             var solarPlant = new SolarPowerPlant(
                 installedPower: _configuration.BaseConfig.InstalledPower,

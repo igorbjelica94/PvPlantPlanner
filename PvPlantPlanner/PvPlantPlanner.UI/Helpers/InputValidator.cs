@@ -29,9 +29,9 @@
             if (window.SelfConsumptionFactorRadioButton.IsChecked == true)
             {
                 if (string.IsNullOrWhiteSpace(window.SelfConsumptionFactorTextBox.Text))
-                    errors.Add("Polje 'Faktor sopstvene potrošnje' nije popunjeno.");
-                else if (!double.TryParse(window.SelfConsumptionFactorTextBox.Text, out double factor) || factor <= 0 || factor > 1)
-                    errors.Add("Faktor sopstvene potrošnje mora biti broj između 0 i 1.");
+                    errors.Add("Polje 'Faktor jednovremenosti sopstvene potrošnje' nije popunjeno.");
+                else if (!double.TryParse(window.SelfConsumptionFactorTextBox.Text, out double factor) || factor < 0 || factor > 1)
+                    errors.Add("Faktor jednovremenosti sopstvene potrošnje mora biti broj između 0 i 1.");
             }
             else if (window.SelfConsumptionFactorRadioButton.IsChecked != true)
             {

@@ -14,7 +14,7 @@ namespace PvPlantPlanner.Common.Results
         public DischargeResult(bool isSuccessful, double dischargedEnergy)
         {
             if (double.IsNaN(dischargedEnergy) || double.IsInfinity(dischargedEnergy) || dischargedEnergy < 0)
-                throw new ArgumentOutOfRangeException(nameof(dischargedEnergy), "Discharged energy must be a non-negative, finite number.");
+                throw new ArgumentOutOfRangeException(nameof(dischargedEnergy), "Energija kojom se baterija ispraznila mora biti nenegativan, konačan broj.");
 
             IsSuccessful = isSuccessful;
             DischargedEnergy = dischargedEnergy;

@@ -11,7 +11,7 @@ namespace PvPlantPlanner.Common.CoreTypes
         public HourlyValue(T value)
         {
             if (value == null)
-                throw new ArgumentNullException(nameof(value), "Single value in HourlyValue cannot be null.");
+                throw new ArgumentNullException(nameof(value), "HourlyValue se ne moze inicijalizovati praznom {{null}} vrednoscu.");
 
             SingleValue = value;
             IsSingle = true;
@@ -20,7 +20,7 @@ namespace PvPlantPlanner.Common.CoreTypes
         public HourlyValue(T[] values)
         {
             if (values == null || values.Length == 0)
-                throw new ArgumentException("Hourly values in HourlyValue cannot be null or empty.", nameof(values));
+                throw new ArgumentException("HourlyValue se ne moze inicijalizovati praznim nizom.", nameof(values));
 
             HourlyValues = values.ToArray(); // Ensuring the array is copied to prevent external modifications.
             IsSingle = false;
@@ -29,17 +29,17 @@ namespace PvPlantPlanner.Common.CoreTypes
         public T GetValueAtHour(int hour)
         {
             if (hour < 0)
-                throw new ArgumentOutOfRangeException(nameof(hour), "Hour value must be non-negative.");
+                throw new ArgumentOutOfRangeException(nameof(hour), "Vrednost za sat mora biti nenegativan broj.");
 
             if (IsSingle)
             {
                 if (SingleValue == null)
-                    throw new InvalidOperationException("Single value is not initialized.");
+                    throw new InvalidOperationException("Jedinstvena vrednost nije inicijalizovana u HourlyValue strukturi..");
                 return SingleValue;
             }
 
             if (HourlyValues == null || hour >= HourlyValues.Length)
-                throw new ArgumentOutOfRangeException(nameof(hour), $"Hour ({hour}) exceeds the length of hourly values.");
+                throw new ArgumentOutOfRangeException(nameof(hour), $"Sat [{hour}] prevazilazi duzinu satnih vrednosti.");
 
             return HourlyValues[hour];
         }

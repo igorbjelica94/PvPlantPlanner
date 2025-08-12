@@ -14,7 +14,7 @@ namespace PvPlantPlanner.Common.Results
         public ChargeResult(bool isSuccessful, double chargedEnergy)
         {
             if (double.IsNaN(chargedEnergy) || double.IsInfinity(chargedEnergy) || chargedEnergy < 0)
-                throw new ArgumentOutOfRangeException(nameof(chargedEnergy), "Charged energy must be a non-negative finite number.");
+                throw new ArgumentOutOfRangeException(nameof(chargedEnergy), "Energija kojom se baterija napunila mora biti nenegativan, konačan broj.");
 
             IsSuccessful = isSuccessful;
             ChargedEnergy = chargedEnergy;
