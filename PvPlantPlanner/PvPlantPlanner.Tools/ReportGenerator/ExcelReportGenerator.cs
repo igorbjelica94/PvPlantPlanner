@@ -247,14 +247,22 @@ namespace PvPlantPlanner.Tools.ReportGenerator
 
             switch (value)
             {
+                case double d when double.IsPositiveInfinity(d):
+                    cell.Value = "∞";
+                    break;
+                case double d when double.IsNegativeInfinity(d):
+                    cell.Value = "-∞";
+                    break;
                 case double d:
-                    if (d == double.PositiveInfinity) d = double.MaxValue;
-                    if (d == double.NegativeInfinity) d = double.MinValue;
                     cell.Value = Math.Round(d, 2);
                     break;
+                case float f when float.IsPositiveInfinity(f):
+                    cell.Value = "∞";
+                    break;
+                case float f when float.IsNegativeInfinity(f):
+                    cell.Value = "-∞";
+                    break;
                 case float f:
-                    if (f == float.PositiveInfinity) f = float.MaxValue;
-                    if (f == float.NegativeInfinity) f = float.MinValue;
                     cell.Value = Math.Round(f, 2);
                     break;
                 case decimal m:
