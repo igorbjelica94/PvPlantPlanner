@@ -215,7 +215,7 @@ namespace PvPlantPlanner.Tools.ReportGenerator
                 WriteCell(ws, currentRow, 21, output.AnnualEnergyFromBattery);
                 WriteCell(ws, currentRow, 22, output.AnnualFullPowerHours);
                 WriteCell(ws, currentRow, 25, output.AnnualRejectedEnergy);
-                var capex = _configuration.BaseConfig.InstalledPower * _configuration.BaseConfig.ConstructionPrice;
+                var capex = _configuration.BaseConfig.InstalledPower * _configuration.BaseConfig.ConstructionPrice + totalBatAndTraPrice;
                 WriteCell(ws, currentRow, 26, capex);
                 var roiAnnual = capex / annualIncome;
                 WriteCell(ws, currentRow, 27, roiAnnual);

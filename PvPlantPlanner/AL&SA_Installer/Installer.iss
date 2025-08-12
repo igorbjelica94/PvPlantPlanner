@@ -17,4 +17,29 @@ Source: "..\PvPlantPlanner.UI\Logo\green-energy.ico"; DestDir: "{app}"; Flags: i
 
 [Icons]
 Name: "{group}\Uninstall AL&SA PVB"; Filename: "{uninstallexe}"
-Name: "{userdesktop}\AL&SA PVB"; Filename: "{app}\AL&&SA PVB.exe"; IconFilename: "{app}\green-energy.ico"; WorkingDir: "{app}"
+
+[Code]
+procedure CreateDesktopShortcut();
+var
+  LinkPath, TargetPath: string;
+  WshShell, Shortcut: Variant;
+begin
+  LinkPath := ExpandConstant('{userdesktop}\AL&SA PVB.lnk');
+  TargetPath := ExpandConstant('{app}\win-x64\AL&SA PVB.exe');
+
+  if FileExists(TargetPath) then
+  begin
+    WshShell := CreateOleObject('WScript.Shell');
+    Shortcut := WshShell.CreateShortcut(LinkPath);
+    Shortcut.TargetPath := TargetPath;
+    Shortcut.WorkingDirectory := ExpandConstant('{app}');
+    Shortcut.IconLocation := TargetPath + ',0';
+    Shortcut.Save;
+  end;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if CurStep = ssPostInstall then
+    CreateDesktopShortcut();
+end;
