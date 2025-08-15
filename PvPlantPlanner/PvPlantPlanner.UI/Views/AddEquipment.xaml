@@ -45,7 +45,7 @@
                     </Grid.RowDefinitions>
 
                     <DataGrid x:Name="BatteryDataGrid" Grid.Row="0" AutoGenerateColumns="False" HeadersVisibility="Column" RowHeaderWidth="0"
-                              CanUserAddRows="False" Margin="5">
+                              CanUserAddRows="True" Margin="5">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="DataGridColumnHeader">
                                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -142,7 +142,7 @@
                     </Grid.RowDefinitions>
 
                     <DataGrid x:Name="TransformerDataGrid" Grid.Row="0" AutoGenerateColumns="False" HeadersVisibility="Column" RowHeaderWidth="0" 
-                              CanUserAddRows="False" Margin="5">
+                              CanUserAddRows="True" Margin="5">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="DataGridColumnHeader">
                                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
