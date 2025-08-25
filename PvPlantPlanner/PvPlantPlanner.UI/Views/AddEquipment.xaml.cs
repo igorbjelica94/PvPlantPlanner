@@ -58,6 +58,12 @@ namespace PvPlantPlanner.UI
 
             BatteryDataGrid.PreviewKeyDown += DataGrid_PreviewKeyDown;
             TransformerDataGrid.PreviewKeyDown += DataGrid_PreviewKeyDown;
+
+            BatteryDataGrid.CellEditEnding += BatteryDataGrid_CellEditEnding;
+            TransformerDataGrid.CellEditEnding += TransformerDataGrid_CellEditEnding;
+
+            BatteryDataGrid.BeginningEdit += BatteryDataGrid_BeginningEdit;
+            TransformerDataGrid.BeginningEdit += TransformerDataGrid_BeginningEdit;
         }
 
         private void DataGrid_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -75,6 +81,22 @@ namespace PvPlantPlanner.UI
             }
         }
 
+        private void BatteryDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.Row.Item is BatteryDisplay battery)
+            {
+                battery.IsEdited = true;
+            }
+        }
+
+        private void TransformerDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.Row.Item is TransformerDisplay transformer)
+            {
+                transformer.IsEdited = true;
+            }
+        }
+
 
         private void SaveChanges(DataGrid grid)
         {
@@ -83,7 +105,9 @@ namespace PvPlantPlanner.UI
             {
                 if (grid == BatteryDataGrid && BatteryDataGrid.SelectedItem is BatteryDisplay battery)
                     SaveBattery(battery);
+
                 else if (grid == TransformerDataGrid && TransformerDataGrid.SelectedItem is TransformerDisplay transformer)
+
                     SaveTransformer(transformer);
             }
             finally
@@ -94,6 +118,8 @@ namespace PvPlantPlanner.UI
 
         private void SaveBattery(BatteryDisplay battery)
         {
+            battery.IsEdited = false;
+
             if (battery.Power <= 0 || battery.Capacity <= 0 || battery.Price <= 0 || battery.Cycles <= 0)
             {
                 MessageBox.Show("Unesite validne vrednosti za sva polja (veće od 0)");
@@ -109,14 +135,21 @@ namespace PvPlantPlanner.UI
                 Cycles = battery.Cycles
             };
 
-            if (battery.Id == 0)
+            try
             {
-                var newId = _repository.AddBattery(batteryModel);
-                battery.Id = newId;
+                if (battery.Id == 0)
+                {
+                    var newId = _repository.AddBattery(batteryModel);
+                    battery.Id = newId;
+                }
+                else
+                {
+                    _repository.UpdateBattery(batteryModel);
+                }
             }
-            else
+            catch (Exception e)
             {
-                _repository.UpdateBattery(batteryModel);
+                MessageBox.Show("Neuspešan unos baterije. Exception: " + e.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             UpdateBatteryNumbers(); // <<< uvek ažuriraj brojeve
@@ -124,6 +157,8 @@ namespace PvPlantPlanner.UI
 
         private void SaveTransformer(TransformerDisplay transformer)
         {
+            transformer.IsEdited = false;
+
             if (transformer.PowerKVA <= 0 || transformer.PowerFactor <= 0 || transformer.Price <= 0)
             {
                 MessageBox.Show("Unesite validne vrednosti za sva polja (veće od 0)");
@@ -138,15 +173,22 @@ namespace PvPlantPlanner.UI
                 Price = transformer.Price
             };
 
-            if (transformer.Id == 0)
+            try
             {
-                var newId = _repository.AddTransformer(transformerModel);
-                transformer.Id = newId;
+                if (transformer.Id == 0)
+                {
+                    var newId = _repository.AddTransformer(transformerModel);
+                    transformer.Id = newId;
+                }
+                else
+                {
+                    _repository.UpdateTransformer(transformerModel);
+                }
             }
-            else
+            catch (Exception e)
             {
-                _repository.UpdateTransformer(transformerModel);
-            }
+                MessageBox.Show("Neuspešan unos transformatora. Exception: " + e.Message, "Greška", MessageBoxButton.OK, MessageBoxImage.Error);
+            }         
 
             UpdateTransformerNumbers(); // <<< uvek ažuriraj brojeve
         }
@@ -225,12 +267,49 @@ namespace PvPlantPlanner.UI
         {
             Close();
         }
+        private void InsertBattery_Click(object sender, RoutedEventArgs e)
+        {
+            if (BatteryDataGrid.SelectedItem is BatteryDisplay battery)
+            {
+                BatteryDataGrid.CommitEdit(DataGridEditingUnit.Cell, true);
+                BatteryDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
+                SaveBattery(battery);
+
+                // Nakon snimanja resetuj flag da dugme nestane
+                battery.IsEdited = false;
+            }
+        }
+
+        private void InsertTransformer_Click(object sender, RoutedEventArgs e)
+        {
+            if (TransformerDataGrid.SelectedItem is TransformerDisplay transformer)
+            {
+                TransformerDataGrid.CommitEdit(DataGridEditingUnit.Cell, true);
+                TransformerDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
+                SaveTransformer(transformer);
+
+                transformer.IsEdited = false;
+            }
+        }
+
+        private void BatteryDataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            if (e.Row.Item is BatteryDisplay battery)
+                battery.IsEdited = true;
+        }
+
+        private void TransformerDataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            if (e.Row.Item is TransformerDisplay transformer)
+                transformer.IsEdited = true;
+        }
 
         public class BatteryDisplay : INotifyPropertyChanged
         {
             private int _no, _id, _cycles;
             private double _power, _capacity;
             private int _price;
+            private bool _isEdited;
 
             public int No { get => _no; set { _no = value; OnPropertyChanged(); } }
             public int Id { get => _id; set { _id = value; OnPropertyChanged(); } }
@@ -238,6 +317,7 @@ namespace PvPlantPlanner.UI
             public double Capacity { get => _capacity; set { _capacity = value; OnPropertyChanged(); } }
             public int Price { get => _price; set { _price = value; OnPropertyChanged(); } }
             public int Cycles { get => _cycles; set { _cycles = value; OnPropertyChanged(); } }
+            public bool IsEdited { get => _isEdited; set { _isEdited = value; OnPropertyChanged(); } }
 
             public event PropertyChangedEventHandler PropertyChanged;
             protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -249,12 +329,14 @@ namespace PvPlantPlanner.UI
             private int _no, _id;
             private double _powerKVA, _powerFactor;
             private int _price;
+            private bool _isEdited;
 
             public int No { get => _no; set { _no = value; OnPropertyChanged(); } }
             public int Id { get => _id; set { _id = value; OnPropertyChanged(); } }
             public double PowerKVA { get => _powerKVA; set { _powerKVA = value; OnPropertyChanged(); } }
             public double PowerFactor { get => _powerFactor; set { _powerFactor = value; OnPropertyChanged(); } }
             public int Price { get => _price; set { _price = value; OnPropertyChanged(); } }
+            public bool IsEdited { get => _isEdited; set { _isEdited = value; OnPropertyChanged(); } }
 
             public event PropertyChangedEventHandler PropertyChanged;
             protected void OnPropertyChanged([CallerMemberName] string name = null)
