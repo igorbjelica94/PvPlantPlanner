@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common.LicenseHashGenerator\Common.LicenseHashGenerator.csproj" />
     <ProjectReference Include="..\PvPlantPlanner.Common\PvPlantPlanner.Common.csproj" />
     <ProjectReference Include="..\PvPlantPlanner.EnergyTransferSimulator\PvPlantPlanner.EnergyTransferSimulator.csproj" />
   </ItemGroup>
